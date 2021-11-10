@@ -1,2 +1,2 @@
-# pocket-resources
+# Pocket Resources
 Pocket Resources microservice
