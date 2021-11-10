@@ -1,13 +1,13 @@
 import { Expose } from 'class-transformer';
-import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
+import { IsUUID, IsOptional, IsDate, IsString } from 'class-validator';
 import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column } from 'typeorm';
 
-export const RESOURCE_TABLE_NAME = 'resources';
+export const TAG_TABLE_NAME = 'tags';
 
 @Entity({
-  name: RESOURCE_TABLE_NAME,
+  name: TAG_TABLE_NAME,
 })
-export class Resource {
+export class Tag {
   @IsUUID('4')
   @IsOptional()
   @Expose()
@@ -29,23 +29,15 @@ export class Resource {
   @IsString()
   @Expose()
   @Column({ type: 'text' })
+  public color: string;
+
+  @IsString()
+  @Expose()
+  @Column({ type: 'text' })
   public title: string;
 
-  @IsString()
+  @IsUUID('4')
   @Expose()
-  @Column({ type: 'text' })
-  public url: string;
-
-  @IsString()
-  @IsUrl()
-  @Expose()
-  @Column({ type: 'text' })
-  public thumbnailUrl: string;
-
-  @IsString()
-  @Expose()
-  @Column({ type: 'text' })
-  public content: string;
+  @Column({ type: 'uuid' })
+  public userId: string;
 }
-
-// TODO: validation
