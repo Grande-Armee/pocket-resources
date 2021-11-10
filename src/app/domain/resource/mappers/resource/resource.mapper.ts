@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
 import { ResourceDTO } from '../../dtos/resource.dto';
-import { ResourceEntity } from '../../entities/resource.entity';
+import { Resource } from '../../entities/resource.entity';
 
 @Injectable()
 export class ResourceMapper {
-  public mapEntityToDTO(entity: ResourceEntity): ResourceDTO {
+  public mapEntityToDTO(entity: Resource): ResourceDTO {
     return ResourceDTO.create({
       id: entity.id,
       createdAt: entity.createdAt,

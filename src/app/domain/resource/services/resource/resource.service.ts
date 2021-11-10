@@ -25,7 +25,6 @@ export class ResourceService {
   public async createResource(unitOfWork: UnitOfWork): Promise<ResourceDTO> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
-
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     const resource = await resourceRepository.createOne();
