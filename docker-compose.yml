@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  pocket-resources:
+    build:
+      context: .
+      target: development
+    volumes:
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    ports:
+      - 9229:9229
+    command: npm run start:dev
+    env_file:
+      - .env
+    networks:
+      - pocket-network
+    depends_on:
+      - pocket-resources-postgres
+
+  pocket-resources-postgres:
+    restart: always
+    image: postgres:14
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE_NAME}
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    volumes:
+      - pocket-resources-pgdata:/var/lib/postgresql/data
+    networks:
+      - pocket-network
+
+volumes:
+  pocket-resources-pgdata:
+
+networks:
+  pocket-network:
+    external: true
