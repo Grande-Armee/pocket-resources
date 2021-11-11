@@ -6,6 +6,7 @@ import { ResourceCreatedEvent } from '../../domain-events/resource-created.event
 import { ResourceRemovedEvent } from '../../domain-events/resource-removed.event';
 import { ResourceUpdatedEvent } from '../../domain-events/resource-updated.event';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resource.repository';
+import { ResourceTestFactory } from '../../tests-factories/resource.factory';
 import { ResourceService } from './resource.service';
 
 describe('ResourceService', () => {
@@ -37,10 +38,10 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = 'title';
-        const content = 'content';
-        const url = 'url';
-        const thumbnailUrl = 'thumbnailUrl';
+        const title = ResourceTestFactory.createTitle();
+        const content = ResourceTestFactory.createContent();
+        const url = ResourceTestFactory.createUrl();
+        const thumbnailUrl = ResourceTestFactory.createUrl();
 
         const createdResourceDTO = await resourceService.createResource(unitOfWork, {
           title,
@@ -74,10 +75,10 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = 'title';
-        const content = 'content';
-        const url = 'url';
-        const thumbnailUrl = 'thumbnailUrl';
+        const title = ResourceTestFactory.createTitle();
+        const content = ResourceTestFactory.createContent();
+        const url = ResourceTestFactory.createUrl();
+        const thumbnailUrl = ResourceTestFactory.createUrl();
 
         await resourceRepository.createOne({ title, content, url, thumbnailUrl });
 
@@ -102,10 +103,10 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = 'title';
-        const content = 'content';
-        const url = 'url';
-        const thumbnailUrl = 'thumbnailUrl';
+        const title = ResourceTestFactory.createTitle();
+        const content = ResourceTestFactory.createContent();
+        const url = ResourceTestFactory.createUrl();
+        const thumbnailUrl = ResourceTestFactory.createUrl();
 
         const resourceDTO = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
 
@@ -118,7 +119,7 @@ describe('ResourceService', () => {
     it('should throw if resource with given id does not exist', async () => {
       expect.assertions(1);
 
-      const nonExistingId = 'nonExistingId';
+      const nonExistingId = ResourceTestFactory.createId();
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         try {
@@ -140,11 +141,11 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = 'title1';
-        const content = 'content';
-        const url = 'url';
-        const thumbnailUrl = 'thumbnailUrl';
-        const titleAfterUpdate = 'title2';
+        const title = ResourceTestFactory.createTitle();
+        const content = ResourceTestFactory.createContent();
+        const url = ResourceTestFactory.createUrl();
+        const thumbnailUrl = ResourceTestFactory.createUrl();
+        const titleAfterUpdate = ResourceTestFactory.createTitle();
 
         const resourceDTOBeforeUpdate = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
 
@@ -174,8 +175,8 @@ describe('ResourceService', () => {
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
 
-        const title = 'title';
-        const nonExistingId = 'nonExistingId';
+        const title = ResourceTestFactory.createTitle();
+        const nonExistingId = ResourceTestFactory.createId();
 
         try {
           await resourceService.updateResource(unitOfWork, nonExistingId, { title });
@@ -199,10 +200,10 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = 'title1';
-        const content = 'content';
-        const url = 'url';
-        const thumbnailUrl = 'thumbnailUrl';
+        const title = ResourceTestFactory.createTitle();
+        const content = ResourceTestFactory.createContent();
+        const url = ResourceTestFactory.createUrl();
+        const thumbnailUrl = ResourceTestFactory.createUrl();
 
         const resourceDTO = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
 
@@ -225,7 +226,7 @@ describe('ResourceService', () => {
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
 
-        const nonExistingId = 'nonExistingId';
+        const nonExistingId = ResourceTestFactory.createId();
 
         try {
           await resourceService.removeResource(unitOfWork, nonExistingId);
