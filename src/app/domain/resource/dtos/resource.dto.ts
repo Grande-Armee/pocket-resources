@@ -18,16 +18,16 @@ export class ResourceDTO {
   public readonly updatedAt: Date;
 
   @Expose()
-  public readonly title: string;
+  public readonly title?: string;
 
   @Expose()
-  public readonly content: string;
+  public readonly content?: string;
 
   @Expose()
   public readonly url: string;
 
   @Expose()
-  public readonly thumbnailUrl: string;
+  public readonly thumbnailUrl?: string;
 
   public static create = createDTOFactory(ResourceDTO);
 }

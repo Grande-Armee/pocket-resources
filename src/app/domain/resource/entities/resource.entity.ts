@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique } from 'typeorm';
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column } from 'typeorm';
 
 export const RESOURCE_TABLE_NAME = 'resources';
 
@@ -28,8 +28,8 @@ export class Resource {
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
-  public title: string;
+  @Column({ type: 'text', nullable: true })
+  public title?: string;
 
   @IsString()
   @Expose()
@@ -39,13 +39,13 @@ export class Resource {
   @IsString()
   @IsUrl()
   @Expose()
-  @Column({ type: 'text' })
-  public thumbnailUrl: string;
+  @Column({ type: 'text', nullable: true })
+  public thumbnailUrl?: string;
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
-  public content: string;
+  @Column({ type: 'text', nullable: true })
+  public content?: string;
 }
 
 // TODO: validation

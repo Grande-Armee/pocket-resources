@@ -30,7 +30,7 @@ describe('ResourceService', () => {
 
   describe('Create resource', () => {
     it('creates a resource in the database', async () => {
-      expect.assertions(7);
+      expect.assertions(4);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -43,17 +43,9 @@ describe('ResourceService', () => {
         const url = ResourceTestFactory.createUrl();
         const thumbnailUrl = ResourceTestFactory.createUrl();
 
-        const createdResourceDTO = await resourceService.createResource(unitOfWork, {
-          title,
-          content,
-          url,
-          thumbnailUrl,
-        });
+        const createdResourceDTO = await resourceService.createResource(unitOfWork, { url });
 
-        expect(createdResourceDTO.title).toBe(title);
-        expect(createdResourceDTO.content).toBe(content);
         expect(createdResourceDTO.url).toBe(url);
-        expect(createdResourceDTO.thumbnailUrl).toBe(thumbnailUrl);
 
         const resourceDTO = await resourceRepository.findOneById(createdResourceDTO.id);
 
@@ -67,29 +59,22 @@ describe('ResourceService', () => {
     });
 
     it('should not create resource if resource with the same url already exists', async () => {
-      expect.assertions(2);
+      expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = ResourceTestFactory.createTitle();
-        const content = ResourceTestFactory.createContent();
         const url = ResourceTestFactory.createUrl();
-        const thumbnailUrl = ResourceTestFactory.createUrl();
 
-        await resourceRepository.createOne({ title, content, url, thumbnailUrl });
+        await resourceRepository.createOne({ url });
 
         try {
-          await resourceService.createResource(unitOfWork, { title, content, url, thumbnailUrl });
+          await resourceService.createResource(unitOfWork, { url });
         } catch (error) {
           expect(error).toBeTruthy();
         }
-
-        const domainEvents = domainEventsDispatcher.getEvents();
-        expect(domainEvents.length).toBe(0);
       });
     });
   });
@@ -103,12 +88,9 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = ResourceTestFactory.createTitle();
-        const content = ResourceTestFactory.createContent();
         const url = ResourceTestFactory.createUrl();
-        const thumbnailUrl = ResourceTestFactory.createUrl();
 
-        const resourceDTO = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
+        const resourceDTO = await resourceRepository.createOne({ url });
 
         const foundResourceDTO = await resourceService.findResource(unitOfWork, resourceDTO.id);
 
@@ -133,7 +115,7 @@ describe('ResourceService', () => {
 
   describe('Update resource', () => {
     it('updates a resource in the database', async () => {
-      expect.assertions(7);
+      expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -142,21 +124,16 @@ describe('ResourceService', () => {
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
         const title = ResourceTestFactory.createTitle();
-        const content = ResourceTestFactory.createContent();
         const url = ResourceTestFactory.createUrl();
-        const thumbnailUrl = ResourceTestFactory.createUrl();
-        const titleAfterUpdate = ResourceTestFactory.createTitle();
 
-        const resourceDTOBeforeUpdate = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
+        const resourceDTOBeforeUpdate = await resourceRepository.createOne({ url });
 
         const resourceDTOAfterUpdate = await resourceService.updateResource(unitOfWork, resourceDTOBeforeUpdate.id, {
-          title: titleAfterUpdate,
+          title,
         });
 
-        expect(resourceDTOAfterUpdate.title).toBe(titleAfterUpdate);
-        expect(resourceDTOAfterUpdate.content).toBe(content);
+        expect(resourceDTOAfterUpdate.title).toBe(title);
         expect(resourceDTOAfterUpdate.url).toBe(url);
-        expect(resourceDTOAfterUpdate.thumbnailUrl).toBe(thumbnailUrl);
 
         const resourceInDb = await resourceRepository.findOneById(resourceDTOBeforeUpdate.id);
 
@@ -170,11 +147,9 @@ describe('ResourceService', () => {
     });
 
     it('should throw if resource with given id does not exist', async () => {
-      expect.assertions(2);
+      expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
-
         const title = ResourceTestFactory.createTitle();
         const nonExistingId = ResourceTestFactory.createId();
 
@@ -183,9 +158,6 @@ describe('ResourceService', () => {
         } catch (error) {
           expect(error).toBeTruthy();
         }
-
-        const domainEvents = domainEventsDispatcher.getEvents();
-        expect(domainEvents.length).toBe(0);
       });
     });
   });
@@ -200,12 +172,9 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = ResourceTestFactory.createTitle();
-        const content = ResourceTestFactory.createContent();
         const url = ResourceTestFactory.createUrl();
-        const thumbnailUrl = ResourceTestFactory.createUrl();
 
-        const resourceDTO = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
+        const resourceDTO = await resourceRepository.createOne({ url });
 
         await resourceService.removeResource(unitOfWork, resourceDTO.id);
 
@@ -221,11 +190,9 @@ describe('ResourceService', () => {
     });
 
     it('should throw if resource with given id does not exist', async () => {
-      expect.assertions(2);
+      expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
-
         const nonExistingId = ResourceTestFactory.createId();
 
         try {
@@ -233,9 +200,6 @@ describe('ResourceService', () => {
         } catch (error) {
           expect(error).toBeTruthy();
         }
-
-        const domainEvents = domainEventsDispatcher.getEvents();
-        expect(domainEvents.length).toBe(0);
       });
     });
   });

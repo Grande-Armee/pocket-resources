@@ -1,4 +1,4 @@
-import { internet, lorem } from 'faker';
+import { internet, lorem, datatype } from 'faker';
 
 export class ResourceTestFactory {
   public static createTitle(): string {
@@ -14,6 +14,6 @@ export class ResourceTestFactory {
   }
 
   public static createId(): string {
-    return internet.password(12);
+    return datatype.uuid();
   }
 }
