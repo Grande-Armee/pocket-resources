@@ -3,6 +3,7 @@ import { TestingModule } from '@nestjs/testing';
 import { PostgresHelper } from '../../../../../integration-tests/helpers/postgres/postgres.helper';
 import { TestModuleHelper } from '../../../../../integration-tests/helpers/test-module/test-module.helper';
 import { ResourceCreatedEvent } from '../../domain-events/resource-created.event';
+import { ResourceRemovedEvent } from '../../domain-events/resource-removed.event';
 import { ResourceUpdatedEvent } from '../../domain-events/resource-updated.event';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resource.repository';
 import { ResourceService } from './resource.service';
@@ -28,7 +29,7 @@ describe('ResourceService', () => {
 
   describe('Create resource', () => {
     it('creates a resource in the database', async () => {
-      expect.assertions(6);
+      expect.assertions(7);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -59,6 +60,7 @@ describe('ResourceService', () => {
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
+        expect(domainEvents.length).toBe(1);
         expect(domainEvents.at(0) instanceof ResourceCreatedEvent).toBe(true);
       });
     });
@@ -91,7 +93,7 @@ describe('ResourceService', () => {
     });
   });
 
-  describe('Read resource', () => {
+  describe('Find resource', () => {
     it('should return resource if resource with given id exists', async () => {
       expect.assertions(1);
 
@@ -130,7 +132,7 @@ describe('ResourceService', () => {
 
   describe('Update resource', () => {
     it('updates a resource in the database', async () => {
-      expect.assertions(6);
+      expect.assertions(7);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -161,6 +163,7 @@ describe('ResourceService', () => {
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
+        expect(domainEvents.length).toBe(1);
         expect(domainEvents.at(0) instanceof ResourceUpdatedEvent).toBe(true);
       });
     });
@@ -176,6 +179,56 @@ describe('ResourceService', () => {
 
         try {
           await resourceService.updateResource(unitOfWork, nonExistingId, { title });
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+
+        const domainEvents = domainEventsDispatcher.getEvents();
+        expect(domainEvents.length).toBe(0);
+      });
+    });
+  });
+
+  describe('Remove resource', () => {
+    it('removes resource from database', async () => {
+      expect.assertions(3);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
+        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
+
+        const title = 'title1';
+        const content = 'content';
+        const url = 'url';
+        const thumbnailUrl = 'thumbnailUrl';
+
+        const resourceDTO = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
+
+        await resourceService.removeResource(unitOfWork, resourceDTO.id);
+
+        const resourceInDb = await resourceRepository.findOneById(resourceDTO.id);
+
+        expect(resourceInDb).toBe(null);
+
+        const domainEvents = domainEventsDispatcher.getEvents();
+
+        expect(domainEvents.length).toBe(1);
+        expect(domainEvents.at(0) instanceof ResourceRemovedEvent).toBe(true);
+      });
+    });
+
+    it('should throw if resource with given id does not exist', async () => {
+      expect.assertions(2);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+
+        const nonExistingId = 'nonExistingId';
+
+        try {
+          await resourceService.removeResource(unitOfWork, nonExistingId);
         } catch (error) {
           expect(error).toBeTruthy();
         }

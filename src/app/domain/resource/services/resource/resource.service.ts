@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { UnitOfWork } from '../../../../shared/unit-of-work/providers/unit-of-work-factory';
 import { ResourceCreatedEvent } from '../../domain-events/resource-created.event';
+import { ResourceRemovedEvent } from '../../domain-events/resource-removed.event';
 import { ResourceUpdatedEvent } from '../../domain-events/resource-updated.event';
 import { ResourceDTO } from '../../dtos/resource.dto';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resource.repository';
@@ -65,5 +66,19 @@ export class ResourceService {
     );
 
     return resource;
+  }
+
+  public async removeResource(unitOfWork: UnitOfWork, resourceId: string): Promise<void> {
+    const entityManager = unitOfWork.getEntityManager();
+    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
+
+    await resourceRepository.removeOne(resourceId);
+
+    domainEventsDispatcher.addEvent(
+      new ResourceRemovedEvent({
+        id: resourceId,
+      }),
+    );
   }
 }
