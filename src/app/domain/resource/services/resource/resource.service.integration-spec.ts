@@ -89,4 +89,39 @@ describe('ResourceService', () => {
       });
     });
   });
+
+  describe('Find resource', () => {
+    it('should return resource if resource with given id exists', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
+
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
+
+        const title = 'title';
+        const content = 'content';
+        const url = 'url';
+        const thumbnailUrl = 'thumbnailUrl';
+
+        const resourceDTO = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
+
+        const foundResourceDTO = await resourceService.findResource(unitOfWork, resourceDTO.id);
+
+        expect(foundResourceDTO).not.toBe(null);
+      });
+    });
+
+    it('should throw if resource with given id does not exist', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        try {
+          await resourceService.findResource(unitOfWork, 'invalid_id');
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+      });
+    });
+  });
 });
