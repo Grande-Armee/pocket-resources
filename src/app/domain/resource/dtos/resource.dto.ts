@@ -17,5 +17,17 @@ export class ResourceDTO {
   @Expose()
   public readonly updatedAt: Date;
 
+  @Expose()
+  public readonly title?: string;
+
+  @Expose()
+  public readonly content?: string;
+
+  @Expose()
+  public readonly url: string;
+
+  @Expose()
+  public readonly thumbnailUrl?: string;
+
   public static create = createDTOFactory(ResourceDTO);
 }

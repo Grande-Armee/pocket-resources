@@ -28,24 +28,24 @@ export class Resource {
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
-  public title: string;
+  @Column({ type: 'text', nullable: true })
+  public title?: string;
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
   public url: string;
 
   @IsString()
   @IsUrl()
   @Expose()
-  @Column({ type: 'text' })
-  public thumbnailUrl: string;
+  @Column({ type: 'text', nullable: true })
+  public thumbnailUrl?: string;
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
-  public content: string;
+  @Column({ type: 'text', nullable: true })
+  public content?: string;
 }
 
 // TODO: validation
