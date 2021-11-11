@@ -3,6 +3,7 @@ import { TestingModule } from '@nestjs/testing';
 import { PostgresHelper } from '../../../../../integration-tests/helpers/postgres/postgres.helper';
 import { TestModuleHelper } from '../../../../../integration-tests/helpers/test-module/test-module.helper';
 import { ResourceCreatedEvent } from '../../domain-events/resource-created.event';
+import { ResourceUpdatedEvent } from '../../domain-events/resource-updated.event';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resource.repository';
 import { ResourceService } from './resource.service';
 
@@ -90,7 +91,7 @@ describe('ResourceService', () => {
     });
   });
 
-  describe('Find resource', () => {
+  describe('Read resource', () => {
     it('should return resource if resource with given id exists', async () => {
       expect.assertions(1);
 
@@ -115,12 +116,72 @@ describe('ResourceService', () => {
     it('should throw if resource with given id does not exist', async () => {
       expect.assertions(1);
 
+      const nonExistingId = 'nonExistingId';
+
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         try {
-          await resourceService.findResource(unitOfWork, 'invalid_id');
+          await resourceService.findResource(unitOfWork, nonExistingId);
         } catch (error) {
           expect(error).toBeTruthy();
         }
+      });
+    });
+  });
+
+  describe('Update resource', () => {
+    it('updates a resource in the database', async () => {
+      expect.assertions(6);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
+        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
+
+        const title = 'title1';
+        const content = 'content';
+        const url = 'url';
+        const thumbnailUrl = 'thumbnailUrl';
+        const titleAfterUpdate = 'title2';
+
+        const resourceDTOBeforeUpdate = await resourceRepository.createOne({ title, content, url, thumbnailUrl });
+
+        const resourceDTOAfterUpdate = await resourceService.updateResource(unitOfWork, resourceDTOBeforeUpdate.id, {
+          title: titleAfterUpdate,
+        });
+
+        expect(resourceDTOAfterUpdate.title).toBe(titleAfterUpdate);
+        expect(resourceDTOAfterUpdate.content).toBe(content);
+        expect(resourceDTOAfterUpdate.url).toBe(url);
+        expect(resourceDTOAfterUpdate.thumbnailUrl).toBe(thumbnailUrl);
+
+        const resourceInDb = await resourceRepository.findOneById(resourceDTOBeforeUpdate.id);
+
+        expect(resourceInDb).not.toBe(null);
+
+        const domainEvents = domainEventsDispatcher.getEvents();
+
+        expect(domainEvents.at(0) instanceof ResourceUpdatedEvent).toBe(true);
+      });
+    });
+
+    it('should throw if resource with given id does not exist', async () => {
+      expect.assertions(2);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+
+        const title = 'title';
+        const nonExistingId = 'nonExistingId';
+
+        try {
+          await resourceService.updateResource(unitOfWork, nonExistingId, { title });
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+
+        const domainEvents = domainEventsDispatcher.getEvents();
+        expect(domainEvents.length).toBe(0);
       });
     });
   });
