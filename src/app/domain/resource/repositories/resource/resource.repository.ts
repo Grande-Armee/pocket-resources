@@ -28,6 +28,16 @@ export class ResourceRepository {
     return this.resourceMapper.mapEntityToDTO(resource);
   }
 
+  public async findOneByUrl(url: string): Promise<ResourceDTO | null> {
+    const resource = await this.manager.findOne(Resource, { url });
+
+    if (!resource) {
+      return null;
+    }
+
+    return this.resourceMapper.mapEntityToDTO(resource);
+  }
+
   public async findAll(): Promise<ResourceDTO[]> {
     const resources = await this.manager.find(Resource, {});
 

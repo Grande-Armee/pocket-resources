@@ -27,7 +27,7 @@ describe('ResourceService', () => {
 
   describe('Create resource', () => {
     it('creates a resource in the database', async () => {
-      expect.assertions(3);
+      expect.assertions(6);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -35,9 +35,22 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const createdResourceDTO = await resourceService.createResource(unitOfWork);
+        const title = 'title';
+        const content = 'content';
+        const url = 'url';
+        const thumbnailUrl = 'thumbnailUrl';
 
-        expect(createdResourceDTO.id).toBe('ef492cef-c478-4974-8555-97adadcc5c15');
+        const createdResourceDTO = await resourceService.createResource(unitOfWork, {
+          title,
+          content,
+          url,
+          thumbnailUrl,
+        });
+
+        expect(createdResourceDTO.title).toBe(title);
+        expect(createdResourceDTO.content).toBe(content);
+        expect(createdResourceDTO.url).toBe(url);
+        expect(createdResourceDTO.thumbnailUrl).toBe(thumbnailUrl);
 
         const resourceDTO = await resourceRepository.findOneById(createdResourceDTO.id);
 
@@ -46,6 +59,33 @@ describe('ResourceService', () => {
         const domainEvents = domainEventsDispatcher.getEvents();
 
         expect(domainEvents.at(0) instanceof ResourceCreatedEvent).toBe(true);
+      });
+    });
+
+    it('should not create resource if resource with the same url already exists', async () => {
+      expect.assertions(2);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
+        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
+
+        const title = 'title';
+        const content = 'content';
+        const url = 'url';
+        const thumbnailUrl = 'thumbnailUrl';
+
+        await resourceRepository.createOne({ title, content, url, thumbnailUrl });
+
+        try {
+          await resourceService.createResource(unitOfWork, { title, content, url, thumbnailUrl });
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+
+        const domainEvents = domainEventsDispatcher.getEvents();
+        expect(domainEvents.length).toBe(0);
       });
     });
   });

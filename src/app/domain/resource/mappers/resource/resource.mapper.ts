@@ -10,6 +10,10 @@ export class ResourceMapper {
       id: entity.id,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+      title: entity.title,
+      content: entity.content,
+      url: entity.url,
+      thumbnailUrl: entity.thumbnailUrl,
     });
   }
 }

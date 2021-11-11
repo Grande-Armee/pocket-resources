@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column } from 'typeorm';
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique } from 'typeorm';
 
 export const RESOURCE_TABLE_NAME = 'resources';
 
@@ -33,7 +33,7 @@ export class Resource {
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
   public url: string;
 
   @IsString()
