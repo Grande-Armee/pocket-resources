@@ -1,17 +1,21 @@
 import { Injectable } from '@nestjs/common';
 
+import { Mapper } from '../../../../shared/mapper/mapper';
 import { TagDTO } from '../../dtos/tag.dto';
 import { Tag } from '../../entities/tag.entity';
 
-// TODO: implements Mapper<T>
-
 @Injectable()
-export class TagMapper {
+export class TagMapper implements Mapper<Tag, TagDTO> {
   public mapEntityToDTO(entity: Tag): TagDTO {
+    const { id, createdAt, updatedAt, color, title, userId } = entity;
+
     return TagDTO.create({
-      id: entity.id,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
+      id,
+      createdAt,
+      updatedAt,
+      color,
+      title,
+      userId,
     });
   }
 }

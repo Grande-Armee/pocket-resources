@@ -7,7 +7,7 @@ function createDTOFactory<T>(type: ClassConstructor<T>) {
   };
 }
 
-export class TagDTO {
+export class UserResourceTagDTO {
   @Expose()
   public readonly id: string;
 
@@ -18,13 +18,10 @@ export class TagDTO {
   public readonly updatedAt: Date;
 
   @Expose()
-  public readonly color: string;
+  public readonly userResourceId: string;
 
   @Expose()
-  public readonly title: string;
+  public readonly tagId: string;
 
-  @Expose()
-  public readonly userId: string;
-
-  public static create = createDTOFactory(TagDTO);
+  public static create = createDTOFactory(UserResourceTagDTO);
 }

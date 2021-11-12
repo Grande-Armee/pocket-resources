@@ -20,14 +20,8 @@ export class TagRepository {
     return this.tagMapper.mapEntityToDTO(tag);
   }
 
-  public async createOne(): Promise<TagDTO> {
-    // TODO: remove hardcoded id
-    const tag = this.manager.create(Tag, {
-      id: 'ef492cef-c478-4974-8555-97adadcc5c15',
-      color: 'asd',
-      title: 'asd',
-      userId: 'a6a18f2d-46f6-47e9-8c5d-ce7352fa22d5',
-    });
+  public async createOne(data: Partial<Tag>): Promise<TagDTO> {
+    const tag = this.manager.create(Tag, { ...data });
 
     const [savedTag] = await this.manager.save([tag]);
 

@@ -1,5 +1,8 @@
 import { ClassConstructor, Expose, plainToClass } from 'class-transformer';
 
+import { ResourceDTO } from '../../resource/dtos/resource.dto';
+import { TagDTO } from '../../tag/dtos/tag.dto';
+
 // TODO: move to common
 function createDTOFactory<T>(type: ClassConstructor<T>) {
   return (params: T): T => {
@@ -7,7 +10,7 @@ function createDTOFactory<T>(type: ClassConstructor<T>) {
   };
 }
 
-export class TagDTO {
+export class UserResourceDTO {
   @Expose()
   public readonly id: string;
 
@@ -18,13 +21,16 @@ export class TagDTO {
   public readonly updatedAt: Date;
 
   @Expose()
-  public readonly color: string;
+  public readonly resource: ResourceDTO | null;
 
   @Expose()
-  public readonly title: string;
+  public readonly resourceId: string;
 
   @Expose()
   public readonly userId: string;
 
-  public static create = createDTOFactory(TagDTO);
+  @Expose()
+  public readonly tags: TagDTO[] | null;
+
+  public static create = createDTOFactory(UserResourceDTO);
 }

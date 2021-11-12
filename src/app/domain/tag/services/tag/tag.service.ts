@@ -27,7 +27,7 @@ export class TagService {
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
-    const tag = await tagRepository.createOne();
+    const tag = await tagRepository.createOne({});
 
     domainEventsDispatcher.addEvent(
       new TagCreatedEvent({
