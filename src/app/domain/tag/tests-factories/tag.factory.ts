@@ -9,7 +9,7 @@ export class TagTestFactory {
     return internet.color();
   }
 
-  public static createId(): string {
+  public static createUserId(): string {
     return datatype.uuid();
   }
 }

@@ -40,7 +40,7 @@ describe('TagService', () => {
 
         const title = TagTestFactory.createTitle();
         const color = TagTestFactory.createColor();
-        const userId = TagTestFactory.createId();
+        const userId = TagTestFactory.createUserId();
 
         const createdTagDTO = await tagService.createTag(unitOfWork, { title, color, userId });
 
@@ -71,7 +71,7 @@ describe('TagService', () => {
 
         const title = TagTestFactory.createTitle();
         const color = TagTestFactory.createColor();
-        const userId = TagTestFactory.createId();
+        const userId = TagTestFactory.createUserId();
 
         const tagDTO = await tagRepository.createOne({ title, color, userId });
 
@@ -84,7 +84,7 @@ describe('TagService', () => {
     it('should throw if tag with given id does not exist', async () => {
       expect.assertions(1);
 
-      const nonExistingId = TagTestFactory.createId();
+      const nonExistingId = TagTestFactory.createUserId();
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         try {
@@ -109,7 +109,7 @@ describe('TagService', () => {
         const title = TagTestFactory.createTitle();
         const titleAfterUpdate = TagTestFactory.createTitle();
         const color = TagTestFactory.createColor();
-        const userId = TagTestFactory.createId();
+        const userId = TagTestFactory.createUserId();
 
         const tagDTOBeforeUpdate = await tagRepository.createOne({ title, color, userId });
 
@@ -135,7 +135,7 @@ describe('TagService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const title = TagTestFactory.createTitle();
-        const nonExistingId = TagTestFactory.createId();
+        const nonExistingId = TagTestFactory.createUserId();
 
         try {
           await tagService.updateTag(unitOfWork, nonExistingId, { title });
@@ -158,7 +158,7 @@ describe('TagService', () => {
 
         const title = TagTestFactory.createTitle();
         const color = TagTestFactory.createColor();
-        const userId = TagTestFactory.createId();
+        const userId = TagTestFactory.createUserId();
 
         const tagDTO = await tagRepository.createOne({ title, color, userId });
 
@@ -179,7 +179,7 @@ describe('TagService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const nonExistingId = TagTestFactory.createId();
+        const nonExistingId = TagTestFactory.createUserId();
 
         try {
           await tagService.removeTag(unitOfWork, nonExistingId);
