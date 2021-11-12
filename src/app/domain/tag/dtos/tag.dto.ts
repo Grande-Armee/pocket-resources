@@ -17,5 +17,14 @@ export class TagDTO {
   @Expose()
   public readonly updatedAt: Date;
 
+  @Expose()
+  public readonly color: string;
+
+  @Expose()
+  public readonly title: string;
+
+  @Expose()
+  public readonly userId: string;
+
   public static create = createDTOFactory(TagDTO);
 }
