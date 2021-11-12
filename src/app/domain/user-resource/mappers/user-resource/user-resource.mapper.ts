@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { Tag } from '../../../../domain/tag/entities/tag.entity';
 import { Mapper } from '../../../../shared/mapper/mapper';
 import { Nullable } from '../../../../shared/nullable/nullable';
 import { ResourceMapper } from '../../../resource/mappers/resource/resource.mapper';
@@ -17,7 +18,7 @@ export class UserResourceMapper implements Mapper<UserResource, UserResourceDTO>
     const nullableResourceDTO = Nullable.wrap(resource).map((resource) => this.resourceMapper.mapEntityToDTO(resource));
 
     const nullableTagsDTO = Nullable.wrap(userResourceTags).map((userResourceTags) =>
-      userResourceTags.map((userResourceTag) => this.tagMapper.mapEntityToDTO(userResourceTag.tag)),
+      userResourceTags.map((userResourceTag) => this.tagMapper.mapEntityToDTO(userResourceTag.tag as Tag)),
     );
 
     return UserResourceDTO.create({

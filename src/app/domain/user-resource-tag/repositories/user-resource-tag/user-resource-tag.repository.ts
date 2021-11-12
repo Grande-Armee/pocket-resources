@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntityRepository, EntityManager } from 'typeorm';
+import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
 import { RepositoryFactory } from '../../../../shared/postgres/interfaces';
 import { UserResourceTagDTO } from '../../dtos/user-resource-tag.dto';
@@ -13,14 +13,18 @@ export class UserResourceTagRepository {
     private readonly userResourceTagMapper: UserResourceTagMapper,
   ) {}
 
-  public async findOneById(id: string): Promise<UserResourceTagDTO | null> {
-    const userResourceTag = await this.manager.findOne(UserResourceTag, { id });
+  public async findOne(conditions: FindConditions<UserResourceTag>): Promise<UserResourceTagDTO | null> {
+    const userResourceTag = await this.manager.findOne(UserResourceTag, conditions);
 
     if (!userResourceTag) {
       return null;
     }
 
     return this.userResourceTagMapper.mapEntityToDTO(userResourceTag);
+  }
+
+  public async findOneById(id: string): Promise<UserResourceTagDTO | null> {
+    return this.findOne({ id });
   }
 
   public async createOne(data: Partial<UserResourceTag>): Promise<UserResourceTagDTO> {

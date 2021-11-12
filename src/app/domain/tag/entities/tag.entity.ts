@@ -40,7 +40,7 @@ export class Tag {
 
   @Expose()
   @OneToMany(() => UserResourceTag, (userResourceTag) => userResourceTag.tag)
-  public userResourceTags: UserResourceTag[];
+  public userResourceTags?: UserResourceTag[];
 
   @IsUUID('4')
   @Expose()

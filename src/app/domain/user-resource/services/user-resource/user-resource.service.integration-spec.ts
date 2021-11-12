@@ -25,6 +25,7 @@ describe('UserResourceService', () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userResourceService = testingModule.get(UserResourceService);
     userResourceRepositoryFactory = testingModule.get(UserResourceRepositoryFactory);
     resourceService = testingModule.get(ResourceService);
@@ -78,10 +79,7 @@ describe('UserResourceService', () => {
 
         const result = await userResourceRepository.findMany({ userId });
 
-        console.log(result);
-        console.log(result.at(0)?.tags);
-
-        expect(result).toBeTruthy();
+        expect(result.length).toBe(1);
       });
     });
   });

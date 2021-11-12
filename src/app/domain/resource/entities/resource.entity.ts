@@ -51,5 +51,5 @@ export class Resource {
 
   @Expose()
   @ManyToOne(() => UserResource, (userResource) => userResource.resource)
-  public userResources: UserResource[];
+  public userResources?: UserResource[];
 }

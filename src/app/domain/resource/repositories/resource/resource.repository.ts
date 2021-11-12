@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntityRepository, EntityManager } from 'typeorm';
+import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
 import { RepositoryFactory } from '../../../../shared/postgres/interfaces';
 import { ResourceDTO } from '../../dtos/resource.dto';
@@ -10,6 +10,22 @@ import { ResourceMapper } from '../../mappers/resource/resource.mapper';
 export class ResourceRepository {
   public constructor(private readonly manager: EntityManager, private readonly resourceMapper: ResourceMapper) {}
 
+  public async findOne(conditions: FindConditions<Resource>): Promise<ResourceDTO | null> {
+    const resource = await this.manager.findOne(Resource, conditions);
+
+    if (!resource) {
+      return null;
+    }
+
+    return this.resourceMapper.mapEntityToDTO(resource);
+  }
+
+  public async findMany(conditions: FindConditions<Resource>): Promise<ResourceDTO[]> {
+    const resources = await this.manager.find(Resource, conditions);
+
+    return resources.map((resource) => this.resourceMapper.mapEntityToDTO(resource));
+  }
+
   public async createOne(resourceData: Partial<Resource>): Promise<ResourceDTO> {
     const resource = this.manager.create(Resource, { ...resourceData });
 
@@ -19,29 +35,11 @@ export class ResourceRepository {
   }
 
   public async findOneById(id: string): Promise<ResourceDTO | null> {
-    const resource = await this.manager.findOne(Resource, { id });
-
-    if (!resource) {
-      return null;
-    }
-
-    return this.resourceMapper.mapEntityToDTO(resource);
+    return this.findOne({ id });
   }
 
   public async findOneByUrl(url: string): Promise<ResourceDTO | null> {
-    const resource = await this.manager.findOne(Resource, { url });
-
-    if (!resource) {
-      return null;
-    }
-
-    return this.resourceMapper.mapEntityToDTO(resource);
-  }
-
-  public async findAll(): Promise<ResourceDTO[]> {
-    const resources = await this.manager.find(Resource, {});
-
-    return resources.map((resource) => this.resourceMapper.mapEntityToDTO(resource));
+    return this.findOne({ url });
   }
 
   public async updateOne(id: string, data: Partial<Resource>): Promise<ResourceDTO> {

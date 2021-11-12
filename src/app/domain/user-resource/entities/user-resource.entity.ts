@@ -72,22 +72,19 @@ export class UserResource {
 
   @Expose()
   @ManyToOne(() => Resource, (resource) => resource.userResources)
-  public resource: Resource;
+  public resource?: Resource;
 
   @IsUUID('4')
   @Expose()
   @Column({ type: 'uuid' })
   public resourceId: string;
 
-  // TODO: null
   @Expose()
   @OneToMany(() => UserResourceTag, (userResourceTag) => userResourceTag.userResource)
-  public userResourceTags: UserResourceTag[];
+  public userResourceTags?: UserResourceTag[];
 
   @IsUUID('4')
   @Expose()
   @Column({ type: 'uuid' })
   public userId: string;
 }
-
-// TODO: userId & resourceId unique

@@ -32,7 +32,7 @@ export class UserResourceTag {
 
   @Expose()
   @ManyToOne(() => UserResource, (userResource) => userResource.userResourceTags)
-  public userResource: UserResource;
+  public userResource?: UserResource;
 
   @IsUUID('4')
   @Expose()
@@ -41,7 +41,7 @@ export class UserResourceTag {
 
   @Expose()
   @ManyToOne(() => Tag, (tag) => tag.id)
-  public tag: Tag;
+  public tag?: Tag;
 
   @IsUUID('4')
   @Expose()
