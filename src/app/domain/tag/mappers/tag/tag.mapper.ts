@@ -12,6 +12,9 @@ export class TagMapper {
       id: entity.id,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
+      color: entity.color,
+      title: entity.title,
+      userId: entity.userId,
     });
   }
 }
