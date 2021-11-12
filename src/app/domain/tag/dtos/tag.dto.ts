@@ -18,7 +18,7 @@ export class TagDTO {
   public readonly updatedAt: Date;
 
   @Expose()
-  public readonly color?: string;
+  public readonly color: string;
 
   @Expose()
   public readonly title: string;
