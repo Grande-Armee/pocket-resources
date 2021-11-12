@@ -17,6 +17,7 @@ services:
       - pocket-network
     depends_on:
       - pocket-resources-postgres
+    container_name: pocket-resources
 
   pocket-resources-postgres:
     restart: always
@@ -34,6 +35,7 @@ services:
       - pocket-resources-pgdata:/var/lib/postgresql/data
     networks:
       - pocket-network
+    container_name: pocket-resources-postgres
 
 volumes:
   pocket-resources-pgdata:

@@ -30,28 +30,26 @@ export class Resource {
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
-  public title: string;
+  @Column({ type: 'text', unique: true })
+  public url: string;
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
-  public url: string;
+  @Column({ type: 'text', nullable: true })
+  public title: string | null;
 
   @IsString()
   @IsUrl()
   @Expose()
-  @Column({ type: 'text' })
-  public thumbnailUrl: string;
+  @Column({ type: 'text', nullable: true })
+  public thumbnailUrl: string | null;
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
-  public content: string;
+  @Column({ type: 'text', nullable: true })
+  public content: string | null;
 
   @Expose()
   @ManyToOne(() => UserResource, (userResource) => userResource.resource)
   public userResources: UserResource[];
 }
-
-// TODO: validation

@@ -48,7 +48,9 @@ describe('UserResourceService', () => {
 
         const userId = 'daf76e08-83f7-4ed5-9664-742105bdaa24';
 
-        const resource = await resourceService.createResource(unitOfWork);
+        const resource = await resourceService.createResource(unitOfWork, {
+          url: 'url',
+        });
 
         const tag = await tagRepository.createOne({
           userId,

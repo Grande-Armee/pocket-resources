@@ -10,6 +10,14 @@ import { ResourceMapper } from '../../mappers/resource/resource.mapper';
 export class ResourceRepository {
   public constructor(private readonly manager: EntityManager, private readonly resourceMapper: ResourceMapper) {}
 
+  public async createOne(resourceData: Partial<Resource>): Promise<ResourceDTO> {
+    const resource = this.manager.create(Resource, { ...resourceData });
+
+    const [savedResource] = await this.manager.save([resource]);
+
+    return this.resourceMapper.mapEntityToDTO(savedResource);
+  }
+
   public async findOneById(id: string): Promise<ResourceDTO | null> {
     const resource = await this.manager.findOne(Resource, { id });
 
@@ -20,19 +28,42 @@ export class ResourceRepository {
     return this.resourceMapper.mapEntityToDTO(resource);
   }
 
-  public async createOne(): Promise<ResourceDTO> {
-    // TODO: remove hardcoded id
-    const resource = this.manager.create(Resource, {
-      id: 'ef492cef-c478-4974-8555-97adadcc5c15',
-      title: 'asd',
-      content: 'asd',
-      url: 'asd',
-      thumbnailUrl: 'asd',
-    });
+  public async findOneByUrl(url: string): Promise<ResourceDTO | null> {
+    const resource = await this.manager.findOne(Resource, { url });
 
-    const [savedResource] = await this.manager.save([resource]);
+    if (!resource) {
+      return null;
+    }
 
-    return this.resourceMapper.mapEntityToDTO(savedResource);
+    return this.resourceMapper.mapEntityToDTO(resource);
+  }
+
+  public async findAll(): Promise<ResourceDTO[]> {
+    const resources = await this.manager.find(Resource, {});
+
+    return resources.map((resource) => this.resourceMapper.mapEntityToDTO(resource));
+  }
+
+  public async updateOne(id: string, data: Partial<Resource>): Promise<ResourceDTO> {
+    const resource = await this.findOneById(id);
+
+    if (!resource) {
+      throw new Error('Resource not found');
+    }
+
+    await this.manager.update(Resource, { id }, data);
+
+    return this.findOneById(id) as Promise<ResourceDTO>;
+  }
+
+  public async removeOne(id: string): Promise<void> {
+    const resource = await this.findOneById(id);
+
+    if (!resource) {
+      throw new Error('Resource not found');
+    }
+
+    await this.manager.delete(Resource, { id });
   }
 }
 
