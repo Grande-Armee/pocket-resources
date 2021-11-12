@@ -1,6 +1,8 @@
 import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column } from 'typeorm';
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm';
+
+import { UserResourceTag } from '../../user-resource-tag/entities/user-resource-tag.entity';
 
 export const TAG_TABLE_NAME = 'tags';
 
@@ -35,6 +37,10 @@ export class Tag {
   @Expose()
   @Column({ type: 'text' })
   public title: string;
+
+  @Expose()
+  @OneToMany(() => UserResourceTag, (userResourceTag) => userResourceTag.tag)
+  public userResourceTags?: UserResourceTag[];
 
   @IsUUID('4')
   @Expose()

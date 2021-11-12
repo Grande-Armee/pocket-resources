@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EntityRepository, EntityManager } from 'typeorm';
+import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
 import { RepositoryFactory } from '../../../../shared/postgres/interfaces';
 import { TagDTO } from '../../dtos/tag.dto';
@@ -10,16 +10,8 @@ import { TagMapper } from '../../mappers/tag/tag.mapper';
 export class TagRepository {
   public constructor(private readonly manager: EntityManager, private readonly tagMapper: TagMapper) {}
 
-  public async createOne(tagData: Partial<Tag>): Promise<TagDTO> {
-    const tag = this.manager.create(Tag, { ...tagData });
-
-    const [savedTag] = await this.manager.save([tag]);
-
-    return this.tagMapper.mapEntityToDTO(savedTag);
-  }
-
-  public async findOne(tagData: Partial<Tag>): Promise<TagDTO | null> {
-    const tag = await this.manager.findOne(Tag, { ...tagData });
+  public async findOne(conditions: FindConditions<Tag>): Promise<TagDTO | null> {
+    const tag = await this.manager.findOne(Tag, { ...conditions });
 
     if (!tag) {
       return null;
@@ -28,10 +20,18 @@ export class TagRepository {
     return this.tagMapper.mapEntityToDTO(tag);
   }
 
-  public async findAll(): Promise<TagDTO[]> {
-    const tags = await this.manager.find(Tag, {});
+  public async findMany(conditions: FindConditions<Tag>): Promise<TagDTO[]> {
+    const tags = await this.manager.find(Tag, conditions);
 
     return tags.map((tag) => this.tagMapper.mapEntityToDTO(tag));
+  }
+
+  public async createOne(data: Partial<Tag>): Promise<TagDTO> {
+    const tag = this.manager.create(Tag, { ...data });
+
+    const [savedTag] = await this.manager.save([tag]);
+
+    return this.tagMapper.mapEntityToDTO(savedTag);
   }
 
   public async updateOne(id: string, data: Partial<Tag>): Promise<TagDTO> {

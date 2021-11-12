@@ -1,6 +1,8 @@
 import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column } from 'typeorm';
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, ManyToOne } from 'typeorm';
+
+import { UserResource } from '../../user-resource/entities/user-resource.entity';
 
 export const RESOURCE_TABLE_NAME = 'resources';
 
@@ -28,24 +30,26 @@ export class Resource {
 
   @IsString()
   @Expose()
-  @Column({ type: 'text', nullable: true })
-  public title?: string;
+  @Column({ type: 'text', unique: true })
+  public url: string;
 
   @IsString()
   @Expose()
-  @Column({ type: 'text', unique: true })
-  public url: string;
+  @Column({ type: 'text', nullable: true })
+  public title: string | null;
 
   @IsString()
   @IsUrl()
   @Expose()
   @Column({ type: 'text', nullable: true })
-  public thumbnailUrl?: string;
+  public thumbnailUrl: string | null;
 
   @IsString()
   @Expose()
   @Column({ type: 'text', nullable: true })
-  public content?: string;
-}
+  public content: string | null;
 
-// TODO: validation
+  @Expose()
+  @ManyToOne(() => UserResource, (userResource) => userResource.resource)
+  public userResources?: UserResource[];
+}

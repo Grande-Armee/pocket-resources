@@ -38,10 +38,7 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = ResourceTestFactory.createTitle();
-        const content = ResourceTestFactory.createContent();
         const url = ResourceTestFactory.createUrl();
-        const thumbnailUrl = ResourceTestFactory.createUrl();
 
         const createdResourceDTO = await resourceService.createResource(unitOfWork, { url });
 
