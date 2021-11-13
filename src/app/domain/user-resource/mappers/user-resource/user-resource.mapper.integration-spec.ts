@@ -71,14 +71,14 @@ describe('UserResourceMapper', () => {
 
         const queryBuilder = entityManager.getRepository(UserResource).createQueryBuilder('userResource');
 
-        const entity = await queryBuilder
+        const userResourceEntity = await queryBuilder
           .leftJoinAndSelect('userResource.resource', 'resource')
           .leftJoinAndSelect('userResource.userResourceTags', 'userResourceTags')
           .leftJoinAndSelect('userResourceTags.tag', 'tag')
           .where({ id: userResource.id })
           .getOne();
 
-        const userResourceDTO = userResourceMapper.mapEntityToDTO(entity as UserResource);
+        const userResourceDTO = userResourceMapper.mapEntityToDTO(userResourceEntity as UserResource);
 
         expect(userResourceDTO).toEqual({
           id: userResource.id,
@@ -92,35 +92,49 @@ describe('UserResourceMapper', () => {
       });
     });
 
-    // it('maps a resource with optional fields from entity to dto', async () => {
-    //   expect.assertions(2);
+    it('maps a resource without user-resource-tag relation from entity to dto', async () => {
+      expect.assertions(1);
 
-    //   await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-    //     const entityManager = unitOfWork.getEntityManager();
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
 
-    //     const url = ResourceTestFactory.createUrl();
-    //     const title = ResourceTestFactory.createTitle();
-    //     const thumbnailUrl = ResourceTestFactory.createUrl();
-    //     const content = ResourceTestFactory.createContent();
+        const url = ResourceTestFactory.createUrl();
+        const userId = ResourceTestFactory.createId();
+        const color = TagTestFactory.createColor();
+        const title = TagTestFactory.createTitle();
 
-    //     const resource = entityManager.create(Resource, { url });
-    //     const [savedResource] = await entityManager.save([resource]);
-    //     await entityManager.update(Resource, { id: savedResource.id }, { title, thumbnailUrl, content });
-    //     const updatedResource = await entityManager.findOne(Resource, { id: savedResource.id });
+        const resource = entityManager.create(Resource, { url });
 
-    //     expect(updatedResource).toBeTruthy();
-    //     const resourceDTO = userResourceMapper.mapEntityToDTO(updatedResource as Resource);
+        const [savedResource] = await entityManager.save([resource]);
 
-    //     expect(resourceDTO).toEqual({
-    //       id: savedResource.id,
-    //       createdAt: savedResource.createdAt,
-    //       updatedAt: savedResource.updatedAt,
-    //       url: url,
-    //       title: title,
-    //       thumbnailUrl: thumbnailUrl,
-    //       content: content,
-    //     });
-    //   });
-    // });
+        const userResource = entityManager.create(UserResource, {
+          userId: userId,
+          resourceId: resource.id,
+        });
+
+        await entityManager.save([userResource]);
+
+        const queryBuilder = entityManager.getRepository(UserResource).createQueryBuilder('userResource');
+
+        const userResourceEntity = await queryBuilder
+          .leftJoinAndSelect('userResource.resource', 'resource')
+          .leftJoinAndSelect('userResource.userResourceTags', 'userResourceTags')
+          .leftJoinAndSelect('userResourceTags.tag', 'tag')
+          .where({ id: userResource.id })
+          .getOne();
+
+        const userResourceDTO = userResourceMapper.mapEntityToDTO(userResourceEntity as UserResource);
+
+        expect(userResourceDTO).toEqual({
+          id: userResource.id,
+          createdAt: userResource.createdAt,
+          updatedAt: userResource.updatedAt,
+          resourceId: resource.id,
+          userId: userId,
+          resource: resourceMapper.mapEntityToDTO(savedResource),
+          tags: [],
+        });
+      });
+    });
   });
 });
