@@ -47,10 +47,9 @@ export class UserResourceRepository {
     return this.findOne({ id });
   }
 
-  public async createOne(userId: string, resourceId: string): Promise<UserResourceDTO> {
+  public async createOne(data: Partial<UserResource>): Promise<UserResourceDTO> {
     const userResource = this.manager.create(UserResource, {
-      userId,
-      resourceId,
+      ...data,
     });
 
     const [savedUserResource] = await this.manager.save([userResource]);
