@@ -100,8 +100,6 @@ describe('UserResourceMapper', () => {
 
         const url = ResourceTestFactory.createUrl();
         const userId = ResourceTestFactory.createId();
-        const color = TagTestFactory.createColor();
-        const title = TagTestFactory.createTitle();
 
         const resource = entityManager.create(Resource, { url });
 
