@@ -28,7 +28,6 @@ class PostgresConfigModule {}
           applicationName: appName,
           logging: isLoggingEnabled,
           synchronize: true,
-          dropSchema: true,
         };
       },
       inject: [POSTGRES_CONFIG],
