@@ -47,15 +47,37 @@ export class UserResourceRepository {
     return this.findOne({ id });
   }
 
-  public async createOne(resourceId: string): Promise<UserResourceDTO> {
+  public async createOne(userId: string, resourceId: string): Promise<UserResourceDTO> {
     const userResource = this.manager.create(UserResource, {
-      userId: 'daf76e08-83f7-4ed5-9664-742105bdaa24',
+      userId,
       resourceId,
     });
 
     const [savedUserResource] = await this.manager.save([userResource]);
 
     return this.userResourceMapper.mapEntityToDTO(savedUserResource);
+  }
+
+  public async updateOne(id: string, data: Partial<UserResource>): Promise<UserResourceDTO> {
+    const userResource = await this.findOneById(id);
+
+    if (!userResource) {
+      throw new Error('User resource not found');
+    }
+
+    await this.manager.update(UserResource, { id }, data);
+
+    return this.findOneById(id) as Promise<UserResourceDTO>;
+  }
+
+  public async removeOne(id: string): Promise<void> {
+    const userResource = await this.findOneById(id);
+
+    if (!userResource) {
+      throw new Error('User resource not found');
+    }
+
+    await this.manager.delete(UserResource, { id });
   }
 }
 
