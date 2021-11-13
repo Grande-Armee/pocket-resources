@@ -15,7 +15,7 @@ describe('ResourceMapper', () => {
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
-    resourceMapper = new ResourceMapper();
+    resourceMapper = testingModule.get(ResourceMapper);
   });
 
   afterEach(async () => {
@@ -32,6 +32,7 @@ describe('ResourceMapper', () => {
         const url = ResourceTestFactory.createUrl();
 
         const resource = entityManager.create(Resource, { url });
+
         const [savedResource] = await entityManager.save([resource]);
 
         const userId = ResourceTestFactory.createId();
@@ -40,6 +41,7 @@ describe('ResourceMapper', () => {
           userId: userId,
           resourceId: savedResource.id,
         });
+
         await entityManager.save([userResource]);
 
         const resourceDTO = resourceMapper.mapEntityToDTO(savedResource);
@@ -68,11 +70,15 @@ describe('ResourceMapper', () => {
         const content = ResourceTestFactory.createContent();
 
         const resource = entityManager.create(Resource, { url });
+
         const [savedResource] = await entityManager.save([resource]);
+
         await entityManager.update(Resource, { id: savedResource.id }, { title, thumbnailUrl, content });
+
         const updatedResource = await entityManager.findOne(Resource, { id: savedResource.id });
 
         expect(updatedResource).toBeTruthy();
+
         const resourceDTO = resourceMapper.mapEntityToDTO(updatedResource as Resource);
 
         expect(resourceDTO).toEqual({

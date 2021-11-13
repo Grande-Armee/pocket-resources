@@ -18,7 +18,7 @@ describe('UserResourceMapper', () => {
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
-    userResourceTagMapper = new UserResourceTagMapper();
+    userResourceTagMapper = testingModule.get(UserResourceTagMapper);
   });
 
   afterEach(async () => {

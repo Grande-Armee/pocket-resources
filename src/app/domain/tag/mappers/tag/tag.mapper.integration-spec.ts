@@ -18,7 +18,7 @@ describe('TagMapper', () => {
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
-    tagMapper = new TagMapper();
+    tagMapper = testingModule.get(TagMapper);
   });
 
   afterEach(async () => {
@@ -38,12 +38,14 @@ describe('TagMapper', () => {
         const title = TagTestFactory.createTitle();
 
         const resource = entityManager.create(Resource, { url });
+
         await entityManager.save([resource]);
 
         const userResource = entityManager.create(UserResource, {
           userId: userId,
           resourceId: resource.id,
         });
+
         await entityManager.save([userResource]);
 
         const tag = entityManager.create(Tag, {
@@ -51,12 +53,14 @@ describe('TagMapper', () => {
           color: color,
           title: title,
         });
+
         const [savedTag] = await entityManager.save([tag]);
 
         const userResourceTag = entityManager.create(UserResourceTag, {
           tagId: tag.id,
           userResourceId: userResource.id,
         });
+
         await entityManager.save([userResourceTag]);
 
         const tagDTO = tagMapper.mapEntityToDTO(savedTag);

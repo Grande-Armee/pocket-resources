@@ -22,9 +22,9 @@ describe('UserResourceMapper', () => {
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
-    resourceMapper = new ResourceMapper();
-    tagMapper = new TagMapper();
-    userResourceMapper = new UserResourceMapper(resourceMapper, tagMapper);
+    resourceMapper = testingModule.get(ResourceMapper);
+    tagMapper = testingModule.get(TagMapper);
+    userResourceMapper = testingModule.get(UserResourceMapper);
   });
 
   afterEach(async () => {
@@ -84,6 +84,9 @@ describe('UserResourceMapper', () => {
           id: userResource.id,
           createdAt: userResource.createdAt,
           updatedAt: userResource.updatedAt,
+          isFavorite: false,
+          rating: null,
+          status: 'TO_READ',
           resourceId: resource.id,
           userId: userId,
           resource: resourceMapper.mapEntityToDTO(savedResource),
@@ -127,6 +130,9 @@ describe('UserResourceMapper', () => {
           id: userResource.id,
           createdAt: userResource.createdAt,
           updatedAt: userResource.updatedAt,
+          isFavorite: false,
+          rating: null,
+          status: 'TO_READ',
           resourceId: resource.id,
           userId: userId,
           resource: resourceMapper.mapEntityToDTO(savedResource),
