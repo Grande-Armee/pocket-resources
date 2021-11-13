@@ -187,7 +187,6 @@ describe('UserResourceService', () => {
           },
         );
 
-        console.log(userResourceDTOAfterUpdate);
         expect(userResourceDTOAfterUpdate.rating).toBe(rating);
 
         const userResourceInDb = await userResourceRepository.findOneById(userResourceDTOBeforeUpdate.id);

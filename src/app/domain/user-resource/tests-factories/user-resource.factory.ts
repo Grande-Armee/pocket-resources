@@ -12,7 +12,10 @@ export class UserResourceTestFactory {
   }
 
   public static createRating(): number {
-    return datatype.number();
+    return datatype.number({
+      min: 1,
+      max: 5,
+    });
   }
 
   public static createResourceId(): string {
