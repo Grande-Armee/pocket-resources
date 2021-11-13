@@ -13,7 +13,8 @@ export class UserResourceMapper implements Mapper<UserResource, UserResourceDTO>
   public constructor(private readonly resourceMapper: ResourceMapper, private readonly tagMapper: TagMapper) {}
 
   public mapEntityToDTO(entity: UserResource): UserResourceDTO {
-    const { id, createdAt, updatedAt, resource, resourceId, userId, userResourceTags } = entity;
+    const { id, createdAt, updatedAt, status, isFavorite, rating, resource, resourceId, userId, userResourceTags } =
+      entity;
 
     const nullableResourceDTO = Nullable.wrap(resource).map((resource) => this.resourceMapper.mapEntityToDTO(resource));
 
@@ -25,6 +26,9 @@ export class UserResourceMapper implements Mapper<UserResource, UserResourceDTO>
       id,
       createdAt,
       updatedAt,
+      status,
+      isFavorite,
+      rating,
       resourceId,
       userId,
       resource: nullableResourceDTO.toValue(),
