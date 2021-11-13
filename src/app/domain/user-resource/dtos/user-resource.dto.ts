@@ -2,6 +2,7 @@ import { ClassConstructor, Expose, plainToClass } from 'class-transformer';
 
 import { ResourceDTO } from '../../resource/dtos/resource.dto';
 import { TagDTO } from '../../tag/dtos/tag.dto';
+import { UserResourceStatus } from '../entities/user-resource.entity';
 
 // TODO: move to common
 function createDTOFactory<T>(type: ClassConstructor<T>) {
@@ -19,6 +20,15 @@ export class UserResourceDTO {
 
   @Expose()
   public readonly updatedAt: Date;
+
+  @Expose()
+  public readonly status: UserResourceStatus;
+
+  @Expose()
+  public readonly isFavorite: boolean;
+
+  @Expose()
+  public readonly rating: number | null;
 
   @Expose()
   public readonly resource: ResourceDTO | null;
