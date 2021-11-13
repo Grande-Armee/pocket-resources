@@ -4,8 +4,8 @@ import { PostgresHelper } from '../../../../../integration-tests/helpers/postgre
 import { TestModuleHelper } from '../../../../../integration-tests/helpers/test-module/test-module.helper';
 import { UserResource } from '../../../user-resource/entities/user-resource.entity';
 import { Resource } from '../../entities/resource.entity';
-import { ResourceMapper } from '../../mappers/resource/resource.mapper';
 import { ResourceTestFactory } from '../../tests-factories/resource.factory';
+import { ResourceMapper } from './resource.mapper';
 
 describe('ResourceMapper', () => {
   let testingModule: TestingModule;
