@@ -30,7 +30,6 @@ class PostgresConfigModule {}
           applicationName: appName,
           logging: isLoggingEnabled,
           synchronize: true,
-          dropSchema: true,
           logger: new PostgresLogger(loggerService),
         };
       },
