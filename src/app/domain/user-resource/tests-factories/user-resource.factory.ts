@@ -2,7 +2,7 @@ import { helpers, datatype } from 'faker';
 
 import { UserResourceStatus } from '../entities/user-resource.entity';
 
-export class TagTestFactory {
+export class UserResourceTestFactory {
   public static createStatus(): UserResourceStatus {
     return helpers.randomize([UserResourceStatus.toRead, UserResourceStatus.inArchive, UserResourceStatus.inTrash]);
   }
@@ -20,6 +20,10 @@ export class TagTestFactory {
   }
 
   public static createUserId(): string {
+    return datatype.uuid();
+  }
+
+  public static createUserResourceId(): string {
     return datatype.uuid();
   }
 }

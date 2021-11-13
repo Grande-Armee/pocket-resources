@@ -3,9 +3,12 @@ import { TestingModule } from '@nestjs/testing';
 import { PostgresHelper } from '../../../../../integration-tests/helpers/postgres/postgres.helper';
 import { TestModuleHelper } from '../../../../../integration-tests/helpers/test-module/test-module.helper';
 import { ResourceService } from '../../../resource/services/resource/resource.service';
+import { ResourceTestFactory } from '../../../resource/tests-factories/resource.factory';
 import { TagRepositoryFactory } from '../../../tag/repositories/tag/tag.repository';
+import { TagTestFactory } from '../../../tag/tests-factories/tag.factory';
 import { UserResourceTagRepositoryFactory } from '../../../user-resource-tag/repositories/user-resource-tag/user-resource-tag.repository';
 import { UserResourceRepositoryFactory } from '../../repositories/user-resource/user-resource.repository';
+import { UserResourceTestFactory } from '../../tests-factories/user-resource.factory';
 import { UserResourceService } from './user-resource.service';
 
 describe('UserResourceService', () => {
@@ -37,9 +40,9 @@ describe('UserResourceService', () => {
     await testingModule.close();
   });
 
-  describe('Get entities', () => {
-    it('gets entities form the database', async () => {
-      expect.assertions(1);
+  describe('Find user resource', () => {
+    it('gets user resource from the database', async () => {
+      expect.assertions(4);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -47,28 +50,31 @@ describe('UserResourceService', () => {
         const userResourceTagRepository = userResourceTagRepositoryFactory.create(entityManager);
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
-        const userId = 'daf76e08-83f7-4ed5-9664-742105bdaa24';
+        const userId = UserResourceTestFactory.createUserId();
+        const url = ResourceTestFactory.createUrl();
+        const color1 = TagTestFactory.createColor();
+        const color2 = TagTestFactory.createColor();
+        const title1 = ResourceTestFactory.createTitle();
+        const title2 = ResourceTestFactory.createTitle();
 
-        const resource = await resourceService.createResource(unitOfWork, {
-          url: 'url',
-        });
+        const resource = await resourceService.createResource(unitOfWork, { url });
 
-        const tag = await tagRepository.createOne({
+        const tag1 = await tagRepository.createOne({
           userId,
-          color: 'asd',
-          title: 'asd',
+          color: color1,
+          title: title1,
         });
 
         const tag2 = await tagRepository.createOne({
           userId,
-          color: 'bcd',
-          title: 'bcd',
+          color: color2,
+          title: title2,
         });
 
-        const userResource = await userResourceRepository.createOne(resource.id);
+        const userResource = await userResourceRepository.createOne({ resourceId: resource.id, userId: userId });
 
         await userResourceTagRepository.createOne({
-          tagId: tag.id,
+          tagId: tag1.id,
           userResourceId: userResource.id,
         });
 
@@ -77,9 +83,172 @@ describe('UserResourceService', () => {
           userResourceId: userResource.id,
         });
 
-        const result = await userResourceRepository.findMany({ userId });
+        const foundUserResourceDTO = await userResourceService.findUserResource(unitOfWork, userResource.id);
 
-        expect(result.length).toBe(1);
+        expect(foundUserResourceDTO.id).toBe(userResource.id);
+        expect(foundUserResourceDTO.userId).toBe(userId);
+        expect(foundUserResourceDTO.resource).toEqual(resource);
+        expect(foundUserResourceDTO.tags).toEqual([tag1, tag2]);
+      });
+    });
+
+    it('should throw if user resource id not found', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const userResourceId = UserResourceTestFactory.createUserResourceId();
+
+        try {
+          await userResourceService.findUserResource(unitOfWork, userResourceId);
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+      });
+    });
+  });
+
+  describe('Create user resource', () => {
+    it('creates user resource in database', async () => {
+      expect.assertions(3);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
+
+        const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+
+        const userId = UserResourceTestFactory.createUserId();
+        const url = ResourceTestFactory.createUrl();
+
+        const resource = await resourceService.createResource(unitOfWork, { url });
+
+        const createdUserResourceDTO = await userResourceService.createUserResource(unitOfWork, {
+          resourceId: resource.id,
+          userId: userId,
+        });
+
+        expect(createdUserResourceDTO.resourceId).toBe(resource.id);
+        expect(createdUserResourceDTO.userId).toBe(userId);
+
+        const userResourceDTO = await userResourceRepository.findOneById(createdUserResourceDTO.id);
+
+        expect(userResourceDTO).not.toBe(null);
+      });
+    });
+
+    it('should not create user resource if userResource with same resourceId and userId exists', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
+
+        const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+
+        const userId = UserResourceTestFactory.createUserId();
+        const url = ResourceTestFactory.createUrl();
+
+        const resource = await resourceService.createResource(unitOfWork, { url });
+
+        await userResourceRepository.createOne({ resourceId: resource.id, userId: userId });
+
+        try {
+          await userResourceService.createUserResource(unitOfWork, { resourceId: resource.id, userId: userId });
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+      });
+    });
+  });
+
+  describe('Update user resource', () => {
+    it('updates user resource in the database', async () => {
+      expect.assertions(2);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
+
+        const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+
+        const userId = UserResourceTestFactory.createUserId();
+        const url = ResourceTestFactory.createUrl();
+        const rating = UserResourceTestFactory.createRating();
+
+        const resource = await resourceService.createResource(unitOfWork, { url });
+
+        const userResourceDTOBeforeUpdate = await userResourceRepository.createOne({
+          resourceId: resource.id,
+          userId: userId,
+        });
+
+        const userResourceDTOAfterUpdate = await userResourceService.updateUserResource(
+          unitOfWork,
+          userResourceDTOBeforeUpdate.id,
+          {
+            rating,
+          },
+        );
+
+        console.log(userResourceDTOAfterUpdate);
+        expect(userResourceDTOAfterUpdate.rating).toBe(rating);
+
+        const userResourceInDb = await userResourceRepository.findOneById(userResourceDTOBeforeUpdate.id);
+
+        expect(userResourceInDb).not.toBe(null);
+      });
+    });
+
+    it('should throw if user resource with given id does not exist', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const nonExistingId = UserResourceTestFactory.createUserResourceId();
+        const rating = UserResourceTestFactory.createRating();
+
+        try {
+          await userResourceService.updateUserResource(unitOfWork, nonExistingId, {
+            rating,
+          });
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+      });
+    });
+  });
+
+  describe('Remove user resource', () => {
+    it('removes user resource from database', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const entityManager = unitOfWork.getEntityManager();
+
+        const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+
+        const userId = UserResourceTestFactory.createUserId();
+        const url = ResourceTestFactory.createUrl();
+
+        const resource = await resourceService.createResource(unitOfWork, { url });
+
+        const userResource = await userResourceRepository.createOne({ resourceId: resource.id, userId: userId });
+
+        await userResourceService.removeUserResource(unitOfWork, userResource.id);
+
+        const userResourceInDb = await userResourceRepository.findOneById(userResource.id);
+
+        expect(userResourceInDb).toBe(null);
+      });
+    });
+
+    it('should throw if user resource with given id does not exist', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const nonExistingId = UserResourceTestFactory.createUserResourceId();
+
+        try {
+          await userResourceService.removeUserResource(unitOfWork, nonExistingId);
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
       });
     });
   });
