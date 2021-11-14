@@ -12,12 +12,13 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --exec 'node --inspect-brk=0.0.0.0:9229' --watch",
-    "lint": "eslint \"src/**/*.ts\" --fix",
+    "lint:": "eslint --fix",
+    "lint:all": "npm run lint -- \"src/**/*.ts\"",
     "test": "cross-env NODE_ENV=test jest",
-    "test:unit": "npm run test",
+    "test:unit": "npm run test --config tests-unit.config.js",
     "test:unit:watch": "npm run test:unit -- --watch",
     "test:unit:cov": "npm run test:unit -- --coverage",
-    "test:integration": "npm run test -- --config jest-integration.config.js",
+    "test:integration": "npm run test -- --config tests-integration.config.js",
     "test:integration:watch": "npm run test:integration -- --watchAll",
     "test:integration:cov": "npm run test:integration -- --coverage"
   },
@@ -37,7 +38,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.1",
-    "typeorm": "^0.2.39"
+    "typeorm": "^0.2.40"
   },
   "devDependencies": {
     "@commitlint/cli": "^14.1.0",
@@ -58,7 +59,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
     "jest": "^27.3.1",
-    "lint-staged": "^11.2.6",
+    "lint-staged": "^12.0.1",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",
     "ts-loader": "^9.2.6",
