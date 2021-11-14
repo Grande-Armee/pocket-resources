@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { UnitOfWork } from '../../../../shared/unitOfWork/providers/unitOfWorkFactory';
+import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+
 import { UserResourceTagDTO } from '../../dtos/userResourceTagDTO';
 import { UserResourceTagRepositoryFactory } from '../../repositories/userResourceTag/userResourceTagRepository';
 

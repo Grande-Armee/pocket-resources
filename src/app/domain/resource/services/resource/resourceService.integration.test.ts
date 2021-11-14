@@ -1,7 +1,8 @@
 import { TestingModule } from '@nestjs/testing';
 
-import { PostgresHelper } from '../../../../../integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '../../../../../integration/helpers/testModuleHelper/testModuleHelper';
+import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
+import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+
 import { ResourceCreatedEvent, ResourceRemovedEvent, ResourceUpdatedEvent } from '../../domainEvents';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { ResourceTestFactory } from '../../testFactories/resourceTestFactory';

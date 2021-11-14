@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { Mapper } from '../../../../shared/mapper/mapper';
-import { Nullable } from '../../../../shared/nullable/nullable';
-import { ResourceMapper } from '../../../resource/mappers/resource/resourceMapper';
-import { Tag } from '../../../tag/entities/tag';
-import { TagMapper } from '../../../tag/mappers/tag/tagMapper';
+import { ResourceMapper } from '@domain/resource/mappers/resource/resourceMapper';
+import { Tag } from '@domain/tag/entities/tag';
+import { TagMapper } from '@domain/tag/mappers/tag/tagMapper';
+import { Mapper } from '@shared/mapper/mapper';
+import { Nullable } from '@shared/nullable/nullable';
+
 import { UserResourceDTO } from '../../dtos/userResourceDTO';
 import { UserResource } from '../../entities/userResource';
 

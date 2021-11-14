@@ -1,7 +1,8 @@
 import { TestingModule } from '@nestjs/testing';
 
-import { PostgresHelper } from '../../../../../integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '../../../../../integration/helpers/testModuleHelper/testModuleHelper';
+import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
+import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+
 import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../domainEvents';
 import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
 import { TagTestFactory } from '../../testFactories/tagTestFactory';

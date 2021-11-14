@@ -2,7 +2,7 @@ import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
 import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, ManyToOne } from 'typeorm';
 
-import { UserResource } from '../../userResource/entities/userResource';
+import { UserResource } from '@domain/userResource/entities/userResource';
 
 export const RESOURCE_TABLE_NAME = 'resources';
 

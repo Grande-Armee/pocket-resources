@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
-import { RepositoryFactory } from '../../../../shared/postgres/interfaces';
+import { RepositoryFactory } from '@shared/postgres/interfaces';
+
 import { TagDTO } from '../../dtos/tagDTO';
 import { Tag } from '../../entities/tag';
 import { TagMapper } from '../../mappers/tag/tagMapper';

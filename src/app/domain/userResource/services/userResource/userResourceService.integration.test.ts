@@ -1,12 +1,13 @@
 import { TestingModule } from '@nestjs/testing';
 
-import { PostgresHelper } from '../../../../../integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '../../../../../integration/helpers/testModuleHelper/testModuleHelper';
-import { ResourceService } from '../../../resource/services/resource/resourceService';
-import { ResourceTestFactory } from '../../../resource/testFactories/resourceTestFactory';
-import { TagRepositoryFactory } from '../../../tag/repositories/tag/tagRepository';
-import { TagTestFactory } from '../../../tag/testFactories/tagTestFactory';
-import { UserResourceTagRepositoryFactory } from '../../../userResourceTag/repositories/userResourceTag/userResourceTagRepository';
+import { ResourceService } from '@domain/resource/services/resource/resourceService';
+import { ResourceTestFactory } from '@domain/resource/testFactories/resourceTestFactory';
+import { TagRepositoryFactory } from '@domain/tag/repositories/tag/tagRepository';
+import { TagTestFactory } from '@domain/tag/testFactories/tagTestFactory';
+import { UserResourceTagRepositoryFactory } from '@domain/userResourceTag/repositories/userResourceTag/userResourceTagRepository';
+import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
+import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+
 import { UserResourceRepositoryFactory } from '../../repositories/userResource/userResourceRepository';
 import { UserResourceTestFactory } from '../../testFactories/userResourceTestFactory';
 import { UserResourceService } from './userResourceService';
@@ -28,7 +29,6 @@ describe('UserResourceService', () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userResourceService = testingModule.get(UserResourceService);
     userResourceRepositoryFactory = testingModule.get(UserResourceRepositoryFactory);
     resourceService = testingModule.get(ResourceService);

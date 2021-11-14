@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { UnitOfWork } from '../../../../shared/unitOfWork/providers/unitOfWorkFactory';
-import { ResourceCreatedEvent } from '../../domainEvents/resourceCreatedEvent';
-import { ResourceRemovedEvent } from '../../domainEvents/resourceRemovedEvent';
-import { ResourceUpdatedEvent } from '../../domainEvents/resourceUpdatedEvent';
+import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+
+import { ResourceCreatedEvent, ResourceUpdatedEvent, ResourceRemovedEvent } from '../../domainEvents';
 import { ResourceDTO } from '../../dtos/resourceDTO';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { CreateResourceData, UpdateResourceData } from './interfaces';
