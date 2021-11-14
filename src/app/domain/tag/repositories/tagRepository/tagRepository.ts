@@ -11,7 +11,7 @@ export class TagRepository {
   public constructor(private readonly manager: EntityManager, private readonly tagMapper: TagMapper) {}
 
   public async findOne(conditions: FindConditions<Tag>): Promise<TagDTO | null> {
-    const tag = await this.manager.findOne(Tag, { ...conditions });
+    const tag = await this.manager.findOne(Tag, conditions);
 
     if (!tag) {
       return null;
