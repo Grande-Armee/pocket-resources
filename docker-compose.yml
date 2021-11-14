@@ -5,6 +5,7 @@ services:
     build:
       context: .
       target: development
+    container_name: pocket-resources
     volumes:
       - /usr/src/app/node_modules
       - .:/usr/src/app
@@ -17,11 +18,11 @@ services:
       - pocket-network
     depends_on:
       - pocket-resources-postgres
-    container_name: pocket-resources
 
   pocket-resources-postgres:
-    restart: always
     image: postgres:14
+    container_name: pocket-resources-postgres
+    restart: always
     env_file:
       - .env
     environment:
@@ -35,7 +36,6 @@ services:
       - pocket-resources-pgdata:/var/lib/postgresql/data
     networks:
       - pocket-network
-    container_name: pocket-resources-postgres
 
 volumes:
   pocket-resources-pgdata:
