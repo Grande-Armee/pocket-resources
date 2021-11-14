@@ -1,7 +1,8 @@
 import { ClassConstructor, Expose, plainToClass } from 'class-transformer';
 
-import { ResourceDTO } from '../../resource/dtos/resourceDTO';
-import { TagDTO } from '../../tag/dtos/tagDTO';
+import { ResourceDTO } from '@domain/resource/dtos/resourceDTO';
+import { TagDTO } from '@domain/tag/dtos/tagDTO';
+
 import { UserResourceStatus } from '../entities/userResource';
 
 // TODO: move to common

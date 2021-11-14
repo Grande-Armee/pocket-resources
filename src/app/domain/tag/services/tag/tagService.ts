@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 
-import { UnitOfWork } from '../../../../shared/unitOfWork/providers/unitOfWorkFactory';
+import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+
 import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../domainEvents';
 import { TagDTO } from '../../dtos/tagDTO';
-import { TagRepositoryFactory } from '../../repositories/tagRepository/tagRepository';
+import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
 import { CreateTagData, UpdateTagData } from './interfaces';
 
 @Injectable()

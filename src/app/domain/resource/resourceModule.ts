@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 
-import { ResourceMapper } from './mappers/resourceMapper/resourceMapper';
-import { ResourceRepositoryFactory } from './repositories/resourceRepository/resourceRepository';
-import { ResourceService } from './services/resourceService/resourceService';
+import { ResourceMapper } from './mappers/resource/resourceMapper';
+import { ResourceRepositoryFactory } from './repositories/resource/resourceRepository';
+import { ResourceService } from './services/resource/resourceService';
 
 @Module({
   providers: [ResourceService, ResourceMapper, ResourceRepositoryFactory],

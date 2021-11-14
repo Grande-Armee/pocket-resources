@@ -1,7 +1,8 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { QueryRunner } from 'typeorm';
 
-import { DomainEventsDispatcher } from '../../../domainEventsDispatcher/providers/domainEventsDispatcherFactory';
+import { DomainEventsDispatcher } from '@shared/domainEventsDispatcher/providers/domainEventsDispatcherFactory';
+
 import { TransactionalEntityManager, TransactionIsolationLevel } from './interfaces';
 
 export type TransactionalCallback<Result> = (unitOfWork: UnitOfWork) => Promise<Result>;

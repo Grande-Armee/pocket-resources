@@ -2,8 +2,8 @@ import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate } from 'class-validator';
 import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, Column, Unique } from 'typeorm';
 
-import { Tag } from '../../tag/entities/tag';
-import { UserResource } from '../../userResource/entities/userResource';
+import { Tag } from '@domain/tag/entities/tag';
+import { UserResource } from '@domain/userResource/entities/userResource';
 
 export const USER_RESOURCE_TAG_TABLE_NAME = 'userResourceTags';
 

@@ -1,11 +1,12 @@
 import { TestingModule } from '@nestjs/testing';
 
-import { PostgresHelper } from '../../../../../integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '../../../../../integration/helpers/testModuleHelper/testModuleHelper';
-import { Resource } from '../../../resource/entities/resource';
-import { ResourceTestFactory } from '../../../resource/testFactories/resourceTestFactory';
-import { UserResource } from '../../../userResource/entities/userResource';
-import { UserResourceTag } from '../../../userResourceTag/entities/userResourceTag';
+import { Resource } from '@domain/resource/entities/resource';
+import { ResourceTestFactory } from '@domain/resource/testFactories/resourceTestFactory';
+import { UserResource } from '@domain/userResource/entities/userResource';
+import { UserResourceTag } from '@domain/userResourceTag/entities/userResourceTag';
+import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
+import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+
 import { Tag } from '../../entities/tag';
 import { TagTestFactory } from '../../testFactories/tagTestFactory';
 import { TagMapper } from './tagMapper';

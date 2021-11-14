@@ -1,8 +1,9 @@
 import { TestingModule } from '@nestjs/testing';
 
-import { PostgresHelper } from '../../../../../integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '../../../../../integration/helpers/testModuleHelper/testModuleHelper';
-import { UserResource } from '../../../userResource/entities/userResource';
+import { UserResource } from '@domain/userResource/entities/userResource';
+import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
+import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+
 import { Resource } from '../../entities/resource';
 import { ResourceTestFactory } from '../../testFactories/resourceTestFactory';
 import { ResourceMapper } from './resourceMapper';

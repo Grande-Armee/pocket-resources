@@ -11,8 +11,8 @@ import {
   Unique,
 } from 'typeorm';
 
-import { Resource } from '../../resource/entities/resource';
-import { UserResourceTag } from '../../userResourceTag/entities/userResourceTag';
+import { Resource } from '@domain/resource/entities/resource';
+import { UserResourceTag } from '@domain/userResourceTag/entities/userResourceTag';
 
 export const USER_RESOURCE_TABLE_NAME = 'userResources';
 

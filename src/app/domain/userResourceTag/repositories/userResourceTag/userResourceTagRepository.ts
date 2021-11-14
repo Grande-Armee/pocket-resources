@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
-import { RepositoryFactory } from '../../../../shared/postgres/interfaces';
+import { RepositoryFactory } from '@shared/postgres/interfaces';
+
 import { UserResourceTagDTO } from '../../dtos/userResourceTagDTO';
 import { UserResourceTag } from '../../entities/userResourceTag';
-import { UserResourceTagMapper } from '../../mappers/userResourceTagMapper/userResourceTagMapper';
+import { UserResourceTagMapper } from '../../mappers/userResourceTag/userResourceTagMapper';
 
 @EntityRepository()
 export class UserResourceTagRepository {

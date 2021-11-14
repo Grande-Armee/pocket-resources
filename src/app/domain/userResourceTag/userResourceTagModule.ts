@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 
-import { UserResourceTagMapper } from './mappers/userResourceTagMapper/userResourceTagMapper';
-import { UserResourceTagRepositoryFactory } from './repositories/userResourceTagRepository/userResourceTagRepository';
-import { UserResourceTagService } from './services/userResourceTagService/userResourceTagService';
+import { UserResourceTagMapper } from './mappers/userResourceTag/userResourceTagMapper';
+import { UserResourceTagRepositoryFactory } from './repositories/userResourceTag/userResourceTagRepository';
+import { UserResourceTagService } from './services/userResourceTag/userResourceTagService';
 
 @Module({
   providers: [UserResourceTagService, UserResourceTagMapper, UserResourceTagRepositoryFactory],

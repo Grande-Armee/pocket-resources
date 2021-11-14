@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { Mapper } from '../../../../shared/mapper/mapper';
+import { Mapper } from '@shared/mapper/mapper';
+
 import { UserResourceTagDTO } from '../../dtos/userResourceTagDTO';
 import { UserResourceTag } from '../../entities/userResourceTag';
 

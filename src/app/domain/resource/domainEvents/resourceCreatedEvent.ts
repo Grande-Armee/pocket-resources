@@ -1,4 +1,4 @@
-import { DomainEvent } from '../../../shared/domainEventsDispatcher/providers/domainEventsDispatcherFactory';
+import { DomainEvent } from '@shared/domainEventsDispatcher/providers/domainEventsDispatcherFactory';
 
 export interface ResourceCreatedEventPayload {
   readonly id: string;

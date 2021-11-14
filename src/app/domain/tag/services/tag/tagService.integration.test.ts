@@ -1,9 +1,10 @@
 import { TestingModule } from '@nestjs/testing';
 
-import { PostgresHelper } from '../../../../../integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '../../../../../integration/helpers/testModuleHelper/testModuleHelper';
+import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
+import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+
 import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../domainEvents';
-import { TagRepositoryFactory } from '../../repositories/tagRepository/tagRepository';
+import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
 import { TagTestFactory } from '../../testFactories/tagTestFactory';
 import { TagService } from './tagService';
 
@@ -48,11 +49,11 @@ describe('TagService', () => {
 
         const tagDTO = await tagRepository.findOne({ id: createdTagDTO.id });
 
-        expect(tagDTO).not.toBe(null);
+        expect(tagDTO).not.toBeNull();
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
-        expect(domainEvents.length).toBe(1);
+        expect(domainEvents).toHaveLength(1);
         expect(domainEvents.at(0) instanceof TagCreatedEvent).toBe(true);
       });
     });
@@ -75,7 +76,7 @@ describe('TagService', () => {
 
         const foundTagDTO = await tagService.findTag(unitOfWork, tagDTO.id);
 
-        expect(foundTagDTO).not.toBe(null);
+        expect(foundTagDTO).not.toBeNull();
       });
     });
 
@@ -119,11 +120,11 @@ describe('TagService', () => {
 
         const tagInDb = await tagRepository.findOne({ id: tagDTOBeforeUpdate.id });
 
-        expect(tagInDb).not.toBe(null);
+        expect(tagInDb).not.toBeNull();
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
-        expect(domainEvents.length).toBe(1);
+        expect(domainEvents).toHaveLength(1);
         expect(domainEvents.at(0) instanceof TagUpdatedEvent).toBe(true);
       });
     });
@@ -164,11 +165,11 @@ describe('TagService', () => {
 
         const tagInDb = await tagRepository.findOne({ id: tagDTO.id });
 
-        expect(tagInDb).toBe(null);
+        expect(tagInDb).toBeNull();
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
-        expect(domainEvents.length).toBe(1);
+        expect(domainEvents).toHaveLength(1);
         expect(domainEvents.at(0) instanceof TagRemovedEvent).toBe(true);
       });
     });

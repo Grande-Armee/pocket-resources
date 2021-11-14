@@ -1,9 +1,10 @@
 import { TestingModule } from '@nestjs/testing';
 
-import { PostgresHelper } from '../../../../../integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '../../../../../integration/helpers/testModuleHelper/testModuleHelper';
+import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
+import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+
 import { ResourceCreatedEvent, ResourceRemovedEvent, ResourceUpdatedEvent } from '../../domainEvents';
-import { ResourceRepositoryFactory } from '../../repositories/resourceRepository/resourceRepository';
+import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { ResourceTestFactory } from '../../testFactories/resourceTestFactory';
 import { ResourceService } from './resourceService';
 
@@ -44,11 +45,11 @@ describe('ResourceService', () => {
 
         const resourceDTO = await resourceRepository.findOneById(createdResourceDTO.id);
 
-        expect(resourceDTO).not.toBe(null);
+        expect(resourceDTO).not.toBeNull();
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
-        expect(domainEvents.length).toBe(1);
+        expect(domainEvents).toHaveLength(1);
         expect(domainEvents.at(0) instanceof ResourceCreatedEvent).toBe(true);
       });
     });
@@ -89,7 +90,7 @@ describe('ResourceService', () => {
 
         const foundResourceDTO = await resourceService.findResource(unitOfWork, resourceDTO.id);
 
-        expect(foundResourceDTO).not.toBe(null);
+        expect(foundResourceDTO).not.toBeNull();
       });
     });
 
@@ -132,11 +133,11 @@ describe('ResourceService', () => {
 
         const resourceInDb = await resourceRepository.findOneById(resourceDTOBeforeUpdate.id);
 
-        expect(resourceInDb).not.toBe(null);
+        expect(resourceInDb).not.toBeNull();
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
-        expect(domainEvents.length).toBe(1);
+        expect(domainEvents).toHaveLength(1);
         expect(domainEvents.at(0) instanceof ResourceUpdatedEvent).toBe(true);
       });
     });
@@ -175,11 +176,11 @@ describe('ResourceService', () => {
 
         const resourceInDb = await resourceRepository.findOneById(resourceDTO.id);
 
-        expect(resourceInDb).toBe(null);
+        expect(resourceInDb).toBeNull();
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
-        expect(domainEvents.length).toBe(1);
+        expect(domainEvents).toHaveLength(1);
         expect(domainEvents.at(0) instanceof ResourceRemovedEvent).toBe(true);
       });
     });

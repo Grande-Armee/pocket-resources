@@ -3,7 +3,7 @@ import { Test, TestingModule, TestingModuleBuilder } from '@nestjs/testing';
 import { getConnectionToken } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
-import { AppModule } from '../../../app/appModule';
+import { AppModule } from '@src/app/appModule';
 
 export class TestModuleHelper {
   private builder: TestingModuleBuilder;
