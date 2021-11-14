@@ -4,7 +4,7 @@ import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 import { RepositoryFactory } from '../../../../shared/postgres/interfaces';
 import { ResourceDTO } from '../../dtos/resourceDTO';
 import { Resource } from '../../entities/resource';
-import { ResourceMapper } from '../../mappers/resourceMapper/resourceMapper';
+import { ResourceMapper } from '../../mappers/resource/resourceMapper';
 
 @EntityRepository()
 export class ResourceRepository {

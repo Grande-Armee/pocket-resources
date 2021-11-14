@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 
 import { ResourceModule } from '../resource/resourceModule';
 import { TagModule } from '../tag/tagModule';
-import { UserResourceMapper } from './mappers/userResourceMapper/userResourceMapper';
-import { UserResourceRepositoryFactory } from './repositories/userResourceRepository/userResourceRepository';
-import { UserResourceService } from './services/userResourceService/userResourceService';
+import { UserResourceMapper } from './mappers/userResource/userResourceMapper';
+import { UserResourceRepositoryFactory } from './repositories/userResource/userResourceRepository';
+import { UserResourceService } from './services/userResource/userResourceService';
 
 @Module({
   imports: [ResourceModule, TagModule],

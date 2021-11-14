@@ -2,12 +2,12 @@ import { TestingModule } from '@nestjs/testing';
 
 import { PostgresHelper } from '../../../../../integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '../../../../../integration/helpers/testModuleHelper/testModuleHelper';
-import { ResourceService } from '../../../resource/services/resourceService/resourceService';
+import { ResourceService } from '../../../resource/services/resource/resourceService';
 import { ResourceTestFactory } from '../../../resource/testFactories/resourceTestFactory';
-import { TagRepositoryFactory } from '../../../tag/repositories/tagRepository/tagRepository';
+import { TagRepositoryFactory } from '../../../tag/repositories/tag/tagRepository';
 import { TagTestFactory } from '../../../tag/testFactories/tagTestFactory';
-import { UserResourceTagRepositoryFactory } from '../../../userResourceTag/repositories/userResourceTagRepository/userResourceTagRepository';
-import { UserResourceRepositoryFactory } from '../../repositories/userResourceRepository/userResourceRepository';
+import { UserResourceTagRepositoryFactory } from '../../../userResourceTag/repositories/userResourceTag/userResourceTagRepository';
+import { UserResourceRepositoryFactory } from '../../repositories/userResource/userResourceRepository';
 import { UserResourceTestFactory } from '../../testFactories/userResourceTestFactory';
 import { UserResourceService } from './userResourceService';
 
@@ -131,7 +131,7 @@ describe('UserResourceService', () => {
 
         const userResourceDTO = await userResourceRepository.findOneById(createdUserResourceDTO.id);
 
-        expect(userResourceDTO).not.toBe(null);
+        expect(userResourceDTO).not.toBeNull();
       });
     });
 
@@ -191,7 +191,7 @@ describe('UserResourceService', () => {
 
         const userResourceInDb = await userResourceRepository.findOneById(userResourceDTOBeforeUpdate.id);
 
-        expect(userResourceInDb).not.toBe(null);
+        expect(userResourceInDb).not.toBeNull();
       });
     });
 
@@ -233,7 +233,7 @@ describe('UserResourceService', () => {
 
         const userResourceInDb = await userResourceRepository.findOneById(userResource.id);
 
-        expect(userResourceInDb).toBe(null);
+        expect(userResourceInDb).toBeNull();
       });
     });
 

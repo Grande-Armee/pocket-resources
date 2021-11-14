@@ -5,7 +5,7 @@ import { ResourceCreatedEvent } from '../../domainEvents/resourceCreatedEvent';
 import { ResourceRemovedEvent } from '../../domainEvents/resourceRemovedEvent';
 import { ResourceUpdatedEvent } from '../../domainEvents/resourceUpdatedEvent';
 import { ResourceDTO } from '../../dtos/resourceDTO';
-import { ResourceRepositoryFactory } from '../../repositories/resourceRepository/resourceRepository';
+import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { CreateResourceData, UpdateResourceData } from './interfaces';
 
 @Injectable()

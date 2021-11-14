@@ -4,7 +4,7 @@ import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 import { RepositoryFactory } from '../../../../shared/postgres/interfaces';
 import { TagDTO } from '../../dtos/tagDTO';
 import { Tag } from '../../entities/tag';
-import { TagMapper } from '../../mappers/tagMapper/tagMapper';
+import { TagMapper } from '../../mappers/tag/tagMapper';
 
 @EntityRepository()
 export class TagRepository {
