@@ -17,7 +17,7 @@ export class UserResourceTagService {
     const userResourceTag = await userResourceTagRepository.findOneById(userResourceTagId);
 
     if (!userResourceTag) {
-      throw new Error('Tag not found.');
+      throw new Error('User resource tag not found.');
     }
 
     return userResourceTag;
