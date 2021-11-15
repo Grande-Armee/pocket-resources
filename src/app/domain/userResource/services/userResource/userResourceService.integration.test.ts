@@ -1,20 +1,23 @@
 import { TestingModule } from '@nestjs/testing';
 
 import { ResourceService } from '@domain/resource/services/resource/resourceService';
-import { ResourceTestFactory } from '@domain/resource/testFactories/resourceTestFactory';
+import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { TagRepositoryFactory } from '@domain/tag/repositories/tag/tagRepository';
-import { TagTestFactory } from '@domain/tag/testFactories/tagTestFactory';
+import { TagTestDataGenerator } from '@domain/tag/testDataGenerators/tagTestDataGenerator';
 import { UserResourceTagRepositoryFactory } from '@domain/userResourceTag/repositories/userResourceTag/userResourceTagRepository';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
 import { UserResourceRepositoryFactory } from '../../repositories/userResource/userResourceRepository';
-import { UserResourceTestFactory } from '../../testFactories/userResourceTestFactory';
+import { UserResourceTestDataGenerator } from '../../testDataGenerators/userResourceTestDataGenerator';
 import { UserResourceService } from './userResourceService';
 
 describe('UserResourceService', () => {
   let testingModule: TestingModule;
   let postgresHelper: PostgresHelper;
+  let resourceTestDataGenerator: ResourceTestDataGenerator;
+  let userResourceTestDataGenerator: UserResourceTestDataGenerator;
+  let tagTestDataGenerator: TagTestDataGenerator;
 
   let userResourceService: UserResourceService;
   let userResourceRepositoryFactory: UserResourceRepositoryFactory;
@@ -28,6 +31,9 @@ describe('UserResourceService', () => {
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
+    userResourceTestDataGenerator = new UserResourceTestDataGenerator();
+    resourceTestDataGenerator = new ResourceTestDataGenerator();
+    tagTestDataGenerator = new TagTestDataGenerator();
 
     userResourceService = testingModule.get(UserResourceService);
     userResourceRepositoryFactory = testingModule.get(UserResourceRepositoryFactory);
@@ -50,28 +56,30 @@ describe('UserResourceService', () => {
         const userResourceTagRepository = userResourceTagRepositoryFactory.create(entityManager);
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
-        const userId = UserResourceTestFactory.createUserId();
-        const url = ResourceTestFactory.createUrl();
-        const color1 = TagTestFactory.createColor();
-        const color2 = TagTestFactory.createColor();
-        const title1 = ResourceTestFactory.createTitle();
-        const title2 = ResourceTestFactory.createTitle();
+        const resourceData = resourceTestDataGenerator.generateEntityData();
+        const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url });
+        const { color: color1, title: title1 } = tagTestDataGenerator.generateEntityData();
+        const { color: color2, title: title2 } = tagTestDataGenerator.generateEntityData();
+
+        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
 
         const tag1 = await tagRepository.createOne({
-          userId,
+          userId: userResourceData.userId,
           color: color1,
           title: title1,
         });
 
         const tag2 = await tagRepository.createOne({
-          userId,
+          userId: userResourceData.userId,
           color: color2,
           title: title2,
         });
 
-        const userResource = await userResourceRepository.createOne({ resourceId: resource.id, userId: userId });
+        const userResource = await userResourceRepository.createOne({
+          resourceId: resource.id,
+          userId: userResourceData.userId,
+        });
 
         await userResourceTagRepository.createOne({
           tagId: tag1.id,
@@ -86,7 +94,7 @@ describe('UserResourceService', () => {
         const foundUserResourceDTO = await userResourceService.findUserResource(unitOfWork, userResource.id);
 
         expect(foundUserResourceDTO.id).toBe(userResource.id);
-        expect(foundUserResourceDTO.userId).toBe(userId);
+        expect(foundUserResourceDTO.userId).toBe(userResourceData.userId);
         expect(foundUserResourceDTO.resource).toEqual(resource);
         expect(foundUserResourceDTO.tags).toEqual([tag1, tag2]);
       });
@@ -96,7 +104,7 @@ describe('UserResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const userResourceId = UserResourceTestFactory.createUserResourceId();
+        const { id: userResourceId } = userResourceTestDataGenerator.generateEntityData();
 
         try {
           await userResourceService.findUserResource(unitOfWork, userResourceId);
@@ -116,18 +124,18 @@ describe('UserResourceService', () => {
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
 
-        const userId = UserResourceTestFactory.createUserId();
-        const url = ResourceTestFactory.createUrl();
+        const resourceData = resourceTestDataGenerator.generateEntityData();
+        const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url });
+        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
 
         const createdUserResourceDTO = await userResourceService.createUserResource(unitOfWork, {
           resourceId: resource.id,
-          userId: userId,
+          userId: userResourceData.userId,
         });
 
         expect(createdUserResourceDTO.resourceId).toBe(resource.id);
-        expect(createdUserResourceDTO.userId).toBe(userId);
+        expect(createdUserResourceDTO.userId).toBe(userResourceData.userId);
 
         const userResourceDTO = await userResourceRepository.findOneById(createdUserResourceDTO.id);
 
@@ -143,15 +151,18 @@ describe('UserResourceService', () => {
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
 
-        const userId = UserResourceTestFactory.createUserId();
-        const url = ResourceTestFactory.createUrl();
+        const resourceData = resourceTestDataGenerator.generateEntityData();
+        const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url });
+        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
 
-        await userResourceRepository.createOne({ resourceId: resource.id, userId: userId });
+        await userResourceRepository.createOne({ resourceId: resource.id, userId: userResourceData.userId });
 
         try {
-          await userResourceService.createUserResource(unitOfWork, { resourceId: resource.id, userId: userId });
+          await userResourceService.createUserResource(unitOfWork, {
+            resourceId: resource.id,
+            userId: userResourceData.userId,
+          });
         } catch (error) {
           expect(error).toBeTruthy();
         }
@@ -168,26 +179,25 @@ describe('UserResourceService', () => {
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
 
-        const userId = UserResourceTestFactory.createUserId();
-        const url = ResourceTestFactory.createUrl();
-        const rating = UserResourceTestFactory.createRating();
+        const resourceData = resourceTestDataGenerator.generateEntityData();
+        const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url });
+        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
 
         const userResourceDTOBeforeUpdate = await userResourceRepository.createOne({
           resourceId: resource.id,
-          userId: userId,
+          userId: userResourceData.userId,
         });
 
         const userResourceDTOAfterUpdate = await userResourceService.updateUserResource(
           unitOfWork,
           userResourceDTOBeforeUpdate.id,
           {
-            rating,
+            rating: userResourceData.rating,
           },
         );
 
-        expect(userResourceDTOAfterUpdate.rating).toBe(rating);
+        expect(userResourceDTOAfterUpdate.rating).toBe(userResourceData.rating);
 
         const userResourceInDb = await userResourceRepository.findOneById(userResourceDTOBeforeUpdate.id);
 
@@ -199,8 +209,7 @@ describe('UserResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const nonExistingId = UserResourceTestFactory.createUserResourceId();
-        const rating = UserResourceTestFactory.createRating();
+        const { id: nonExistingId, rating } = userResourceTestDataGenerator.generateEntityData();
 
         try {
           await userResourceService.updateUserResource(unitOfWork, nonExistingId, {
@@ -222,12 +231,15 @@ describe('UserResourceService', () => {
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
 
-        const userId = UserResourceTestFactory.createUserId();
-        const url = ResourceTestFactory.createUrl();
+        const resourceData = resourceTestDataGenerator.generateEntityData();
+        const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url });
+        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
 
-        const userResource = await userResourceRepository.createOne({ resourceId: resource.id, userId: userId });
+        const userResource = await userResourceRepository.createOne({
+          resourceId: resource.id,
+          userId: userResourceData.userId,
+        });
 
         await userResourceService.removeUserResource(unitOfWork, userResource.id);
 
@@ -241,7 +253,7 @@ describe('UserResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const nonExistingId = UserResourceTestFactory.createUserResourceId();
+        const { id: nonExistingId } = userResourceTestDataGenerator.generateEntityData();
 
         try {
           await userResourceService.removeUserResource(unitOfWork, nonExistingId);

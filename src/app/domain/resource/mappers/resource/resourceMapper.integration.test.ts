@@ -1,21 +1,28 @@
 import { TestingModule } from '@nestjs/testing';
 
 import { UserResource } from '@domain/userResource/entities/userResource';
+import { UserResourceTestDataGenerator } from '@domain/userResource/testDataGenerators/userResourceTestDataGenerator';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
 import { Resource } from '../../entities/resource';
-import { ResourceTestFactory } from '../../testFactories/resourceTestFactory';
+import { ResourceTestDataGenerator } from '../../testDataGenerators/resourceTestDataGenerator';
 import { ResourceMapper } from './resourceMapper';
 
 describe('ResourceMapper', () => {
   let testingModule: TestingModule;
   let postgresHelper: PostgresHelper;
+  let resourceTestDataGenerator: ResourceTestDataGenerator;
+  let userResourceTestDataGenerator: UserResourceTestDataGenerator;
+
   let resourceMapper: ResourceMapper;
 
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
+    userResourceTestDataGenerator = new UserResourceTestDataGenerator();
+    resourceTestDataGenerator = new ResourceTestDataGenerator();
+
     resourceMapper = testingModule.get(ResourceMapper);
   });
 
@@ -30,13 +37,12 @@ describe('ResourceMapper', () => {
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
 
-        const url = ResourceTestFactory.createUrl();
+        const { url } = resourceTestDataGenerator.generateEntityData();
+        const { userId } = userResourceTestDataGenerator.generateEntityData();
 
         const resource = entityManager.create(Resource, { url });
 
         const [savedResource] = await entityManager.save([resource]);
-
-        const userId = ResourceTestFactory.createId();
 
         const userResource = entityManager.create(UserResource, {
           userId: userId,
@@ -65,10 +71,7 @@ describe('ResourceMapper', () => {
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
 
-        const url = ResourceTestFactory.createUrl();
-        const title = ResourceTestFactory.createTitle();
-        const thumbnailUrl = ResourceTestFactory.createUrl();
-        const content = ResourceTestFactory.createContent();
+        const { url, title, thumbnailUrl, content } = resourceTestDataGenerator.generateEntityData();
 
         const resource = entityManager.create(Resource, { url });
 

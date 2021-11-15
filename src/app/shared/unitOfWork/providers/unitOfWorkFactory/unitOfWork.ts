@@ -9,32 +9,32 @@ export type TransactionalCallback<Result> = (unitOfWork: UnitOfWork) => Promise<
 
 export class UnitOfWork {
   public constructor(
-    private readonly loggerService: LoggerService,
+    private readonly logger: LoggerService,
     private readonly queryRunner: QueryRunner,
     private readonly domainEventsDispatcher: DomainEventsDispatcher,
   ) {}
 
   public async init(isolationLevel?: TransactionIsolationLevel): Promise<void> {
-    this.loggerService.log('Starting transaction...');
+    this.logger.log('Starting transaction...');
     await this.queryRunner.connect();
     await this.queryRunner.startTransaction(isolationLevel);
-    this.loggerService.log('Transaction started.');
+    this.logger.log('Transaction started.');
   }
 
   public async commit(): Promise<void> {
-    this.loggerService.log('Commiting transaction...');
+    this.logger.log('Commiting transaction...');
     await this.queryRunner.commitTransaction();
-    this.loggerService.log('Transaction commited.');
+    this.logger.log('Transaction commited.');
 
-    this.loggerService.log('Dispatching domain events...');
+    this.logger.log('Dispatching domain events...');
     await this.domainEventsDispatcher.dispatch();
-    this.loggerService.log('Domain events dispached.');
+    this.logger.log('Domain events dispached.');
   }
 
   public async rollback(): Promise<void> {
-    this.loggerService.log('Rolling back transaction...');
+    this.logger.log('Rolling back transaction...');
     await this.queryRunner.rollbackTransaction();
-    this.loggerService.log('Transaction rolled back.');
+    this.logger.log('Transaction rolled back.');
   }
 
   public async release(): Promise<void> {

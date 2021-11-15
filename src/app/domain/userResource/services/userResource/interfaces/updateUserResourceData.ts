@@ -1,4 +1,4 @@
-import { UserResourceStatus } from '../../../entities/userResource';
+import { UserResourceStatus } from '../../../entities/types/userResourceStatus';
 
 export interface UpdateUserResourceData {
   readonly status?: UserResourceStatus;

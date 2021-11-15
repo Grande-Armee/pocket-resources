@@ -5,12 +5,13 @@ import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModu
 
 import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../domainEvents';
 import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
-import { TagTestFactory } from '../../testFactories/tagTestFactory';
+import { TagTestDataGenerator } from '../../testDataGenerators/tagTestDataGenerator';
 import { TagService } from './tagService';
 
 describe('TagService', () => {
   let testingModule: TestingModule;
   let postgresHelper: PostgresHelper;
+  let tagTestDataGenerator: TagTestDataGenerator;
 
   let tagService: TagService;
   let tagRepositoryFactory: TagRepositoryFactory;
@@ -18,6 +19,7 @@ describe('TagService', () => {
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
+    tagTestDataGenerator = new TagTestDataGenerator();
 
     tagService = testingModule.get(TagService);
     tagRepositoryFactory = testingModule.get(TagRepositoryFactory);
@@ -37,9 +39,7 @@ describe('TagService', () => {
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
-        const title = TagTestFactory.createTitle();
-        const color = TagTestFactory.createColor();
-        const userId = TagTestFactory.createUserId();
+        const { title, userId, color } = tagTestDataGenerator.generateEntityData();
 
         const createdTagDTO = await tagService.createTag(unitOfWork, { title, color, userId });
 
@@ -68,9 +68,7 @@ describe('TagService', () => {
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
-        const title = TagTestFactory.createTitle();
-        const color = TagTestFactory.createColor();
-        const userId = TagTestFactory.createUserId();
+        const { title, userId, color } = tagTestDataGenerator.generateEntityData();
 
         const tagDTO = await tagRepository.createOne({ title, color, userId });
 
@@ -83,7 +81,7 @@ describe('TagService', () => {
     it('should throw if tag with given id does not exist', async () => {
       expect.assertions(1);
 
-      const nonExistingId = TagTestFactory.createUserId();
+      const { id: nonExistingId } = tagTestDataGenerator.generateEntityData();
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         try {
@@ -105,10 +103,8 @@ describe('TagService', () => {
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
-        const title = TagTestFactory.createTitle();
-        const titleAfterUpdate = TagTestFactory.createTitle();
-        const color = TagTestFactory.createColor();
-        const userId = TagTestFactory.createUserId();
+        const { title, userId, color } = tagTestDataGenerator.generateEntityData();
+        const { title: titleAfterUpdate } = tagTestDataGenerator.generateEntityData();
 
         const tagDTOBeforeUpdate = await tagRepository.createOne({ title, color, userId });
 
@@ -133,8 +129,7 @@ describe('TagService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const title = TagTestFactory.createTitle();
-        const nonExistingId = TagTestFactory.createUserId();
+        const { title, id: nonExistingId } = tagTestDataGenerator.generateEntityData();
 
         try {
           await tagService.updateTag(unitOfWork, nonExistingId, { title });
@@ -155,9 +150,7 @@ describe('TagService', () => {
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
-        const title = TagTestFactory.createTitle();
-        const color = TagTestFactory.createColor();
-        const userId = TagTestFactory.createUserId();
+        const { title, userId, color } = tagTestDataGenerator.generateEntityData();
 
         const tagDTO = await tagRepository.createOne({ title, color, userId });
 
@@ -178,7 +171,7 @@ describe('TagService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const nonExistingId = TagTestFactory.createUserId();
+        const { id: nonExistingId } = tagTestDataGenerator.generateEntityData();
 
         try {
           await tagService.removeTag(unitOfWork, nonExistingId);

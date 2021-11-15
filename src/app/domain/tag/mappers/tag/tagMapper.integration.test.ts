@@ -1,24 +1,33 @@
 import { TestingModule } from '@nestjs/testing';
 
 import { Resource } from '@domain/resource/entities/resource';
-import { ResourceTestFactory } from '@domain/resource/testFactories/resourceTestFactory';
+import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { UserResource } from '@domain/userResource/entities/userResource';
+import { UserResourceTestDataGenerator } from '@domain/userResource/testDataGenerators/userResourceTestDataGenerator';
 import { UserResourceTag } from '@domain/userResourceTag/entities/userResourceTag';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
 import { Tag } from '../../entities/tag';
-import { TagTestFactory } from '../../testFactories/tagTestFactory';
+import { TagTestDataGenerator } from '../../testDataGenerators/tagTestDataGenerator';
 import { TagMapper } from './tagMapper';
 
 describe('TagMapper', () => {
   let testingModule: TestingModule;
   let postgresHelper: PostgresHelper;
+  let resourceTestDataGenerator: ResourceTestDataGenerator;
+  let userResourceTestDataGenerator: UserResourceTestDataGenerator;
+  let tagTestDataGenerator: TagTestDataGenerator;
+
   let tagMapper: TagMapper;
 
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
+    userResourceTestDataGenerator = new UserResourceTestDataGenerator();
+    resourceTestDataGenerator = new ResourceTestDataGenerator();
+    tagTestDataGenerator = new TagTestDataGenerator();
+
     tagMapper = testingModule.get(TagMapper);
   });
 
@@ -33,10 +42,9 @@ describe('TagMapper', () => {
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
 
-        const url = ResourceTestFactory.createUrl();
-        const userId = ResourceTestFactory.createId();
-        const color = TagTestFactory.createColor();
-        const title = TagTestFactory.createTitle();
+        const { url } = resourceTestDataGenerator.generateEntityData();
+        const { userId } = userResourceTestDataGenerator.generateEntityData();
+        const { color, title } = tagTestDataGenerator.generateEntityData();
 
         const resource = entityManager.create(Resource, { url });
 
