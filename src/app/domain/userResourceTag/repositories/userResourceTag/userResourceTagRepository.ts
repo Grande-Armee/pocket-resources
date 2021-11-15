@@ -28,12 +28,28 @@ export class UserResourceTagRepository {
     return this.findOne({ id });
   }
 
+  public async findMany(conditions: FindConditions<UserResourceTag>): Promise<UserResourceTagDTO[]> {
+    const userResourceTags = await this.manager.find(UserResourceTag, conditions);
+
+    return userResourceTags.map((userResourceTag) => this.userResourceTagMapper.mapEntityToDTO(userResourceTag));
+  }
+
   public async createOne(data: Partial<UserResourceTag>): Promise<UserResourceTagDTO> {
     const userResourceTag = this.manager.create(UserResourceTag, { ...data });
 
     const [savedUserResourceTag] = await this.manager.save([userResourceTag]);
 
     return this.userResourceTagMapper.mapEntityToDTO(savedUserResourceTag);
+  }
+
+  public async removeOne(id: string): Promise<void> {
+    const userResourceTag = await this.findOneById(id);
+
+    if (!userResourceTag) {
+      throw new Error('User resource tag not found');
+    }
+
+    await this.manager.delete(UserResourceTag, { id });
   }
 }
 

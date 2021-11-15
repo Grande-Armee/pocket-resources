@@ -4,6 +4,7 @@ import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceTagDTO } from '../../dtos/userResourceTagDTO';
 import { UserResourceTagRepositoryFactory } from '../../repositories/userResourceTag/userResourceTagRepository';
+import { CreateUserResourceTagData } from './interfaces';
 
 @Injectable()
 export class UserResourceTagService {
@@ -16,18 +17,28 @@ export class UserResourceTagService {
     const userResourceTag = await userResourceTagRepository.findOneById(userResourceTagId);
 
     if (!userResourceTag) {
-      throw new Error('Tag not found.');
+      throw new Error('User resource tag not found.');
     }
 
     return userResourceTag;
   }
 
-  public async createUserResourceTag(unitOfWork: UnitOfWork): Promise<UserResourceTagDTO> {
+  public async createUserResourceTag(
+    unitOfWork: UnitOfWork,
+    userResourceTagData: CreateUserResourceTagData,
+  ): Promise<UserResourceTagDTO> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
-    const userResourceTag = await userResourceTagRepository.createOne({});
+    const userResourceTag = await userResourceTagRepository.createOne(userResourceTagData);
 
     return userResourceTag;
+  }
+
+  public async removeUserResourceTag(unitOfWork: UnitOfWork, userResourceTagId: string): Promise<void> {
+    const entityManager = unitOfWork.getEntityManager();
+    const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
+
+    await userResourceTagRepository.removeOne(userResourceTagId);
   }
 }
