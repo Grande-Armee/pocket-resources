@@ -5,12 +5,13 @@ import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModu
 
 import { ResourceCreatedEvent, ResourceRemovedEvent, ResourceUpdatedEvent } from '../../domainEvents';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
-import { ResourceTestFactory } from '../../testFactories/resourceTestFactory';
+import { ResourceTestDataGenerator } from '../../testDataGenerators/resourceTestDataGenerator';
 import { ResourceService } from './resourceService';
 
 describe('ResourceService', () => {
   let testingModule: TestingModule;
   let postgresHelper: PostgresHelper;
+  let resourceTestDataGenerator: ResourceTestDataGenerator;
 
   let resourceService: ResourceService;
   let resourceRepositoryFactory: ResourceRepositoryFactory;
@@ -18,6 +19,7 @@ describe('ResourceService', () => {
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
+    resourceTestDataGenerator = new ResourceTestDataGenerator();
 
     resourceService = testingModule.get(ResourceService);
     resourceRepositoryFactory = testingModule.get(ResourceRepositoryFactory);
@@ -37,7 +39,7 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const url = ResourceTestFactory.createUrl();
+        const { url } = resourceTestDataGenerator.generateEntityData();
 
         const createdResourceDTO = await resourceService.createResource(unitOfWork, { url });
 
@@ -62,7 +64,7 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const url = ResourceTestFactory.createUrl();
+        const { url } = resourceTestDataGenerator.generateEntityData();
 
         await resourceRepository.createOne({ url });
 
@@ -84,7 +86,7 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const url = ResourceTestFactory.createUrl();
+        const { url } = resourceTestDataGenerator.generateEntityData();
 
         const resourceDTO = await resourceRepository.createOne({ url });
 
@@ -97,7 +99,7 @@ describe('ResourceService', () => {
     it('should throw if resource with given id does not exist', async () => {
       expect.assertions(1);
 
-      const nonExistingId = ResourceTestFactory.createId();
+      const { id: nonExistingId } = resourceTestDataGenerator.generateEntityData();
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         try {
@@ -119,8 +121,7 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const title = ResourceTestFactory.createTitle();
-        const url = ResourceTestFactory.createUrl();
+        const { title, url } = resourceTestDataGenerator.generateEntityData();
 
         const resourceDTOBeforeUpdate = await resourceRepository.createOne({ url });
 
@@ -146,8 +147,7 @@ describe('ResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const title = ResourceTestFactory.createTitle();
-        const nonExistingId = ResourceTestFactory.createId();
+        const { title, id: nonExistingId } = resourceTestDataGenerator.generateEntityData();
 
         try {
           await resourceService.updateResource(unitOfWork, nonExistingId, { title });
@@ -168,7 +168,7 @@ describe('ResourceService', () => {
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
-        const url = ResourceTestFactory.createUrl();
+        const { url } = resourceTestDataGenerator.generateEntityData();
 
         const resourceDTO = await resourceRepository.createOne({ url });
 
@@ -189,7 +189,7 @@ describe('ResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const nonExistingId = ResourceTestFactory.createId();
+        const { id: nonExistingId } = resourceTestDataGenerator.generateEntityData();
 
         try {
           await resourceService.removeResource(unitOfWork, nonExistingId);
