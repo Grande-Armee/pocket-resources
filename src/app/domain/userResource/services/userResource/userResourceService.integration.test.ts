@@ -1,6 +1,6 @@
 import { TestingModule } from '@nestjs/testing';
 
-import { ResourceService } from '@domain/resource/services/resource/resourceService';
+import { ResourceRepositoryFactory } from '@domain/resource/repositories/resource/resourceRepository';
 import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { TagRepositoryFactory } from '@domain/tag/repositories/tag/tagRepository';
 import { TagTestDataGenerator } from '@domain/tag/testDataGenerators/tagTestDataGenerator';
@@ -22,7 +22,7 @@ describe('UserResourceService', () => {
   let userResourceService: UserResourceService;
   let userResourceRepositoryFactory: UserResourceRepositoryFactory;
 
-  let resourceService: ResourceService;
+  let resourceRepositoryFactory: ResourceRepositoryFactory;
 
   let userResourceTagRepositoryFactory: UserResourceTagRepositoryFactory;
 
@@ -37,7 +37,7 @@ describe('UserResourceService', () => {
 
     userResourceService = testingModule.get(UserResourceService);
     userResourceRepositoryFactory = testingModule.get(UserResourceRepositoryFactory);
-    resourceService = testingModule.get(ResourceService);
+    resourceRepositoryFactory = testingModule.get(ResourceRepositoryFactory);
     userResourceTagRepositoryFactory = testingModule.get(UserResourceTagRepositoryFactory);
     tagRepositoryFactory = testingModule.get(TagRepositoryFactory);
   });
@@ -55,6 +55,7 @@ describe('UserResourceService', () => {
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const userResourceTagRepository = userResourceTagRepositoryFactory.create(entityManager);
         const tagRepository = tagRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
         const userResourceData = userResourceTestDataGenerator.generateEntityData();
@@ -62,7 +63,7 @@ describe('UserResourceService', () => {
         const { color: color1, title: title1 } = tagTestDataGenerator.generateEntityData();
         const { color: color2, title: title2 } = tagTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
+        const resource = await resourceRepository.createOne({ url: resourceData.url });
 
         const tag1 = await tagRepository.createOne({
           userId: userResourceData.userId,
@@ -123,11 +124,12 @@ describe('UserResourceService', () => {
         const entityManager = unitOfWork.getEntityManager();
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
         const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
+        const resource = await resourceRepository.createOne({ url: resourceData.url });
 
         const createdUserResourceDTO = await userResourceService.createUserResource(unitOfWork, {
           resourceId: resource.id,
@@ -150,11 +152,12 @@ describe('UserResourceService', () => {
         const entityManager = unitOfWork.getEntityManager();
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
         const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
+        const resource = await resourceRepository.createOne({ url: resourceData.url });
 
         await userResourceRepository.createOne({ resourceId: resource.id, userId: userResourceData.userId });
 
@@ -178,11 +181,12 @@ describe('UserResourceService', () => {
         const entityManager = unitOfWork.getEntityManager();
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
         const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
+        const resource = await resourceRepository.createOne({ url: resourceData.url });
 
         const userResourceDTOBeforeUpdate = await userResourceRepository.createOne({
           resourceId: resource.id,
@@ -230,11 +234,12 @@ describe('UserResourceService', () => {
         const entityManager = unitOfWork.getEntityManager();
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
         const userResourceData = userResourceTestDataGenerator.generateEntityData();
 
-        const resource = await resourceService.createResource(unitOfWork, { url: resourceData.url });
+        const resource = await resourceRepository.createOne({ url: resourceData.url });
 
         const userResource = await userResourceRepository.createOne({
           resourceId: resource.id,
