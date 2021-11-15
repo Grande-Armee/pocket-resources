@@ -14,13 +14,9 @@ import {
 import { Resource } from '@domain/resource/entities/resource';
 import { UserResourceTag } from '@domain/userResourceTag/entities/userResourceTag';
 
-export const USER_RESOURCE_TABLE_NAME = 'userResources';
+import { UserResourceStatus } from './types/userResourceStatus';
 
-export enum UserResourceStatus {
-  toRead = 'TO_READ',
-  inArchive = 'IN_ARCHIVE',
-  inTrash = 'IN_TRASH',
-}
+export const USER_RESOURCE_TABLE_NAME = 'userResources';
 
 @Unique('UQ_resourceId_userId', ['resourceId', 'userId'])
 @Entity({
