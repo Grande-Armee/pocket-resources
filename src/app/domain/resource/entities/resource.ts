@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm';
 
 import { UserResource } from '@domain/userResource/entities/userResource';
 
@@ -50,6 +50,6 @@ export class Resource {
   public content: string | null;
 
   @Expose()
-  @ManyToOne(() => UserResource, (userResource) => userResource.resource)
+  @OneToMany(() => UserResource, (userResource) => userResource.resource)
   public userResources?: UserResource[];
 }
