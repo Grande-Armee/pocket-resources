@@ -2,6 +2,7 @@ import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
 import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm';
 
+import { CollectionResource } from '@domain/collectionResource/entities/collectionResource';
 import { UserResource } from '@domain/userResource/entities/userResource';
 
 export const RESOURCE_TABLE_NAME = 'resources';
@@ -52,4 +53,8 @@ export class Resource {
   @Expose()
   @OneToMany(() => UserResource, (userResource) => userResource.resource)
   public userResources?: UserResource[];
+
+  @Expose()
+  @OneToMany(() => CollectionResource, (collectionResource) => collectionResource.resource)
+  public collectionResources?: CollectionResource[];
 }

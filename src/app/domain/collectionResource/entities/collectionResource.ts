@@ -1,9 +1,11 @@
 import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique } from 'typeorm';
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique, ManyToOne } from 'typeorm';
 
 // import { Collection } from '@domain/collection/entities/collection';
-// import { Resource } from '@domain/resource/entities/resource';
+import { Resource } from '@domain/resource/entities/resource';
+
+import { Collection } from '../../collection/entities/collection';
 
 export const COLLECTION_RESOURCE_TABLE_NAME = 'collectionResources';
 
@@ -30,21 +32,21 @@ export class CollectionResource {
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
-  // @Expose()
-  // @ManyToOne(() => Collection, (collection) => userResource.userResourceTags)
-  // public userResource?: UserResource;
-
-  @IsUUID('4')
   @Expose()
-  @Column({ type: 'uuid' })
-  public collectionId: string;
-
-  // @Expose()
-  // @ManyToOne(() => Tag, (tag) => tag.id)
-  // public tag?: Tag;
+  @ManyToOne(() => Resource, (resource) => resource.collectionResources)
+  public resource?: Resource;
 
   @IsUUID('4')
   @Expose()
   @Column({ type: 'uuid' })
   public resourceId: string;
+
+  @Expose()
+  @ManyToOne(() => Collection, (collection) => collection.id)
+  public collection?: Collection;
+
+  @IsUUID('4')
+  @Expose()
+  @Column({ type: 'uuid' })
+  public collectionId: string;
 }

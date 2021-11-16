@@ -1,6 +1,8 @@
 import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique } from 'typeorm';
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique, OneToMany } from 'typeorm';
+
+import { CollectionResource } from '@domain/collectionResource/entities/collectionResource';
 
 export const COLLECTION_TABLE_NAME = 'collections';
 
@@ -48,7 +50,7 @@ export class Collection {
   @Column({ type: 'uuid' })
   public userId: string;
 
-  // @Expose()
-  // @ManyToOne(() => UserResource, (userResource) => userResource.resource)
-  // public userResources?: UserResource[];
+  @Expose()
+  @OneToMany(() => CollectionResource, (collectionResource) => collectionResource.collection)
+  public collectionResources?: CollectionResource[];
 }
