@@ -3,7 +3,7 @@ import { internet, lorem, datatype, date } from 'faker';
 
 import { Collection } from '../entities/collection';
 
-type CollectionTestData = NonNullableEntity<Collection>;
+type CollectionTestData = NonNullableEntity<Omit<Collection, 'collectionResources'>>;
 
 export class CollectionTestDataGenerator implements EntityTestDataGenerator<CollectionTestData> {
   public generateEntityData(): CollectionTestData {

@@ -3,7 +3,7 @@ import { internet, lorem, datatype, date } from 'faker';
 
 import { Resource } from '../entities/resource';
 
-type ResourceTestData = NonNullableEntity<Omit<Resource, 'userResources'>>;
+type ResourceTestData = NonNullableEntity<Omit<Resource, 'userResources' | 'collectionResources'>>;
 
 export class ResourceTestDataGenerator implements EntityTestDataGenerator<ResourceTestData> {
   public generateEntityData(): ResourceTestData {

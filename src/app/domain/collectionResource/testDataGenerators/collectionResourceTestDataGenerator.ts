@@ -3,7 +3,7 @@ import { datatype, date } from 'faker';
 
 import { CollectionResource } from '../entities/collectionResource';
 
-type CollectionResourceTestData = NonNullableEntity<CollectionResource>;
+type CollectionResourceTestData = NonNullableEntity<Omit<CollectionResource, 'resource' | 'collection'>>;
 
 export class CollectionResourceTestDataGenerator implements EntityTestDataGenerator<CollectionResourceTestData> {
   public generateEntityData(): CollectionResourceTestData {
