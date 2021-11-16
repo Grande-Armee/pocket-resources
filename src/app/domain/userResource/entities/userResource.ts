@@ -16,7 +16,7 @@ import { UserResourceTag } from '@domain/userResourceTag/entities/userResourceTa
 
 import { UserResourceStatus } from './types/userResourceStatus';
 
-export const USER_RESOURCE_TABLE_NAME = 'userResources';
+export const USER_RESOURCE_TABLE_NAME = 'usersResources';
 
 @Unique('UQ_resourceId_userId', ['resourceId', 'userId'])
 @Entity({
