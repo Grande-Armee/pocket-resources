@@ -92,12 +92,12 @@ describe('UserResourceService', () => {
           userResourceId: userResource.id,
         });
 
-        const foundUserResourceDTO = await userResourceService.findUserResource(unitOfWork, userResource.id);
+        const foundUserResourceDto = await userResourceService.findUserResource(unitOfWork, userResource.id);
 
-        expect(foundUserResourceDTO.id).toBe(userResource.id);
-        expect(foundUserResourceDTO.userId).toBe(userResourceData.userId);
-        expect(foundUserResourceDTO.resource).toEqual(resource);
-        expect(foundUserResourceDTO.tags).toEqual([tag1, tag2]);
+        expect(foundUserResourceDto.id).toBe(userResource.id);
+        expect(foundUserResourceDto.userId).toBe(userResourceData.userId);
+        expect(foundUserResourceDto.resource).toEqual(resource);
+        expect(foundUserResourceDto.tags).toEqual([tag1, tag2]);
       });
     });
 
@@ -131,17 +131,17 @@ describe('UserResourceService', () => {
 
         const resource = await resourceRepository.createOne({ url: resourceData.url });
 
-        const createdUserResourceDTO = await userResourceService.createUserResource(unitOfWork, {
+        const createdUserResourceDto = await userResourceService.createUserResource(unitOfWork, {
           resourceId: resource.id,
           userId: userResourceData.userId,
         });
 
-        expect(createdUserResourceDTO.resourceId).toBe(resource.id);
-        expect(createdUserResourceDTO.userId).toBe(userResourceData.userId);
+        expect(createdUserResourceDto.resourceId).toBe(resource.id);
+        expect(createdUserResourceDto.userId).toBe(userResourceData.userId);
 
-        const userResourceDTO = await userResourceRepository.findOneById(createdUserResourceDTO.id);
+        const userResourceDto = await userResourceRepository.findOneById(createdUserResourceDto.id);
 
-        expect(userResourceDTO).not.toBeNull();
+        expect(userResourceDto).not.toBeNull();
       });
     });
 
@@ -188,22 +188,22 @@ describe('UserResourceService', () => {
 
         const resource = await resourceRepository.createOne({ url: resourceData.url });
 
-        const userResourceDTOBeforeUpdate = await userResourceRepository.createOne({
+        const userResourceDtoBeforeUpdate = await userResourceRepository.createOne({
           resourceId: resource.id,
           userId: userResourceData.userId,
         });
 
-        const userResourceDTOAfterUpdate = await userResourceService.updateUserResource(
+        const userResourceDtoAfterUpdate = await userResourceService.updateUserResource(
           unitOfWork,
-          userResourceDTOBeforeUpdate.id,
+          userResourceDtoBeforeUpdate.id,
           {
             rating: userResourceData.rating,
           },
         );
 
-        expect(userResourceDTOAfterUpdate.rating).toBe(userResourceData.rating);
+        expect(userResourceDtoAfterUpdate.rating).toBe(userResourceData.rating);
 
-        const userResourceInDb = await userResourceRepository.findOneById(userResourceDTOBeforeUpdate.id);
+        const userResourceInDb = await userResourceRepository.findOneById(userResourceDtoBeforeUpdate.id);
 
         expect(userResourceInDb).not.toBeNull();
       });

@@ -22,7 +22,8 @@ export class TestModuleHelper {
 
   private getEnvVariables(): EnvVariables {
     return {
-      SHOULD_PRETTIFY_LOGS: true,
+      LOGGER_SHOULD_PRETTIFY_LOGS: true,
+      LOGGER_LOG_LEVEL: 'debug',
       POSTGRES_USERNAME: 'root',
       POSTGRES_PASSWORD: 'password',
       POSTGRES_HOST: 'pocket-resources-postgres',

@@ -88,9 +88,9 @@ describe('UserResourceMapper', () => {
           .where({ id: userResource.id })
           .getOne();
 
-        const userResourceDTO = userResourceMapper.mapEntityToDTO(userResourceEntity as UserResource);
+        const userResourceDto = userResourceMapper.mapEntityToDto(userResourceEntity as UserResource);
 
-        expect(userResourceDTO).toEqual({
+        expect(userResourceDto).toEqual({
           id: userResource.id,
           createdAt: userResource.createdAt,
           updatedAt: userResource.updatedAt,
@@ -99,8 +99,8 @@ describe('UserResourceMapper', () => {
           status: 'TO_READ',
           resourceId: resource.id,
           userId: userResourceData.userId,
-          resource: resourceMapper.mapEntityToDTO(savedResource),
-          tags: [tagMapper.mapEntityToDTO(savedTag)],
+          resource: resourceMapper.mapEntityToDto(savedResource),
+          tags: [tagMapper.mapEntityToDto(savedTag)],
         });
       });
     });
@@ -134,9 +134,9 @@ describe('UserResourceMapper', () => {
           .where({ id: userResource.id })
           .getOne();
 
-        const userResourceDTO = userResourceMapper.mapEntityToDTO(userResourceEntity as UserResource);
+        const userResourceDto = userResourceMapper.mapEntityToDto(userResourceEntity as UserResource);
 
-        expect(userResourceDTO).toEqual({
+        expect(userResourceDto).toEqual({
           id: userResource.id,
           createdAt: userResource.createdAt,
           updatedAt: userResource.updatedAt,
@@ -145,7 +145,7 @@ describe('UserResourceMapper', () => {
           status: 'TO_READ',
           resourceId: resource.id,
           userId: userResourceData.userId,
-          resource: resourceMapper.mapEntityToDTO(savedResource),
+          resource: resourceMapper.mapEntityToDto(savedResource),
           tags: [],
         });
       });
@@ -190,9 +190,9 @@ describe('UserResourceMapper', () => {
           .where({ id: userResource.id })
           .getOne();
 
-        const userResourceDTO = userResourceMapper.mapEntityToDTO(userResourceEntity as UserResource);
+        const userResourceDto = userResourceMapper.mapEntityToDto(userResourceEntity as UserResource);
 
-        expect(userResourceDTO).toEqual({
+        expect(userResourceDto).toEqual({
           id: userResource.id,
           createdAt: userResource.createdAt,
           updatedAt: userResource.updatedAt,
@@ -201,7 +201,7 @@ describe('UserResourceMapper', () => {
           status: userResourceData.status,
           resourceId: resource.id,
           userId: userResourceData.userId,
-          resource: resourceMapper.mapEntityToDTO(savedResource),
+          resource: resourceMapper.mapEntityToDto(savedResource),
           tags: [],
         });
       });

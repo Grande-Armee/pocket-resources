@@ -73,9 +73,9 @@ describe('UserResourceMapper', () => {
 
         const [savedUserResourceTag] = await entityManager.save([userResourceTag]);
 
-        const userResourceTagDTO = userResourceTagMapper.mapEntityToDTO(savedUserResourceTag as UserResourceTag);
+        const userResourceTagDto = userResourceTagMapper.mapEntityToDto(savedUserResourceTag as UserResourceTag);
 
-        expect(userResourceTagDTO).toEqual({
+        expect(userResourceTagDto).toEqual({
           id: savedUserResourceTag.id,
           createdAt: savedUserResourceTag.createdAt,
           updatedAt: savedUserResourceTag.updatedAt,

@@ -1,6 +1,5 @@
+import { EntityTestDataGenerator, NonNullableEntity } from '@grande-armee/pocket-common';
 import { internet, lorem, datatype, date } from 'faker';
-
-import { EntityTestDataGenerator, NonNullableEntity } from '@shared/testDataGenerator/testDataGenerator';
 
 import { Resource } from '../entities/resource';
 

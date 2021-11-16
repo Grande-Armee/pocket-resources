@@ -3,7 +3,7 @@ import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
 import { RepositoryFactory } from '@shared/postgres/interfaces';
 
-import { UserResourceTagDTO } from '../../dtos/userResourceTagDTO';
+import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
 import { UserResourceTag } from '../../entities/userResourceTag';
 import { UserResourceTagMapper } from '../../mappers/userResourceTag/userResourceTagMapper';
 
@@ -14,32 +14,32 @@ export class UserResourceTagRepository {
     private readonly userResourceTagMapper: UserResourceTagMapper,
   ) {}
 
-  public async findOne(conditions: FindConditions<UserResourceTag>): Promise<UserResourceTagDTO | null> {
+  public async findOne(conditions: FindConditions<UserResourceTag>): Promise<UserResourceTagDto | null> {
     const userResourceTag = await this.manager.findOne(UserResourceTag, conditions);
 
     if (!userResourceTag) {
       return null;
     }
 
-    return this.userResourceTagMapper.mapEntityToDTO(userResourceTag);
+    return this.userResourceTagMapper.mapEntityToDto(userResourceTag);
   }
 
-  public async findOneById(id: string): Promise<UserResourceTagDTO | null> {
+  public async findOneById(id: string): Promise<UserResourceTagDto | null> {
     return this.findOne({ id });
   }
 
-  public async findMany(conditions: FindConditions<UserResourceTag>): Promise<UserResourceTagDTO[]> {
+  public async findMany(conditions: FindConditions<UserResourceTag>): Promise<UserResourceTagDto[]> {
     const userResourceTags = await this.manager.find(UserResourceTag, conditions);
 
-    return userResourceTags.map((userResourceTag) => this.userResourceTagMapper.mapEntityToDTO(userResourceTag));
+    return userResourceTags.map((userResourceTag) => this.userResourceTagMapper.mapEntityToDto(userResourceTag));
   }
 
-  public async createOne(data: Partial<UserResourceTag>): Promise<UserResourceTagDTO> {
+  public async createOne(data: Partial<UserResourceTag>): Promise<UserResourceTagDto> {
     const userResourceTag = this.manager.create(UserResourceTag, { ...data });
 
     const [savedUserResourceTag] = await this.manager.save([userResourceTag]);
 
-    return this.userResourceTagMapper.mapEntityToDTO(savedUserResourceTag);
+    return this.userResourceTagMapper.mapEntityToDto(savedUserResourceTag);
   }
 
   public async removeOne(id: string): Promise<void> {

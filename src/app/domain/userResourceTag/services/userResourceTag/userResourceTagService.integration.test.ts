@@ -83,14 +83,14 @@ describe('UserResourceTagService', () => {
           userResourceId: userResource.id,
         });
 
-        const foundUserResourceTagDTO = await userResourceTagService.findUserResourceTag(
+        const foundUserResourceTagDto = await userResourceTagService.findUserResourceTag(
           unitOfWork,
           userResourceTag.id,
         );
 
-        expect(foundUserResourceTagDTO.id).toBe(userResourceTag.id);
-        expect(foundUserResourceTagDTO.userResourceId).toBe(userResource.id);
-        expect(foundUserResourceTagDTO.tagId).toBe(tag1.id);
+        expect(foundUserResourceTagDto.id).toBe(userResourceTag.id);
+        expect(foundUserResourceTagDto.userResourceId).toBe(userResource.id);
+        expect(foundUserResourceTagDto.tagId).toBe(tag1.id);
       });
     });
 
@@ -139,17 +139,17 @@ describe('UserResourceTagService', () => {
           userId: userResourceData.userId,
         });
 
-        const createdUserResourceTagDTO = await userResourceTagService.createUserResourceTag(unitOfWork, {
+        const createdUserResourceTagDto = await userResourceTagService.createUserResourceTag(unitOfWork, {
           tagId: tag1.id,
           userResourceId: userResource.id,
         });
 
-        expect(createdUserResourceTagDTO.userResourceId).toBe(userResource.id);
-        expect(createdUserResourceTagDTO.tagId).toBe(tag1.id);
+        expect(createdUserResourceTagDto.userResourceId).toBe(userResource.id);
+        expect(createdUserResourceTagDto.tagId).toBe(tag1.id);
 
-        const userResourceDTO = await userResourceTagRepository.findOneById(createdUserResourceTagDTO.id);
+        const userResourceDto = await userResourceTagRepository.findOneById(createdUserResourceTagDto.id);
 
-        expect(userResourceDTO).not.toBeNull();
+        expect(userResourceDto).not.toBeNull();
       });
     });
 

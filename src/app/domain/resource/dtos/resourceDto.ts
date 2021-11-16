@@ -1,13 +1,6 @@
-import { ClassConstructor, Expose, plainToClass } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
-// TODO: move to common
-function createDTOFactory<T>(type: ClassConstructor<T>) {
-  return (params: T): T => {
-    return plainToClass(type, params, { excludeExtraneousValues: true });
-  };
-}
-
-export class ResourceDTO {
+export class ResourceDto {
   @Expose()
   public readonly id: string;
 
@@ -28,6 +21,4 @@ export class ResourceDTO {
 
   @Expose()
   public readonly content: string | null;
-
-  public static create = createDTOFactory(ResourceDTO);
 }

@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { ResourceCreatedEvent, ResourceUpdatedEvent, ResourceRemovedEvent } from '../../domainEvents';
-import { ResourceDTO } from '../../dtos/resourceDTO';
+import { ResourceDto } from '../../dtos/resourceDto';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { CreateResourceData, UpdateResourceData } from './interfaces';
 
@@ -11,7 +11,7 @@ import { CreateResourceData, UpdateResourceData } from './interfaces';
 export class ResourceService {
   public constructor(private readonly resourceRepositoryFactory: ResourceRepositoryFactory) {}
 
-  public async createResource(unitOfWork: UnitOfWork, resourceData: CreateResourceData): Promise<ResourceDTO> {
+  public async createResource(unitOfWork: UnitOfWork, resourceData: CreateResourceData): Promise<ResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
@@ -33,7 +33,7 @@ export class ResourceService {
     return resource;
   }
 
-  public async findResource(unitOfWork: UnitOfWork, resourceId: string): Promise<ResourceDTO> {
+  public async findResource(unitOfWork: UnitOfWork, resourceId: string): Promise<ResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
@@ -50,7 +50,7 @@ export class ResourceService {
     unitOfWork: UnitOfWork,
     resourceId: string,
     resourceData: UpdateResourceData,
-  ): Promise<ResourceDTO> {
+  ): Promise<ResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);

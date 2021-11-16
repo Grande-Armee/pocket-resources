@@ -41,13 +41,13 @@ describe('ResourceService', () => {
 
         const { url } = resourceTestDataGenerator.generateEntityData();
 
-        const createdResourceDTO = await resourceService.createResource(unitOfWork, { url });
+        const createdResourceDto = await resourceService.createResource(unitOfWork, { url });
 
-        expect(createdResourceDTO.url).toBe(url);
+        expect(createdResourceDto.url).toBe(url);
 
-        const resourceDTO = await resourceRepository.findOneById(createdResourceDTO.id);
+        const resourceDto = await resourceRepository.findOneById(createdResourceDto.id);
 
-        expect(resourceDTO).not.toBeNull();
+        expect(resourceDto).not.toBeNull();
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
@@ -88,11 +88,11 @@ describe('ResourceService', () => {
 
         const { url } = resourceTestDataGenerator.generateEntityData();
 
-        const resourceDTO = await resourceRepository.createOne({ url });
+        const resourceDto = await resourceRepository.createOne({ url });
 
-        const foundResourceDTO = await resourceService.findResource(unitOfWork, resourceDTO.id);
+        const foundResourceDto = await resourceService.findResource(unitOfWork, resourceDto.id);
 
-        expect(foundResourceDTO).not.toBeNull();
+        expect(foundResourceDto).not.toBeNull();
       });
     });
 
@@ -123,16 +123,16 @@ describe('ResourceService', () => {
 
         const { title, url } = resourceTestDataGenerator.generateEntityData();
 
-        const resourceDTOBeforeUpdate = await resourceRepository.createOne({ url });
+        const resourceDtoBeforeUpdate = await resourceRepository.createOne({ url });
 
-        const resourceDTOAfterUpdate = await resourceService.updateResource(unitOfWork, resourceDTOBeforeUpdate.id, {
+        const resourceDtoAfterUpdate = await resourceService.updateResource(unitOfWork, resourceDtoBeforeUpdate.id, {
           title,
         });
 
-        expect(resourceDTOAfterUpdate.title).toBe(title);
-        expect(resourceDTOAfterUpdate.url).toBe(url);
+        expect(resourceDtoAfterUpdate.title).toBe(title);
+        expect(resourceDtoAfterUpdate.url).toBe(url);
 
-        const resourceInDb = await resourceRepository.findOneById(resourceDTOBeforeUpdate.id);
+        const resourceInDb = await resourceRepository.findOneById(resourceDtoBeforeUpdate.id);
 
         expect(resourceInDb).not.toBeNull();
 
@@ -170,11 +170,11 @@ describe('ResourceService', () => {
 
         const { url } = resourceTestDataGenerator.generateEntityData();
 
-        const resourceDTO = await resourceRepository.createOne({ url });
+        const resourceDto = await resourceRepository.createOne({ url });
 
-        await resourceService.removeResource(unitOfWork, resourceDTO.id);
+        await resourceService.removeResource(unitOfWork, resourceDto.id);
 
-        const resourceInDb = await resourceRepository.findOneById(resourceDTO.id);
+        const resourceInDb = await resourceRepository.findOneById(resourceDto.id);
 
         expect(resourceInDb).toBeNull();
 
