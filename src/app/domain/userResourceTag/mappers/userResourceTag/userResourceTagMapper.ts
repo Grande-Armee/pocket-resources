@@ -1,16 +1,17 @@
+import { DtoFactory, Mapper } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
-import { Mapper } from '@shared/mapper/mapper';
-
-import { UserResourceTagDTO } from '../../dtos/userResourceTagDTO';
+import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
 import { UserResourceTag } from '../../entities/userResourceTag';
 
 @Injectable()
-export class UserResourceTagMapper implements Mapper<UserResourceTag, UserResourceTagDTO> {
-  public mapEntityToDTO(entity: UserResourceTag): UserResourceTagDTO {
+export class UserResourceTagMapper implements Mapper<UserResourceTag, UserResourceTagDto> {
+  public constructor(private readonly dtoFactory: DtoFactory) {}
+
+  public mapEntityToDto(entity: UserResourceTag): UserResourceTagDto {
     const { id, createdAt, updatedAt, userResourceId, tagId } = entity;
 
-    return UserResourceTagDTO.create({
+    return this.dtoFactory.createDtoInstance(UserResourceTagDto, {
       id,
       createdAt,
       updatedAt,

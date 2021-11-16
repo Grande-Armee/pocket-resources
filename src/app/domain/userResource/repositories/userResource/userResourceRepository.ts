@@ -3,7 +3,7 @@ import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
 import { RepositoryFactory } from '@shared/postgres/interfaces';
 
-import { UserResourceDTO } from '../../dtos/userResourceDTO';
+import { UserResourceDto } from '../../dtos/userResourceDto';
 import { UserResource } from '../../entities/userResource';
 import { UserResourceMapper } from '../../mappers/userResource/userResourceMapper';
 
@@ -14,7 +14,7 @@ export class UserResourceRepository {
     private readonly userResourceMapper: UserResourceMapper,
   ) {}
 
-  public async findOne(conditions: FindConditions<UserResource>): Promise<UserResourceDTO | null> {
+  public async findOne(conditions: FindConditions<UserResource>): Promise<UserResourceDto | null> {
     const queryBuilder = this.manager.getRepository(UserResource).createQueryBuilder('userResource');
 
     const entity = await queryBuilder
@@ -28,10 +28,10 @@ export class UserResourceRepository {
       return null;
     }
 
-    return this.userResourceMapper.mapEntityToDTO(entity);
+    return this.userResourceMapper.mapEntityToDto(entity);
   }
 
-  public async findMany(conditions: FindConditions<UserResource>): Promise<UserResourceDTO[]> {
+  public async findMany(conditions: FindConditions<UserResource>): Promise<UserResourceDto[]> {
     const queryBuilder = this.manager.getRepository(UserResource).createQueryBuilder('userResource');
 
     const entities = await queryBuilder
@@ -41,24 +41,24 @@ export class UserResourceRepository {
       .where(conditions)
       .getMany();
 
-    return entities.map((entity) => this.userResourceMapper.mapEntityToDTO(entity));
+    return entities.map((entity) => this.userResourceMapper.mapEntityToDto(entity));
   }
 
-  public async findOneById(id: string): Promise<UserResourceDTO | null> {
+  public async findOneById(id: string): Promise<UserResourceDto | null> {
     return this.findOne({ id });
   }
 
-  public async createOne(data: Partial<UserResource>): Promise<UserResourceDTO> {
+  public async createOne(data: Partial<UserResource>): Promise<UserResourceDto> {
     const userResource = this.manager.create(UserResource, {
       ...data,
     });
 
     const [savedUserResource] = await this.manager.save([userResource]);
 
-    return this.userResourceMapper.mapEntityToDTO(savedUserResource);
+    return this.userResourceMapper.mapEntityToDto(savedUserResource);
   }
 
-  public async updateOne(id: string, data: Partial<UserResource>): Promise<UserResourceDTO> {
+  public async updateOne(id: string, data: Partial<UserResource>): Promise<UserResourceDto> {
     const userResource = await this.findOneById(id);
 
     if (!userResource) {
@@ -67,7 +67,7 @@ export class UserResourceRepository {
 
     await this.manager.update(UserResource, { id }, data);
 
-    return this.findOneById(id) as Promise<UserResourceDTO>;
+    return this.findOneById(id) as Promise<UserResourceDto>;
   }
 
   public async removeOne(id: string): Promise<void> {

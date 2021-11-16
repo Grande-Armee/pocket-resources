@@ -3,7 +3,7 @@ import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
 import { RepositoryFactory } from '@shared/postgres/interfaces';
 
-import { ResourceDTO } from '../../dtos/resourceDTO';
+import { ResourceDto } from '../../dtos/resourceDto';
 import { Resource } from '../../entities/resource';
 import { ResourceMapper } from '../../mappers/resource/resourceMapper';
 
@@ -11,39 +11,39 @@ import { ResourceMapper } from '../../mappers/resource/resourceMapper';
 export class ResourceRepository {
   public constructor(private readonly manager: EntityManager, private readonly resourceMapper: ResourceMapper) {}
 
-  public async findOne(conditions: FindConditions<Resource>): Promise<ResourceDTO | null> {
+  public async findOne(conditions: FindConditions<Resource>): Promise<ResourceDto | null> {
     const resource = await this.manager.findOne(Resource, conditions);
 
     if (!resource) {
       return null;
     }
 
-    return this.resourceMapper.mapEntityToDTO(resource);
+    return this.resourceMapper.mapEntityToDto(resource);
   }
 
-  public async findMany(conditions: FindConditions<Resource>): Promise<ResourceDTO[]> {
+  public async findMany(conditions: FindConditions<Resource>): Promise<ResourceDto[]> {
     const resources = await this.manager.find(Resource, conditions);
 
-    return resources.map((resource) => this.resourceMapper.mapEntityToDTO(resource));
+    return resources.map((resource) => this.resourceMapper.mapEntityToDto(resource));
   }
 
-  public async createOne(resourceData: Partial<Resource>): Promise<ResourceDTO> {
+  public async createOne(resourceData: Partial<Resource>): Promise<ResourceDto> {
     const resource = this.manager.create(Resource, { ...resourceData });
 
     const [savedResource] = await this.manager.save([resource]);
 
-    return this.resourceMapper.mapEntityToDTO(savedResource);
+    return this.resourceMapper.mapEntityToDto(savedResource);
   }
 
-  public async findOneById(id: string): Promise<ResourceDTO | null> {
+  public async findOneById(id: string): Promise<ResourceDto | null> {
     return this.findOne({ id });
   }
 
-  public async findOneByUrl(url: string): Promise<ResourceDTO | null> {
+  public async findOneByUrl(url: string): Promise<ResourceDto | null> {
     return this.findOne({ url });
   }
 
-  public async updateOne(id: string, data: Partial<Resource>): Promise<ResourceDTO> {
+  public async updateOne(id: string, data: Partial<Resource>): Promise<ResourceDto> {
     const resource = await this.findOneById(id);
 
     if (!resource) {
@@ -52,7 +52,7 @@ export class ResourceRepository {
 
     await this.manager.update(Resource, { id }, data);
 
-    return this.findOneById(id) as Promise<ResourceDTO>;
+    return this.findOneById(id) as Promise<ResourceDto>;
   }
 
   public async removeOne(id: string): Promise<void> {

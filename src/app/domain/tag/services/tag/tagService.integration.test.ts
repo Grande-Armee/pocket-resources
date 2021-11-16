@@ -41,15 +41,15 @@ describe('TagService', () => {
 
         const { title, userId, color } = tagTestDataGenerator.generateEntityData();
 
-        const createdTagDTO = await tagService.createTag(unitOfWork, { title, color, userId });
+        const createdTagDto = await tagService.createTag(unitOfWork, { title, color, userId });
 
-        expect(createdTagDTO.title).toBe(title);
-        expect(createdTagDTO.color).toBe(color);
-        expect(createdTagDTO.userId).toBe(userId);
+        expect(createdTagDto.title).toBe(title);
+        expect(createdTagDto.color).toBe(color);
+        expect(createdTagDto.userId).toBe(userId);
 
-        const tagDTO = await tagRepository.findOne({ id: createdTagDTO.id });
+        const tagDto = await tagRepository.findOne({ id: createdTagDto.id });
 
-        expect(tagDTO).not.toBeNull();
+        expect(tagDto).not.toBeNull();
 
         const domainEvents = domainEventsDispatcher.getEvents();
 
@@ -70,11 +70,11 @@ describe('TagService', () => {
 
         const { title, userId, color } = tagTestDataGenerator.generateEntityData();
 
-        const tagDTO = await tagRepository.createOne({ title, color, userId });
+        const tagDto = await tagRepository.createOne({ title, color, userId });
 
-        const foundTagDTO = await tagService.findTag(unitOfWork, tagDTO.id);
+        const foundTagDto = await tagService.findTag(unitOfWork, tagDto.id);
 
-        expect(foundTagDTO).not.toBeNull();
+        expect(foundTagDto).not.toBeNull();
       });
     });
 
@@ -106,15 +106,15 @@ describe('TagService', () => {
         const { title, userId, color } = tagTestDataGenerator.generateEntityData();
         const { title: titleAfterUpdate } = tagTestDataGenerator.generateEntityData();
 
-        const tagDTOBeforeUpdate = await tagRepository.createOne({ title, color, userId });
+        const tagDtoBeforeUpdate = await tagRepository.createOne({ title, color, userId });
 
-        const tagDTOAfterUpdate = await tagService.updateTag(unitOfWork, tagDTOBeforeUpdate.id, {
+        const tagDtoAfterUpdate = await tagService.updateTag(unitOfWork, tagDtoBeforeUpdate.id, {
           title: titleAfterUpdate,
         });
 
-        expect(tagDTOAfterUpdate.title).toBe(titleAfterUpdate);
+        expect(tagDtoAfterUpdate.title).toBe(titleAfterUpdate);
 
-        const tagInDb = await tagRepository.findOne({ id: tagDTOBeforeUpdate.id });
+        const tagInDb = await tagRepository.findOne({ id: tagDtoBeforeUpdate.id });
 
         expect(tagInDb).not.toBeNull();
 
@@ -152,11 +152,11 @@ describe('TagService', () => {
 
         const { title, userId, color } = tagTestDataGenerator.generateEntityData();
 
-        const tagDTO = await tagRepository.createOne({ title, color, userId });
+        const tagDto = await tagRepository.createOne({ title, color, userId });
 
-        await tagService.removeTag(unitOfWork, tagDTO.id);
+        await tagService.removeTag(unitOfWork, tagDto.id);
 
-        const tagInDb = await tagRepository.findOne({ id: tagDTO.id });
+        const tagInDb = await tagRepository.findOne({ id: tagDto.id });
 
         expect(tagInDb).toBeNull();
 

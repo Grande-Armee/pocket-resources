@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
-import { UserResourceTagDTO } from '../../dtos/userResourceTagDTO';
+import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
 import { UserResourceTagRepositoryFactory } from '../../repositories/userResourceTag/userResourceTagRepository';
 import { CreateUserResourceTagData } from './interfaces';
 
@@ -10,7 +10,7 @@ import { CreateUserResourceTagData } from './interfaces';
 export class UserResourceTagService {
   public constructor(private readonly userResourceTagRepositoryFactory: UserResourceTagRepositoryFactory) {}
 
-  public async findUserResourceTag(unitOfWork: UnitOfWork, userResourceTagId: string): Promise<UserResourceTagDTO> {
+  public async findUserResourceTag(unitOfWork: UnitOfWork, userResourceTagId: string): Promise<UserResourceTagDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
@@ -26,7 +26,7 @@ export class UserResourceTagService {
   public async createUserResourceTag(
     unitOfWork: UnitOfWork,
     userResourceTagData: CreateUserResourceTagData,
-  ): Promise<UserResourceTagDTO> {
+  ): Promise<UserResourceTagDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 

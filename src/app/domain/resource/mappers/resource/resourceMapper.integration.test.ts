@@ -51,9 +51,9 @@ describe('ResourceMapper', () => {
 
         await entityManager.save([userResource]);
 
-        const resourceDTO = resourceMapper.mapEntityToDTO(savedResource);
+        const resourceDto = resourceMapper.mapEntityToDto(savedResource);
 
-        expect(resourceDTO).toEqual({
+        expect(resourceDto).toEqual({
           id: savedResource.id,
           createdAt: savedResource.createdAt,
           updatedAt: savedResource.updatedAt,
@@ -83,9 +83,9 @@ describe('ResourceMapper', () => {
 
         expect(updatedResource).toBeTruthy();
 
-        const resourceDTO = resourceMapper.mapEntityToDTO(updatedResource as Resource);
+        const resourceDto = resourceMapper.mapEntityToDto(updatedResource as Resource);
 
-        expect(resourceDTO).toEqual({
+        expect(resourceDto).toEqual({
           id: savedResource.id,
           createdAt: savedResource.createdAt,
           updatedAt: savedResource.updatedAt,

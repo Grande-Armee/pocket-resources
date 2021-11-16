@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
-import { UserResourceDTO } from '../../dtos/userResourceDTO';
+import { UserResourceDto } from '../../dtos/userResourceDto';
 import { UserResourceRepositoryFactory } from '../../repositories/userResource/userResourceRepository';
 import { CreateUserResourceData, UpdateUserResourceData } from './interfaces';
 
@@ -10,7 +10,7 @@ import { CreateUserResourceData, UpdateUserResourceData } from './interfaces';
 export class UserResourceService {
   public constructor(private readonly userResourceRepositoryFactory: UserResourceRepositoryFactory) {}
 
-  public async findUserResource(unitOfWork: UnitOfWork, userResourceId: string): Promise<UserResourceDTO> {
+  public async findUserResource(unitOfWork: UnitOfWork, userResourceId: string): Promise<UserResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
@@ -26,7 +26,7 @@ export class UserResourceService {
   public async createUserResource(
     unitOfWork: UnitOfWork,
     userResourceData: CreateUserResourceData,
-  ): Promise<UserResourceDTO> {
+  ): Promise<UserResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
@@ -39,7 +39,7 @@ export class UserResourceService {
     unitOfWork: UnitOfWork,
     userResourceId: string,
     userResourceData: UpdateUserResourceData,
-  ): Promise<UserResourceDTO> {
+  ): Promise<UserResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 

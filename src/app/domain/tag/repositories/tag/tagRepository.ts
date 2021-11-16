@@ -3,7 +3,7 @@ import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
 import { RepositoryFactory } from '@shared/postgres/interfaces';
 
-import { TagDTO } from '../../dtos/tagDTO';
+import { TagDto } from '../../dtos/tagDto';
 import { Tag } from '../../entities/tag';
 import { TagMapper } from '../../mappers/tag/tagMapper';
 
@@ -11,31 +11,31 @@ import { TagMapper } from '../../mappers/tag/tagMapper';
 export class TagRepository {
   public constructor(private readonly manager: EntityManager, private readonly tagMapper: TagMapper) {}
 
-  public async findOne(conditions: FindConditions<Tag>): Promise<TagDTO | null> {
+  public async findOne(conditions: FindConditions<Tag>): Promise<TagDto | null> {
     const tag = await this.manager.findOne(Tag, conditions);
 
     if (!tag) {
       return null;
     }
 
-    return this.tagMapper.mapEntityToDTO(tag);
+    return this.tagMapper.mapEntityToDto(tag);
   }
 
-  public async findMany(conditions: FindConditions<Tag>): Promise<TagDTO[]> {
+  public async findMany(conditions: FindConditions<Tag>): Promise<TagDto[]> {
     const tags = await this.manager.find(Tag, conditions);
 
-    return tags.map((tag) => this.tagMapper.mapEntityToDTO(tag));
+    return tags.map((tag) => this.tagMapper.mapEntityToDto(tag));
   }
 
-  public async createOne(data: Partial<Tag>): Promise<TagDTO> {
+  public async createOne(data: Partial<Tag>): Promise<TagDto> {
     const tag = this.manager.create(Tag, { ...data });
 
     const [savedTag] = await this.manager.save([tag]);
 
-    return this.tagMapper.mapEntityToDTO(savedTag);
+    return this.tagMapper.mapEntityToDto(savedTag);
   }
 
-  public async updateOne(id: string, data: Partial<Tag>): Promise<TagDTO> {
+  public async updateOne(id: string, data: Partial<Tag>): Promise<TagDto> {
     const tag = await this.findOne({ id });
 
     if (!tag) {
@@ -44,7 +44,7 @@ export class TagRepository {
 
     await this.manager.update(Tag, { id }, data);
 
-    return this.findOne({ id }) as Promise<TagDTO>;
+    return this.findOne({ id }) as Promise<TagDto>;
   }
 
   public async removeOne(id: string): Promise<void> {
