@@ -12,7 +12,13 @@ export class CollectionRepository {
   public constructor(private readonly manager: EntityManager, private readonly collectionMapper: CollectionMapper) {}
 
   public async findOne(conditions: FindConditions<Collection>): Promise<CollectionDto | null> {
-    const collection = await this.manager.findOne(Collection, conditions);
+    const queryBuilder = this.manager.getRepository(Collection).createQueryBuilder('collection');
+
+    const collection = await queryBuilder
+      .leftJoinAndSelect('collection.collectionResources', 'collectionResources')
+      .leftJoinAndSelect('collectionResources.resource', 'resource')
+      .where(conditions)
+      .getOne();
 
     if (!collection) {
       return null;
@@ -22,7 +28,13 @@ export class CollectionRepository {
   }
 
   public async findMany(conditions: FindConditions<Collection>): Promise<CollectionDto[]> {
-    const collections = await this.manager.find(Collection, conditions);
+    const queryBuilder = this.manager.getRepository(Collection).createQueryBuilder('collection');
+
+    const collections = await queryBuilder
+      .leftJoinAndSelect('collection.collectionResources', 'collectionResources')
+      .leftJoinAndSelect('collectionResources.resource', 'resource')
+      .where(conditions)
+      .getMany();
 
     return collections.map((collection) => this.collectionMapper.mapEntityToDto(collection));
   }

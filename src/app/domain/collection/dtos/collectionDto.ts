@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-// import { ResourceDto } from '@domain/resource/dtos/resourceDto';
+import { ResourceDto } from '@domain/resource/dtos/resourceDto';
 
 export class CollectionDto {
   @Expose()
@@ -24,6 +24,6 @@ export class CollectionDto {
   @Expose()
   public readonly userId: string;
 
-  // @Expose()
-  // public readonly resources: ResourceDto[] | null;
+  @Expose()
+  public readonly resources: ResourceDto[] | null;
 }
