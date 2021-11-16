@@ -5,7 +5,7 @@ import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Man
 import { Tag } from '@domain/tag/entities/tag';
 import { UserResource } from '@domain/userResource/entities/userResource';
 
-export const USER_RESOURCE_TAG_TABLE_NAME = 'userResourceTags';
+export const USER_RESOURCE_TAG_TABLE_NAME = 'usersResourcesTags';
 
 @Unique('UQ_userResourceId_tagId', ['userResourceId', 'tagId'])
 @Entity({
