@@ -36,7 +36,7 @@ describe('TagMapper', () => {
   });
 
   describe('Map tag', () => {
-    it('maps a tag with user-resource-tag relation from entity to dto', async () => {
+    it('maps a tag with userResourceTag relation from entity to dto', async () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {

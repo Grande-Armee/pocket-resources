@@ -31,8 +31,8 @@ describe('CollectionResourceMapper', () => {
     await testingModule.close();
   });
 
-  describe('Map collection-resource', () => {
-    it('maps a collection-resource from entity to dto', async () => {
+  describe('Map collectionResource', () => {
+    it('maps a collectionResource from entity to dto', async () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {

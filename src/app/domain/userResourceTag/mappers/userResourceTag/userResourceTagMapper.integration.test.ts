@@ -35,8 +35,8 @@ describe('UserResourceMapper', () => {
     await testingModule.close();
   });
 
-  describe('Map user-resource-tag', () => {
-    it('maps a user-resource-tag from entity to dto', async () => {
+  describe('Map userResourceTag', () => {
+    it('maps a userResourceTag from entity to dto', async () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {

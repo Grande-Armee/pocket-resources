@@ -66,26 +66,6 @@ describe('CollectionService', () => {
         expect(domainEvents.at(0) instanceof CollectionCreatedEvent).toBe(true);
       });
     });
-
-    it('should not create collection if collection with the same userId already exists', async () => {
-      expect.assertions(1);
-
-      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-
-        const collectionRepository = collectionRepositoryFactory.create(entityManager);
-
-        const { userId } = collectionTestDataGenerator.generateEntityData();
-
-        await collectionRepository.createOne({ userId });
-
-        try {
-          await collectionService.createCollection(unitOfWork, { userId });
-        } catch (error) {
-          expect(error).toBeTruthy();
-        }
-      });
-    });
   });
 
   describe('Find collection', () => {
@@ -128,10 +108,9 @@ describe('CollectionService', () => {
 
     it('should throw if collection with given id does not exist', async () => {
       expect.assertions(1);
-
-      const { id: nonExistingCollectionId } = collectionTestDataGenerator.generateEntityData();
-
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const { id: nonExistingCollectionId } = collectionTestDataGenerator.generateEntityData();
+
         try {
           await collectionService.findCollection(unitOfWork, nonExistingCollectionId);
         } catch (error) {

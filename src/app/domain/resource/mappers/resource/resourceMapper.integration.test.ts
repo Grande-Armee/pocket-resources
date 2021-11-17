@@ -31,7 +31,7 @@ describe('ResourceMapper', () => {
   });
 
   describe('Map resource', () => {
-    it('maps a resource with user-resource relation from entity to dto', async () => {
+    it('maps a resource with userResource relation from entity to dto', async () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
@@ -66,7 +66,7 @@ describe('ResourceMapper', () => {
     });
 
     it('maps a resource with optional fields from entity to dto', async () => {
-      expect.assertions(2);
+      expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -80,8 +80,6 @@ describe('ResourceMapper', () => {
         await entityManager.update(Resource, { id: savedResource.id }, { title, thumbnailUrl, content });
 
         const updatedResource = await entityManager.findOne(Resource, { id: savedResource.id });
-
-        expect(updatedResource).toBeTruthy();
 
         const resourceDto = resourceMapper.mapEntityToDto(updatedResource as Resource);
 

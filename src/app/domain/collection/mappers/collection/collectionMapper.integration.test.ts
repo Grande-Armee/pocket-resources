@@ -36,7 +36,7 @@ describe('CollectionMapper', () => {
 
   describe('Map collection', () => {
     it('maps a collection with optional fields from entity to dto', async () => {
-      expect.assertions(2);
+      expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -68,8 +68,6 @@ describe('CollectionMapper', () => {
           .leftJoinAndSelect('collectionResources.resource', 'resource')
           .where({ id: collection.id })
           .getOne();
-
-        expect(updatedCollection).toBeTruthy();
 
         const collectionDto = collectionMapper.mapEntityToDto(updatedCollection as Collection);
 

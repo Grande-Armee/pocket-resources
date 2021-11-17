@@ -2,7 +2,6 @@ import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate } from 'class-validator';
 import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique, ManyToOne } from 'typeorm';
 
-// import { Collection } from '@domain/collection/entities/collection';
 import { Resource } from '@domain/resource/entities/resource';
 
 import { Collection } from '../../collection/entities/collection';
@@ -42,7 +41,7 @@ export class CollectionResource {
   public resourceId: string;
 
   @Expose()
-  @ManyToOne(() => Collection, (collection) => collection.id)
+  @ManyToOne(() => Collection, (collection) => collection.collectionResources)
   public collection?: Collection;
 
   @IsUUID('4')

@@ -1,12 +1,11 @@
 import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique, OneToMany } from 'typeorm';
+import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm';
 
 import { CollectionResource } from '@domain/collectionResource/entities/collectionResource';
 
 export const COLLECTION_TABLE_NAME = 'collections';
 
-@Unique('UQ_userId', ['userId'])
 @Entity({
   name: COLLECTION_TABLE_NAME,
 })
