@@ -1,20 +1,20 @@
 import { EntityTestDataGenerator, NonNullableEntity } from '@grande-armee/pocket-common';
 import { internet, lorem, datatype, date } from 'faker';
 
-import { Resource } from '../entities/resource';
+import { Collection } from '../entities/collection';
 
-type ResourceTestData = NonNullableEntity<Omit<Resource, 'userResources' | 'collectionResources'>>;
+type CollectionTestData = NonNullableEntity<Omit<Collection, 'collectionResources'>>;
 
-export class ResourceTestDataGenerator implements EntityTestDataGenerator<ResourceTestData> {
-  public generateEntityData(): ResourceTestData {
+export class CollectionTestDataGenerator implements EntityTestDataGenerator<CollectionTestData> {
+  public generateEntityData(): CollectionTestData {
     return {
       id: this.generateId(),
       createdAt: this.generateCreatedAt(),
       updatedAt: this.generateUpdatedAt(),
-      url: this.generateUrl(),
       title: this.generateTitle(),
       content: this.generateContent(),
       thumbnailUrl: this.generateThumbnailUrl(),
+      userId: this.generateId(),
     };
   }
 
@@ -38,11 +38,11 @@ export class ResourceTestDataGenerator implements EntityTestDataGenerator<Resour
     return lorem.text(30);
   }
 
-  public generateUrl(): string {
+  public generateThumbnailUrl(): string {
     return internet.url();
   }
 
-  public generateThumbnailUrl(): string {
-    return internet.url();
+  public generateUserId(): string {
+    return datatype.uuid();
   }
 }

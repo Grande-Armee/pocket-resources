@@ -41,8 +41,8 @@ describe('UserResourceMapper', () => {
     await testingModule.close();
   });
 
-  describe('Map user-resource', () => {
-    it('maps a user-resource with resource and user-resource-tag relation from entity to dto', async () => {
+  describe('Map userResource', () => {
+    it('maps a userResource with resource and userResourceTag relation from entity to dto', async () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
@@ -105,7 +105,7 @@ describe('UserResourceMapper', () => {
       });
     });
 
-    it('maps a resource without user-resource-tag relation from entity to dto', async () => {
+    it('maps a resource without userResourceTag relation from entity to dto', async () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {

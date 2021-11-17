@@ -3,14 +3,13 @@ import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
 import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm';
 
 import { CollectionResource } from '@domain/collectionResource/entities/collectionResource';
-import { UserResource } from '@domain/userResource/entities/userResource';
 
-export const RESOURCE_TABLE_NAME = 'resources';
+export const COLLECTION_TABLE_NAME = 'collections';
 
 @Entity({
-  name: RESOURCE_TABLE_NAME,
+  name: COLLECTION_TABLE_NAME,
 })
-export class Resource {
+export class Collection {
   @IsUUID('4')
   @IsOptional()
   @Expose()
@@ -31,11 +30,6 @@ export class Resource {
 
   @IsString()
   @Expose()
-  @Column({ type: 'text', unique: true })
-  public url: string;
-
-  @IsString()
-  @Expose()
   @Column({ type: 'text', nullable: true })
   public title: string | null;
 
@@ -50,11 +44,12 @@ export class Resource {
   @Column({ type: 'text', nullable: true })
   public content: string | null;
 
+  @IsUUID('4')
   @Expose()
-  @OneToMany(() => UserResource, (userResource) => userResource.resource)
-  public userResources?: UserResource[];
+  @Column({ type: 'uuid' })
+  public userId: string;
 
   @Expose()
-  @OneToMany(() => CollectionResource, (collectionResource) => collectionResource.resource)
+  @OneToMany(() => CollectionResource, (collectionResource) => collectionResource.collection)
   public collectionResources?: CollectionResource[];
 }
