@@ -1,5 +1,9 @@
 import { TestingModule } from '@nestjs/testing';
 
+import { CollectionResource } from '@domain/collectionResource/entities/collectionResource';
+import { Resource } from '@domain/resource/entities/resource';
+import { ResourceMapper } from '@domain/resource/mappers/resource/resourceMapper';
+import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
@@ -11,14 +15,18 @@ describe('CollectionMapper', () => {
   let testingModule: TestingModule;
   let postgresHelper: PostgresHelper;
   let collectionTestDataGenerator: CollectionTestDataGenerator;
+  let resourceTestDataGenerator: ResourceTestDataGenerator;
 
+  let resourceMapper: ResourceMapper;
   let collectionMapper: CollectionMapper;
 
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
     collectionTestDataGenerator = new CollectionTestDataGenerator();
+    resourceTestDataGenerator = new ResourceTestDataGenerator();
 
+    resourceMapper = testingModule.get(ResourceMapper);
     collectionMapper = testingModule.get(CollectionMapper);
   });
 
@@ -34,27 +42,46 @@ describe('CollectionMapper', () => {
         const entityManager = unitOfWork.getEntityManager();
 
         const { userId, title, thumbnailUrl, content } = collectionTestDataGenerator.generateEntityData();
+        const { url } = resourceTestDataGenerator.generateEntityData();
 
         const collection = entityManager.create(Collection, { userId });
 
-        const [savedCollection] = await entityManager.save([collection]);
+        await entityManager.save([collection]);
 
-        await entityManager.update(Collection, { id: savedCollection.id }, { title, thumbnailUrl, content });
+        const resource = entityManager.create(Resource, { url });
 
-        const updatedCollection = await entityManager.findOne(Collection, { id: savedCollection.id });
+        await entityManager.save([resource]);
+
+        const collectionResource = entityManager.create(CollectionResource, {
+          collectionId: collection.id,
+          resourceId: resource.id,
+        });
+
+        await entityManager.save([collectionResource]);
+
+        await entityManager.update(Collection, { id: collection.id }, { title, thumbnailUrl, content });
+
+        const queryBuilder = entityManager.getRepository(Collection).createQueryBuilder('collection');
+
+        const updatedCollection = await queryBuilder
+          .leftJoinAndSelect('collection.collectionResources', 'collectionResources')
+          .leftJoinAndSelect('collectionResources.resource', 'resource')
+          .where({ id: collection.id })
+          .getOne();
 
         expect(updatedCollection).toBeTruthy();
 
         const collectionDto = collectionMapper.mapEntityToDto(updatedCollection as Collection);
 
         expect(collectionDto).toEqual({
-          id: savedCollection.id,
-          createdAt: savedCollection.createdAt,
-          updatedAt: savedCollection.updatedAt,
+          id: collection.id,
+          createdAt: collection.createdAt,
+          updatedAt: collection.updatedAt,
           title: title,
           thumbnailUrl: thumbnailUrl,
           content: content,
           userId: userId,
+          resources: [resourceMapper.mapEntityToDto(resource)],
         });
       });
     });

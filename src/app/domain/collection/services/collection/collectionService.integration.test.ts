@@ -1,5 +1,8 @@
 import { TestingModule } from '@nestjs/testing';
 
+import { CollectionResourceRepositoryFactory } from '@domain/collectionResource/repositories/collectionResource/collectionResourceRepository';
+import { ResourceRepositoryFactory } from '@domain/resource/repositories/resource/resourceRepository';
+import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
@@ -12,17 +15,25 @@ describe('CollectionService', () => {
   let testingModule: TestingModule;
   let postgresHelper: PostgresHelper;
   let collectionTestDataGenerator: CollectionTestDataGenerator;
+  let resourceTestDataGenerator: ResourceTestDataGenerator;
 
   let collectionService: CollectionService;
   let collectionRepositoryFactory: CollectionRepositoryFactory;
+
+  let resourceRepositoryFactory: ResourceRepositoryFactory;
+
+  let collectionResourceRepositoryFactory: CollectionResourceRepositoryFactory;
 
   beforeEach(async () => {
     testingModule = await TestModuleHelper.createTestingModule();
     postgresHelper = new PostgresHelper(testingModule);
     collectionTestDataGenerator = new CollectionTestDataGenerator();
+    resourceTestDataGenerator = new ResourceTestDataGenerator();
 
     collectionService = testingModule.get(CollectionService);
     collectionRepositoryFactory = testingModule.get(CollectionRepositoryFactory);
+    resourceRepositoryFactory = testingModule.get(ResourceRepositoryFactory);
+    collectionResourceRepositoryFactory = testingModule.get(CollectionResourceRepositoryFactory);
   });
 
   afterEach(async () => {
@@ -79,20 +90,39 @@ describe('CollectionService', () => {
 
   describe('Find collection', () => {
     it('should return collection if collection with given id exists', async () => {
-      expect.assertions(1);
+      expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
+        const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
 
         const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { url: url1 } = resourceTestDataGenerator.generateEntityData();
+        const { url: url2 } = resourceTestDataGenerator.generateEntityData();
 
-        const collectionDto = await collectionRepository.createOne({ userId });
+        const collection = await collectionRepository.createOne({ userId });
 
-        const foundCollectionDto = await collectionService.findCollection(unitOfWork, collectionDto.id);
+        const resource1 = await resourceRepository.createOne({ url: url1 });
+        const resource2 = await resourceRepository.createOne({ url: url2 });
 
-        expect(foundCollectionDto).not.toBeNull();
+        await collectionResourceRepository.createOne({
+          collectionId: collection.id,
+          resourceId: resource1.id,
+        });
+
+        await collectionResourceRepository.createOne({
+          collectionId: collection.id,
+          resourceId: resource2.id,
+        });
+
+        const foundCollectionDto = await collectionService.findCollection(unitOfWork, collection.id);
+
+        expect(foundCollectionDto.id).toBe(collection.id);
+        expect(foundCollectionDto.userId).toBe(userId);
+        expect(foundCollectionDto.resources).toEqual([resource1, resource2]);
       });
     });
 
