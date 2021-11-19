@@ -30,8 +30,8 @@ export class Collection {
 
   @IsString()
   @Expose()
-  @Column({ type: 'text', nullable: true })
-  public title: string | null;
+  @Column({ type: 'text' })
+  public title: string;
 
   @IsString()
   @IsUrl()

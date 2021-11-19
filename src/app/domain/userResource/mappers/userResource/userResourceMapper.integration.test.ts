@@ -10,6 +10,7 @@ import { UserResourceTag } from '@domain/userResourceTag/entities/userResourceTa
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
+import { UserResourceStatus } from '../../entities/types/userResourceStatus';
 import { UserResource } from '../../entities/userResource';
 import { UserResourceTestDataGenerator } from '../../testDataGenerators/userResourceTestDataGenerator';
 import { UserResourceMapper } from './userResourceMapper';
@@ -96,7 +97,7 @@ describe('UserResourceMapper', () => {
           updatedAt: userResource.updatedAt,
           isFavorite: false,
           rating: null,
-          status: 'TO_READ',
+          status: UserResourceStatus.toRead,
           resourceId: resource.id,
           userId: userResourceData.userId,
           resource: resourceMapper.mapEntityToDto(savedResource),
@@ -142,7 +143,7 @@ describe('UserResourceMapper', () => {
           updatedAt: userResource.updatedAt,
           isFavorite: false,
           rating: null,
-          status: 'TO_READ',
+          status: UserResourceStatus.toRead,
           resourceId: resource.id,
           userId: userResourceData.userId,
           resource: resourceMapper.mapEntityToDto(savedResource),

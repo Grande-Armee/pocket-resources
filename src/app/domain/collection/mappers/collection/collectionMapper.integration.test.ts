@@ -44,7 +44,7 @@ describe('CollectionMapper', () => {
         const { userId, title, thumbnailUrl, content } = collectionTestDataGenerator.generateEntityData();
         const { url } = resourceTestDataGenerator.generateEntityData();
 
-        const collection = entityManager.create(Collection, { userId });
+        const collection = entityManager.create(Collection, { userId, title });
 
         await entityManager.save([collection]);
 

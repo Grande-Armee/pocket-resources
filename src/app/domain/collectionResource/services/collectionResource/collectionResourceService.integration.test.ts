@@ -53,11 +53,11 @@ describe('CollectionResourceService', () => {
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
-        const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { userId, title } = collectionTestDataGenerator.generateEntityData();
 
         const resource = await resourceRepository.createOne({ url: resourceData.url });
 
-        const collection = await collectionRepository.createOne({ userId: userId });
+        const collection = await collectionRepository.createOne({ userId: userId, title });
 
         const collectionResource = await collectionResourceRepository.createOne({
           collectionId: collection.id,
@@ -101,11 +101,11 @@ describe('CollectionResourceService', () => {
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
-        const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { userId, title } = collectionTestDataGenerator.generateEntityData();
 
         const resource = await resourceRepository.createOne({ url: resourceData.url });
 
-        const collection = await collectionRepository.createOne({ userId: userId });
+        const collection = await collectionRepository.createOne({ userId, title });
 
         const createdCollectionResourceDto = await collectionResourceService.createCollectionResource(unitOfWork, {
           collectionId: collection.id,
@@ -131,11 +131,11 @@ describe('CollectionResourceService', () => {
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
-        const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { userId, title } = collectionTestDataGenerator.generateEntityData();
 
         const resource = await resourceRepository.createOne({ url: resourceData.url });
 
-        const collection = await collectionRepository.createOne({ userId: userId });
+        const collection = await collectionRepository.createOne({ userId, title });
 
         await collectionResourceRepository.createOne({
           collectionId: collection.id,
@@ -165,11 +165,11 @@ describe('CollectionResourceService', () => {
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
         const resourceData = resourceTestDataGenerator.generateEntityData();
-        const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { userId, title } = collectionTestDataGenerator.generateEntityData();
 
         const resource = await resourceRepository.createOne({ url: resourceData.url });
 
-        const collection = await collectionRepository.createOne({ userId: userId });
+        const collection = await collectionRepository.createOne({ userId, title });
 
         const collectionResource = await collectionResourceRepository.createOne({
           collectionId: collection.id,

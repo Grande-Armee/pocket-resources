@@ -1,9 +1,7 @@
-import { LoggerService } from '@grande-armee/pocket-common';
+import { DomainEventsDispatcherFactory, LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
-
-import { DomainEventsDispatcherFactory } from '@shared/domainEventsDispatcher/providers/domainEventsDispatcherFactory';
 
 import { UnitOfWork } from './unitOfWork';
 
@@ -17,8 +15,11 @@ export class UnitOfWorkFactory {
 
   public async create(): Promise<UnitOfWork> {
     const queryRunner = this.connection.createQueryRunner();
+
+    await queryRunner.connect();
+
     const domainEventsDispatcher = this.domainEventsDispatcherFactory.create();
 
-    return new UnitOfWork(this.logger, queryRunner, domainEventsDispatcher);
+    return new UnitOfWork(this.logger, domainEventsDispatcher, queryRunner);
   }
 }

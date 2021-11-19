@@ -42,7 +42,7 @@ describe('CollectionService', () => {
 
   describe('Create collection', () => {
     it('creates a collection in the database', async () => {
-      expect.assertions(4);
+      expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
@@ -50,11 +50,12 @@ describe('CollectionService', () => {
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
-        const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { userId, title } = collectionTestDataGenerator.generateEntityData();
 
-        const createdCollectionDto = await collectionService.createCollection(unitOfWork, { userId });
+        const createdCollectionDto = await collectionService.createCollection(unitOfWork, { userId, title });
 
         expect(createdCollectionDto.userId).toBe(userId);
+        expect(createdCollectionDto.title).toBe(title);
 
         const collectionDto = await collectionRepository.findOneById(createdCollectionDto.id);
 
@@ -79,11 +80,11 @@ describe('CollectionService', () => {
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
         const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
 
-        const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { userId, title } = collectionTestDataGenerator.generateEntityData();
         const { url: url1 } = resourceTestDataGenerator.generateEntityData();
         const { url: url2 } = resourceTestDataGenerator.generateEntityData();
 
-        const collection = await collectionRepository.createOne({ userId });
+        const collection = await collectionRepository.createOne({ userId, title });
 
         const resource1 = await resourceRepository.createOne({ url: url1 });
         const resource2 = await resourceRepository.createOne({ url: url2 });
@@ -132,7 +133,7 @@ describe('CollectionService', () => {
 
         const { title, userId } = collectionTestDataGenerator.generateEntityData();
 
-        const collectionDtoBeforeUpdate = await collectionRepository.createOne({ userId });
+        const collectionDtoBeforeUpdate = await collectionRepository.createOne({ userId, title });
 
         const collectionDtoAfterUpdate = await collectionService.updateCollection(
           unitOfWork,
@@ -180,9 +181,9 @@ describe('CollectionService', () => {
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
-        const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { userId, title } = collectionTestDataGenerator.generateEntityData();
 
-        const collectionDto = await collectionRepository.createOne({ userId });
+        const collectionDto = await collectionRepository.createOne({ userId, title });
 
         await collectionService.removeCollection(unitOfWork, collectionDto.id);
 

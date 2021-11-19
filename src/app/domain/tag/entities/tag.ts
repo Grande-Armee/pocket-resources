@@ -30,7 +30,7 @@ export class Tag {
 
   @IsString()
   @Expose()
-  @Column({ type: 'text' })
+  @Column({ type: 'varchar', length: 7 })
   public color: string;
 
   @IsString()
