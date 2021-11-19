@@ -1,4 +1,4 @@
-import { DomainEvent } from '@shared/domainEventsDispatcher/providers/domainEventsDispatcherFactory';
+import { DomainEvent } from '@grande-armee/pocket-common';
 
 export interface CollectionCreatedEventPayload {
   readonly id: string;

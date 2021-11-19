@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { entities } from './entities';
+import { migrations } from './migrations';
 import { PostgresConfig, postgresConfigProvider, POSTGRES_CONFIG } from './providers/postgresConfig';
 import { PostgresLogger } from './providers/postgresLogger/postgresLogger';
 
@@ -27,7 +28,8 @@ class PostgresConfigModule {}
           type: 'postgres',
           database: databaseName,
           applicationName: appName,
-          synchronize: true,
+          migrations,
+          migrationsRun: false,
         };
 
         if (isLoggingEnabled) {

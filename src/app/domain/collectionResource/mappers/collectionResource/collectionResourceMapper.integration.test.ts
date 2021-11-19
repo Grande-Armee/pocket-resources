@@ -39,14 +39,15 @@ describe('CollectionResourceMapper', () => {
         const entityManager = unitOfWork.getEntityManager();
 
         const { url } = resourceTestDataGenerator.generateEntityData();
-        const { userId } = collectionTestDataGenerator.generateEntityData();
+        const { userId, title } = collectionTestDataGenerator.generateEntityData();
 
         const resource = entityManager.create(Resource, { url });
 
         await entityManager.save([resource]);
 
         const collection = entityManager.create(Collection, {
-          userId: userId,
+          userId,
+          title,
         });
 
         await entityManager.save([collection]);
