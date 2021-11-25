@@ -1,7 +1,5 @@
 import { EnvVariables, ENV_VARIABLES } from '@grande-armee/pocket-common';
 import { Test, TestingModule, TestingModuleBuilder } from '@nestjs/testing';
-import { getConnectionToken } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
 
 import { AppModule } from '@src/app/appModule';
 
@@ -37,14 +35,6 @@ export class TestModuleHelper {
 
   public async init(): Promise<TestingModule> {
     return this.builder.compile();
-  }
-
-  public static async close(testingModule: TestingModule): Promise<void> {
-    const dbConnection: Connection = testingModule.get(getConnectionToken());
-
-    await dbConnection.close();
-
-    await testingModule.close();
   }
 
   public static async createTestingModule(): Promise<TestingModule> {

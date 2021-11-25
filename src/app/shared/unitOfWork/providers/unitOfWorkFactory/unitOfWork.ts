@@ -3,7 +3,7 @@ import { QueryRunner } from 'typeorm';
 
 import { TransactionalEntityManager, TransactionIsolationLevel } from './interfaces';
 
-export class UnitOfWork extends GenericUnitOfWork {
+export class PostgresUnitOfWork extends GenericUnitOfWork {
   public constructor(
     protected override readonly logger: LoggerService,
     protected override readonly domainEventsDispatcher: DomainEventsDispatcher,

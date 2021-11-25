@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { ResourceCreatedEvent, ResourceUpdatedEvent, ResourceRemovedEvent } from '../../domainEvents';
 import { ResourceDto } from '../../dtos/resourceDto';
@@ -11,7 +11,7 @@ import { CreateResourceData, UpdateResourceData } from './interfaces';
 export class ResourceService {
   public constructor(private readonly resourceRepositoryFactory: ResourceRepositoryFactory) {}
 
-  public async createResource(unitOfWork: UnitOfWork, resourceData: CreateResourceData): Promise<ResourceDto> {
+  public async createResource(unitOfWork: PostgresUnitOfWork, resourceData: CreateResourceData): Promise<ResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
@@ -33,7 +33,7 @@ export class ResourceService {
     return resource;
   }
 
-  public async findResource(unitOfWork: UnitOfWork, resourceId: string): Promise<ResourceDto> {
+  public async findResource(unitOfWork: PostgresUnitOfWork, resourceId: string): Promise<ResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
@@ -47,7 +47,7 @@ export class ResourceService {
   }
 
   public async updateResource(
-    unitOfWork: UnitOfWork,
+    unitOfWork: PostgresUnitOfWork,
     resourceId: string,
     resourceData: UpdateResourceData,
   ): Promise<ResourceDto> {
@@ -66,7 +66,7 @@ export class ResourceService {
     return resource;
   }
 
-  public async removeResource(unitOfWork: UnitOfWork, resourceId: string): Promise<void> {
+  public async removeResource(unitOfWork: PostgresUnitOfWork, resourceId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);

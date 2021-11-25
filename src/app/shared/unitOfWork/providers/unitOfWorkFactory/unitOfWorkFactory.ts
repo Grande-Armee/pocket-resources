@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
-import { UnitOfWork } from './unitOfWork';
+import { PostgresUnitOfWork } from './unitOfWork';
 
 @Injectable()
 export class UnitOfWorkFactory {
@@ -13,13 +13,13 @@ export class UnitOfWorkFactory {
     private readonly logger: LoggerService,
   ) {}
 
-  public async create(): Promise<UnitOfWork> {
+  public async create(): Promise<PostgresUnitOfWork> {
     const queryRunner = this.connection.createQueryRunner();
 
     await queryRunner.connect();
 
     const domainEventsDispatcher = this.domainEventsDispatcherFactory.create();
 
-    return new UnitOfWork(this.logger, domainEventsDispatcher, queryRunner);
+    return new PostgresUnitOfWork(this.logger, domainEventsDispatcher, queryRunner);
   }
 }

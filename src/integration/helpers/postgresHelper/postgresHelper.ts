@@ -1,12 +1,14 @@
 import { TransactionalCallback } from '@grande-armee/pocket-common';
 import { TestingModule } from '@nestjs/testing';
 
-import { UnitOfWork, UnitOfWorkFactory } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+import { PostgresUnitOfWork, UnitOfWorkFactory } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 export class PostgresHelper {
   public constructor(private readonly testingModule: TestingModule) {}
 
-  public async runInTestTransaction<Result>(callback: TransactionalCallback<Result, UnitOfWork>): Promise<void> {
+  public async runInTestTransaction<Result>(
+    callback: TransactionalCallback<Result, PostgresUnitOfWork>,
+  ): Promise<void> {
     const unitOfWorkFactory = this.testingModule.get(UnitOfWorkFactory);
     const unitOfWork = await unitOfWorkFactory.create();
 
