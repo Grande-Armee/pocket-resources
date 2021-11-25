@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { CollectionResourceDto } from '../../dtos/collectionResourceDto';
 import { CollectionResourceRepositoryFactory } from '../../repositories/collectionResource/collectionResourceRepository';
@@ -11,7 +11,7 @@ export class CollectionResourceService {
   public constructor(private readonly collectionResourceRepositoryFactory: CollectionResourceRepositoryFactory) {}
 
   public async findCollectionResource(
-    unitOfWork: UnitOfWork,
+    unitOfWork: PostgresUnitOfWork,
     collectionResourceId: string,
   ): Promise<CollectionResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
@@ -27,7 +27,7 @@ export class CollectionResourceService {
   }
 
   public async createCollectionResource(
-    unitOfWork: UnitOfWork,
+    unitOfWork: PostgresUnitOfWork,
     collectionResourceData: CreateCollectionResourceData,
   ): Promise<CollectionResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
@@ -38,7 +38,7 @@ export class CollectionResourceService {
     return collectionResource;
   }
 
-  public async removeCollectionResource(unitOfWork: UnitOfWork, collectionResourceId: string): Promise<void> {
+  public async removeCollectionResource(unitOfWork: PostgresUnitOfWork, collectionResourceId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 

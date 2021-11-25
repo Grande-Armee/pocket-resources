@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { CollectionCreatedEvent, CollectionUpdatedEvent, CollectionRemovedEvent } from '../../domainEvents';
 import { CollectionDto } from '../../dtos/collectionDto';
@@ -11,7 +11,10 @@ import { CreateCollectionData, UpdateCollectionData } from './interfaces';
 export class CollectionService {
   public constructor(private readonly collectionRepositoryFactory: CollectionRepositoryFactory) {}
 
-  public async createCollection(unitOfWork: UnitOfWork, collectionData: CreateCollectionData): Promise<CollectionDto> {
+  public async createCollection(
+    unitOfWork: PostgresUnitOfWork,
+    collectionData: CreateCollectionData,
+  ): Promise<CollectionDto> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
@@ -27,7 +30,7 @@ export class CollectionService {
     return collection;
   }
 
-  public async findCollection(unitOfWork: UnitOfWork, collectionId: string): Promise<CollectionDto> {
+  public async findCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<CollectionDto> {
     const entityManager = unitOfWork.getEntityManager();
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
@@ -41,7 +44,7 @@ export class CollectionService {
   }
 
   public async updateCollection(
-    unitOfWork: UnitOfWork,
+    unitOfWork: PostgresUnitOfWork,
     collectionId: string,
     collectionData: UpdateCollectionData,
   ): Promise<CollectionDto> {
@@ -60,7 +63,7 @@ export class CollectionService {
     return collection;
   }
 
-  public async removeCollection(unitOfWork: UnitOfWork, collectionId: string): Promise<void> {
+  public async removeCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);

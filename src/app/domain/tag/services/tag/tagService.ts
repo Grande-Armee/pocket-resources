@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../domainEvents';
 import { TagDto } from '../../dtos/tagDto';
@@ -11,7 +11,7 @@ import { CreateTagData, UpdateTagData } from './interfaces';
 export class TagService {
   public constructor(private readonly tagRepositoryFactory: TagRepositoryFactory) {}
 
-  public async createTag(unitOfWork: UnitOfWork, tagData: CreateTagData): Promise<TagDto> {
+  public async createTag(unitOfWork: PostgresUnitOfWork, tagData: CreateTagData): Promise<TagDto> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
@@ -27,7 +27,7 @@ export class TagService {
     return tag;
   }
 
-  public async findTag(unitOfWork: UnitOfWork, tagId: string): Promise<TagDto> {
+  public async findTag(unitOfWork: PostgresUnitOfWork, tagId: string): Promise<TagDto> {
     const entityManager = unitOfWork.getEntityManager();
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
@@ -40,7 +40,7 @@ export class TagService {
     return tag;
   }
 
-  public async updateTag(unitOfWork: UnitOfWork, tagId: string, tagData: UpdateTagData): Promise<TagDto> {
+  public async updateTag(unitOfWork: PostgresUnitOfWork, tagId: string, tagData: UpdateTagData): Promise<TagDto> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
@@ -56,7 +56,7 @@ export class TagService {
     return tag;
   }
 
-  public async removeTag(unitOfWork: UnitOfWork, tagId: string): Promise<void> {
+  public async removeTag(unitOfWork: PostgresUnitOfWork, tagId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
     const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
