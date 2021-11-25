@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceDto } from '../../dtos/userResourceDto';
 import { UserResourceRepositoryFactory } from '../../repositories/userResource/userResourceRepository';
@@ -10,7 +10,7 @@ import { CreateUserResourceData, UpdateUserResourceData } from './interfaces';
 export class UserResourceService {
   public constructor(private readonly userResourceRepositoryFactory: UserResourceRepositoryFactory) {}
 
-  public async findUserResource(unitOfWork: PostgresUnitOfWork, userResourceId: string): Promise<UserResourceDto> {
+  public async findUserResource(unitOfWork: UnitOfWork, userResourceId: string): Promise<UserResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
@@ -24,7 +24,7 @@ export class UserResourceService {
   }
 
   public async createUserResource(
-    unitOfWork: PostgresUnitOfWork,
+    unitOfWork: UnitOfWork,
     userResourceData: CreateUserResourceData,
   ): Promise<UserResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
@@ -36,7 +36,7 @@ export class UserResourceService {
   }
 
   public async updateUserResource(
-    unitOfWork: PostgresUnitOfWork,
+    unitOfWork: UnitOfWork,
     userResourceId: string,
     userResourceData: UpdateUserResourceData,
   ): Promise<UserResourceDto> {
@@ -48,7 +48,7 @@ export class UserResourceService {
     return userResource;
   }
 
-  public async removeUserResource(unitOfWork: PostgresUnitOfWork, userResourceId: string): Promise<void> {
+  public async removeUserResource(unitOfWork: UnitOfWork, userResourceId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 

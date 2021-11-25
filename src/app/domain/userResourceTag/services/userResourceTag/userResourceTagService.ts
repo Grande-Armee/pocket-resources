@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
+import { UnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
 import { UserResourceTagRepositoryFactory } from '../../repositories/userResourceTag/userResourceTagRepository';
@@ -10,10 +10,7 @@ import { CreateUserResourceTagData } from './interfaces';
 export class UserResourceTagService {
   public constructor(private readonly userResourceTagRepositoryFactory: UserResourceTagRepositoryFactory) {}
 
-  public async findUserResourceTag(
-    unitOfWork: PostgresUnitOfWork,
-    userResourceTagId: string,
-  ): Promise<UserResourceTagDto> {
+  public async findUserResourceTag(unitOfWork: UnitOfWork, userResourceTagId: string): Promise<UserResourceTagDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
@@ -27,7 +24,7 @@ export class UserResourceTagService {
   }
 
   public async createUserResourceTag(
-    unitOfWork: PostgresUnitOfWork,
+    unitOfWork: UnitOfWork,
     userResourceTagData: CreateUserResourceTagData,
   ): Promise<UserResourceTagDto> {
     const entityManager = unitOfWork.getEntityManager();
@@ -38,7 +35,7 @@ export class UserResourceTagService {
     return userResourceTag;
   }
 
-  public async removeUserResourceTag(unitOfWork: PostgresUnitOfWork, userResourceTagId: string): Promise<void> {
+  public async removeUserResourceTag(unitOfWork: UnitOfWork, userResourceTagId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
