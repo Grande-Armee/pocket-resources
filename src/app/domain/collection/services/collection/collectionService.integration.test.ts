@@ -45,8 +45,7 @@ describe('CollectionService', () => {
       expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
@@ -74,7 +73,7 @@ describe('CollectionService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
@@ -126,8 +125,7 @@ describe('CollectionService', () => {
       expect.assertions(4);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
@@ -176,8 +174,7 @@ describe('CollectionService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 

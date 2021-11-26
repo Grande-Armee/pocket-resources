@@ -34,8 +34,7 @@ describe('ResourceService', () => {
       expect.assertions(4);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -60,7 +59,7 @@ describe('ResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -82,7 +81,7 @@ describe('ResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -116,8 +115,7 @@ describe('ResourceService', () => {
       expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -163,8 +161,7 @@ describe('ResourceService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 

@@ -15,8 +15,7 @@ export class CollectionService {
     unitOfWork: PostgresUnitOfWork,
     collectionData: CreateCollectionData,
   ): Promise<CollectionDto> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.createOne(collectionData);
@@ -35,7 +34,7 @@ export class CollectionService {
   }
 
   public async findCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<CollectionDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.findOneById(collectionId);
@@ -52,8 +51,7 @@ export class CollectionService {
     collectionId: string,
     collectionData: UpdateCollectionData,
   ): Promise<CollectionDto> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.updateOne(collectionId, { ...collectionData });
@@ -72,8 +70,7 @@ export class CollectionService {
   }
 
   public async removeCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<void> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     await collectionRepository.removeOne(collectionId);
