@@ -10,22 +10,6 @@ import { CreateUserResourceTagData } from './interfaces';
 export class UserResourceTagService {
   public constructor(private readonly userResourceTagRepositoryFactory: UserResourceTagRepositoryFactory) {}
 
-  public async findUserResourceTag(
-    unitOfWork: PostgresUnitOfWork,
-    userResourceTagId: string,
-  ): Promise<UserResourceTagDto> {
-    const entityManager = unitOfWork.getEntityManager();
-    const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
-
-    const userResourceTag = await userResourceTagRepository.findOneById(userResourceTagId);
-
-    if (!userResourceTag) {
-      throw new Error('User resource tag not found.');
-    }
-
-    return userResourceTag;
-  }
-
   public async createUserResourceTag(
     unitOfWork: PostgresUnitOfWork,
     userResourceTagData: CreateUserResourceTagData,

@@ -1,4 +1,5 @@
 export interface CreateUserResourceTagData {
-  readonly userResourceId: string;
+  readonly userId: string;
+  readonly resourceId: string;
   readonly tagId: string;
 }
