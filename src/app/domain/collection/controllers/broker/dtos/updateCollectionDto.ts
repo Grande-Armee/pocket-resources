@@ -6,6 +6,10 @@ import { CollectionDto } from './collectionDto';
 export class UpdateCollectionPayloadDto {
   @IsUUID('4')
   @Expose()
+  public userId: string;
+
+  @IsUUID('4')
+  @Expose()
   public collectionId: string;
 
   @IsOptional()
