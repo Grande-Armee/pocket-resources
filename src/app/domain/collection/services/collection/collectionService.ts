@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
-import { CollectionCreatedEvent, CollectionUpdatedEvent, CollectionRemovedEvent } from '../../domainEvents';
 import { CollectionDto } from '../../dtos/collectionDto';
+import { CollectionCreatedEvent, CollectionUpdatedEvent, CollectionRemovedEvent } from '../../integrationEvents';
 import { CollectionRepositoryFactory } from '../../repositories/collection/collectionRepository';
 import { CreateCollectionData, UpdateCollectionData } from './interfaces';
 
@@ -16,15 +16,19 @@ export class CollectionService {
     collectionData: CreateCollectionData,
   ): Promise<CollectionDto> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.createOne(collectionData);
 
-    domainEventsDispatcher.addEvent(
-      new CollectionCreatedEvent({
-        id: collection.id,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new CollectionCreatedEvent(
+        {
+          id: collection.id,
+        },
+        'id',
+        new Date(),
+      ),
     );
 
     return collection;
@@ -49,15 +53,19 @@ export class CollectionService {
     collectionData: UpdateCollectionData,
   ): Promise<CollectionDto> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.updateOne(collectionId, { ...collectionData });
 
-    domainEventsDispatcher.addEvent(
-      new CollectionUpdatedEvent({
-        id: collection.id,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new CollectionUpdatedEvent(
+        {
+          id: collection.id,
+        },
+        'id',
+        new Date(),
+      ),
     );
 
     return collection;
@@ -65,15 +73,19 @@ export class CollectionService {
 
   public async removeCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     await collectionRepository.removeOne(collectionId);
 
-    domainEventsDispatcher.addEvent(
-      new CollectionRemovedEvent({
-        id: collectionId,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new CollectionRemovedEvent(
+        {
+          id: collectionId,
+        },
+        'id',
+        new Date(),
+      ),
     );
   }
 }

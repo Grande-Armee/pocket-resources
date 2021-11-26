@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
-import { ResourceCreatedEvent, ResourceUpdatedEvent, ResourceRemovedEvent } from '../../domainEvents';
 import { ResourceDto } from '../../dtos/resourceDto';
+import { ResourceCreatedEvent, ResourceUpdatedEvent, ResourceRemovedEvent } from '../../integrationEvents';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { CreateResourceData, UpdateResourceData } from './interfaces';
 
@@ -13,7 +13,7 @@ export class ResourceService {
 
   public async createResource(unitOfWork: PostgresUnitOfWork, resourceData: CreateResourceData): Promise<ResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     const existingResource = await resourceRepository.findOneByUrl(resourceData.url);
@@ -24,10 +24,14 @@ export class ResourceService {
 
     const resource = await resourceRepository.createOne(resourceData);
 
-    domainEventsDispatcher.addEvent(
-      new ResourceCreatedEvent({
-        id: resource.id,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new ResourceCreatedEvent(
+        {
+          id: resource.id,
+        },
+        'id',
+        new Date(),
+      ),
     );
 
     return resource;
@@ -52,15 +56,19 @@ export class ResourceService {
     resourceData: UpdateResourceData,
   ): Promise<ResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     const resource = await resourceRepository.updateOne(resourceId, { ...resourceData });
 
-    domainEventsDispatcher.addEvent(
-      new ResourceUpdatedEvent({
-        id: resource.id,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new ResourceUpdatedEvent(
+        {
+          id: resource.id,
+        },
+        'id',
+        new Date(),
+      ),
     );
 
     return resource;
@@ -68,15 +76,19 @@ export class ResourceService {
 
   public async removeResource(unitOfWork: PostgresUnitOfWork, resourceId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     await resourceRepository.removeOne(resourceId);
 
-    domainEventsDispatcher.addEvent(
-      new ResourceRemovedEvent({
-        id: resourceId,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new ResourceRemovedEvent(
+        {
+          id: resourceId,
+        },
+        'id',
+        new Date(),
+      ),
     );
   }
 }
