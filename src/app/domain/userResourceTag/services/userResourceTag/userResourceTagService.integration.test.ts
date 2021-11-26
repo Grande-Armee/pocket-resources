@@ -50,6 +50,7 @@ describe('UserResourceTagService', () => {
   });
 
   describe('Create user resource tag', () => {
+    // TODO: restore create user resource tag success test
     it('should not create user resource tag if userResourceTag with same userResourceId and tagId exists', async () => {
       expect.assertions(1);
 
