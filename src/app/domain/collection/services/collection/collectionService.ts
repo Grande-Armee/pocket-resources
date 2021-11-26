@@ -38,7 +38,7 @@ export class CollectionService {
     const entityManager = unitOfWork.getEntityManager();
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
-    const collection = await collectionRepository.findOneById(collectionId);
+    const collection = await collectionRepository.findOne({ id: collectionId });
 
     if (!collection) {
       throw new Error(`Collection with id ${collectionId} not found.`);
