@@ -4,17 +4,20 @@ import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFacto
 
 import { UserResourceDto } from '../../dtos/userResourceDto';
 import { UserResourceRepositoryFactory } from '../../repositories/userResource/userResourceRepository';
-import { CreateUserResourceData, UpdateUserResourceData } from './interfaces';
+import { CreateUserResourceData, UpdateUserResourceData, FindUserResourceData } from './interfaces';
 
 @Injectable()
 export class UserResourceService {
   public constructor(private readonly userResourceRepositoryFactory: UserResourceRepositoryFactory) {}
 
-  public async findUserResource(unitOfWork: PostgresUnitOfWork, userResourceId: string): Promise<UserResourceDto> {
+  public async findUserResource(
+    unitOfWork: PostgresUnitOfWork,
+    findUserResourceData: FindUserResourceData,
+  ): Promise<UserResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
-    const userResource = await userResourceRepository.findOneById(userResourceId);
+    const userResource = await userResourceRepository.findOne({ ...findUserResourceData });
 
     if (!userResource) {
       throw new Error('User resource not found.');
@@ -37,21 +40,36 @@ export class UserResourceService {
 
   public async updateUserResource(
     unitOfWork: PostgresUnitOfWork,
-    userResourceId: string,
+    findUserResourceData: FindUserResourceData,
     userResourceData: UpdateUserResourceData,
   ): Promise<UserResourceDto> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
-    const userResource = await userResourceRepository.updateOne(userResourceId, { ...userResourceData });
+    const foundUserResource = await userResourceRepository.findOne({ ...findUserResourceData });
+
+    if (!foundUserResource) {
+      throw new Error('User resource not found.');
+    }
+
+    const userResource = await userResourceRepository.updateOne(foundUserResource.id, { ...userResourceData });
 
     return userResource;
   }
 
-  public async removeUserResource(unitOfWork: PostgresUnitOfWork, userResourceId: string): Promise<void> {
+  public async removeUserResource(
+    unitOfWork: PostgresUnitOfWork,
+    findUserResourceData: FindUserResourceData,
+  ): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
-    await userResourceRepository.removeOne(userResourceId);
+    const foundUserResource = await userResourceRepository.findOne({ ...findUserResourceData });
+
+    if (!foundUserResource) {
+      throw new Error('User resource not found.');
+    }
+
+    await userResourceRepository.removeOne(foundUserResource.id);
   }
 }
