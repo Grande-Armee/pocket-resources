@@ -6,7 +6,7 @@ import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/r
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
-import { CollectionCreatedEvent, CollectionRemovedEvent, CollectionUpdatedEvent } from '../../domainEvents';
+import { CollectionCreatedEvent, CollectionRemovedEvent, CollectionUpdatedEvent } from '../../integrationEvents';
 import { CollectionRepositoryFactory } from '../../repositories/collection/collectionRepository';
 import { CollectionTestDataGenerator } from '../../testDataGenerators/collectionTestDataGenerator';
 import { CollectionService } from './collectionService';
@@ -46,7 +46,7 @@ describe('CollectionService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
@@ -61,10 +61,10 @@ describe('CollectionService', () => {
 
         expect(collectionDto).not.toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof CollectionCreatedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof CollectionCreatedEvent).toBe(true);
       });
     });
   });
@@ -127,7 +127,7 @@ describe('CollectionService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
@@ -149,10 +149,10 @@ describe('CollectionService', () => {
 
         expect(collectionInDb).not.toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof CollectionUpdatedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof CollectionUpdatedEvent).toBe(true);
       });
     });
 
@@ -177,7 +177,7 @@ describe('CollectionService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
@@ -191,10 +191,10 @@ describe('CollectionService', () => {
 
         expect(collectionInDb).toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof CollectionRemovedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof CollectionRemovedEvent).toBe(true);
       });
     });
 

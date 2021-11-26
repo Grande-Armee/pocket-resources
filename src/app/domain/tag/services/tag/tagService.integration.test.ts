@@ -3,7 +3,7 @@ import { TestingModule } from '@nestjs/testing';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
-import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../domainEvents';
+import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../integrationEvents';
 import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
 import { TagTestDataGenerator } from '../../testDataGenerators/tagTestDataGenerator';
 import { TagService } from './tagService';
@@ -35,7 +35,7 @@ describe('TagService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
@@ -51,10 +51,10 @@ describe('TagService', () => {
 
         expect(tagDto).not.toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof TagCreatedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof TagCreatedEvent).toBe(true);
       });
     });
   });
@@ -99,7 +99,7 @@ describe('TagService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
@@ -118,10 +118,10 @@ describe('TagService', () => {
 
         expect(tagInDb).not.toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof TagUpdatedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof TagUpdatedEvent).toBe(true);
       });
     });
 
@@ -146,7 +146,7 @@ describe('TagService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
@@ -160,10 +160,10 @@ describe('TagService', () => {
 
         expect(tagInDb).toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof TagRemovedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof TagRemovedEvent).toBe(true);
       });
     });
 

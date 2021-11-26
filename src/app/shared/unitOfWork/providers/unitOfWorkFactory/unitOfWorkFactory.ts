@@ -1,4 +1,4 @@
-import { DomainEventsDispatcherFactory, LoggerService } from '@grande-armee/pocket-common';
+import { IntegrationEventsDispatcherFactory, LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
@@ -9,7 +9,7 @@ import { PostgresUnitOfWork } from './unitOfWork';
 export class UnitOfWorkFactory {
   public constructor(
     @InjectConnection() private connection: Connection,
-    private readonly domainEventsDispatcherFactory: DomainEventsDispatcherFactory,
+    private readonly integrationEventsDispatcherFactory: IntegrationEventsDispatcherFactory,
     private readonly logger: LoggerService,
   ) {}
 
@@ -18,8 +18,8 @@ export class UnitOfWorkFactory {
 
     await queryRunner.connect();
 
-    const domainEventsDispatcher = this.domainEventsDispatcherFactory.create();
+    const integrationEventsDispatcher = this.integrationEventsDispatcherFactory.create();
 
-    return new PostgresUnitOfWork(this.logger, domainEventsDispatcher, queryRunner);
+    return new PostgresUnitOfWork(this.logger, integrationEventsDispatcher, queryRunner);
   }
 }

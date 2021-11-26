@@ -3,7 +3,7 @@ import { TestingModule } from '@nestjs/testing';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
-import { ResourceCreatedEvent, ResourceRemovedEvent, ResourceUpdatedEvent } from '../../domainEvents';
+import { ResourceCreatedEvent, ResourceRemovedEvent, ResourceUpdatedEvent } from '../../integrationEvents';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { ResourceTestDataGenerator } from '../../testDataGenerators/resourceTestDataGenerator';
 import { ResourceService } from './resourceService';
@@ -35,7 +35,7 @@ describe('ResourceService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -49,10 +49,10 @@ describe('ResourceService', () => {
 
         expect(resourceDto).not.toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof ResourceCreatedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof ResourceCreatedEvent).toBe(true);
       });
     });
 
@@ -117,7 +117,7 @@ describe('ResourceService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -136,10 +136,10 @@ describe('ResourceService', () => {
 
         expect(resourceInDb).not.toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof ResourceUpdatedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof ResourceUpdatedEvent).toBe(true);
       });
     });
 
@@ -164,7 +164,7 @@ describe('ResourceService', () => {
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const entityManager = unitOfWork.getEntityManager();
-        const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -178,10 +178,10 @@ describe('ResourceService', () => {
 
         expect(resourceInDb).toBeNull();
 
-        const domainEvents = domainEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsDispatcher.getEvents();
 
-        expect(domainEvents).toHaveLength(1);
-        expect(domainEvents.at(0) instanceof ResourceRemovedEvent).toBe(true);
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof ResourceRemovedEvent).toBe(true);
       });
     });
 

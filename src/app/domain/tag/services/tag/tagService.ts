@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
-import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../domainEvents';
 import { TagDto } from '../../dtos/tagDto';
+import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../integrationEvents';
 import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
 import { CreateTagData, UpdateTagData } from './interfaces';
 
@@ -13,15 +13,19 @@ export class TagService {
 
   public async createTag(unitOfWork: PostgresUnitOfWork, tagData: CreateTagData): Promise<TagDto> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     const tag = await tagRepository.createOne(tagData);
 
-    domainEventsDispatcher.addEvent(
-      new TagCreatedEvent({
-        id: tag.id,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new TagCreatedEvent(
+        {
+          id: tag.id,
+        },
+        'id',
+        new Date(),
+      ),
     );
 
     return tag;
@@ -42,15 +46,19 @@ export class TagService {
 
   public async updateTag(unitOfWork: PostgresUnitOfWork, tagId: string, tagData: UpdateTagData): Promise<TagDto> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     const tag = await tagRepository.updateOne(tagId, { ...tagData });
 
-    domainEventsDispatcher.addEvent(
-      new TagUpdatedEvent({
-        id: tag.id,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new TagUpdatedEvent(
+        {
+          id: tag.id,
+        },
+        'id',
+        new Date(),
+      ),
     );
 
     return tag;
@@ -58,15 +66,19 @@ export class TagService {
 
   public async removeTag(unitOfWork: PostgresUnitOfWork, tagId: string): Promise<void> {
     const entityManager = unitOfWork.getEntityManager();
-    const domainEventsDispatcher = unitOfWork.getDomainEventsDispatcher();
+    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     await tagRepository.removeOne(tagId);
 
-    domainEventsDispatcher.addEvent(
-      new TagRemovedEvent({
-        id: tagId,
-      }),
+    integrationEventsDispatcher.addEvent(
+      new TagRemovedEvent(
+        {
+          id: tagId,
+        },
+        'id',
+        new Date(),
+      ),
     );
   }
 }

@@ -1,15 +1,15 @@
-import { DomainEventsDispatcher, LoggerService, GenericUnitOfWork } from '@grande-armee/pocket-common';
+import { IntegrationEventsDispatcher, LoggerService, UnitOfWork } from '@grande-armee/pocket-common';
 import { QueryRunner } from 'typeorm';
 
 import { TransactionalEntityManager, TransactionIsolationLevel } from './interfaces';
 
-export class PostgresUnitOfWork extends GenericUnitOfWork {
+export class PostgresUnitOfWork extends UnitOfWork {
   public constructor(
     protected override readonly logger: LoggerService,
-    protected override readonly domainEventsDispatcher: DomainEventsDispatcher,
+    protected override readonly integrationEventsDispatcher: IntegrationEventsDispatcher,
     protected readonly queryRunner: QueryRunner,
   ) {
-    super(logger, domainEventsDispatcher);
+    super(logger, integrationEventsDispatcher);
   }
 
   public async init(isolationLevel?: TransactionIsolationLevel): Promise<void> {
@@ -19,7 +19,7 @@ export class PostgresUnitOfWork extends GenericUnitOfWork {
   public async commit(): Promise<void> {
     await this.queryRunner.commitTransaction();
 
-    await this.domainEventsDispatcher.dispatch();
+    await this.integrationEventsDispatcher.dispatch();
   }
 
   public async rollback(): Promise<void> {
