@@ -176,7 +176,10 @@ describe('CollectionResourceService', () => {
           resourceId: resource.id,
         });
 
-        await collectionResourceService.removeCollectionResource(unitOfWork, collectionResource.id);
+        await collectionResourceService.removeCollectionResource(unitOfWork, {
+          collectionId: collection.id,
+          resourceId: resource.id,
+        });
 
         const collectionResourceInDb = await collectionResourceRepository.findOneById(collectionResource.id);
 
@@ -188,10 +191,14 @@ describe('CollectionResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { id: nonExistingCollectionResourceId } = collectionResourceTestDataGenerator.generateEntityData();
+        const { collectionId: nonExistingCollectionId, resourceId: nonExistingResourceId } =
+          collectionResourceTestDataGenerator.generateEntityData();
 
         try {
-          await collectionResourceService.removeCollectionResource(unitOfWork, nonExistingCollectionResourceId);
+          await collectionResourceService.removeCollectionResource(unitOfWork, {
+            collectionId: nonExistingCollectionId,
+            resourceId: nonExistingResourceId,
+          });
         } catch (error) {
           expect(error).toBeTruthy();
         }
