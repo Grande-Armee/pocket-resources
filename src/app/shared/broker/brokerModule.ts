@@ -5,6 +5,7 @@ import { CollectionTransporter } from './domain/collection/collectionTransporter
 import { CollectionResourceTransporter } from './domain/collectionResource/collectionResourceTransporter';
 import { ResourceTransporter } from './domain/resource/resourceTransporter';
 import { TagTransporter } from './domain/tag/tagTransporter';
+import { UserResourceTransporter } from './domain/userResource/userResourceTransporter';
 import { BrokerInterceptor } from './interceptors/brokerInterceptor';
 import { BrokerService } from './services/broker/brokerService';
 
@@ -28,6 +29,7 @@ import { BrokerService } from './services/broker/brokerService';
     TagTransporter,
     CollectionTransporter,
     CollectionResourceTransporter,
+    UserResourceTransporter,
   ],
   exports: [
     RabbitMQModule,
@@ -37,6 +39,7 @@ import { BrokerService } from './services/broker/brokerService';
     TagTransporter,
     CollectionTransporter,
     CollectionResourceTransporter,
+    UserResourceTransporter,
   ],
 })
 export class BrokerModule {}

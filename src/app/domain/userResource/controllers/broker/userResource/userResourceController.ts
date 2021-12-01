@@ -1,27 +1,44 @@
 import { DtoFactory } from '@grande-armee/pocket-common';
-import { Injectable } from '@nestjs/common';
 
+import { BrokerController } from '@shared/broker/decorators/brokerController';
+import { RpcRoute } from '@shared/broker/decorators/rpcRoute';
+import {
+  CreateUserResourcePayloadDto,
+  CreateUserResourceResponseDto,
+} from '@shared/broker/domain/userResource/requests/createUserResource';
+import {
+  FindUserResourcePayloadDto,
+  FindUserResourceResponseDto,
+} from '@shared/broker/domain/userResource/requests/findUserResource';
+import { RemoveUserResourcePayloadDto } from '@shared/broker/domain/userResource/requests/removeUserResource';
+import {
+  UpdateUserResourcePayloadDto,
+  UpdateUserResourceResponseDto,
+} from '@shared/broker/domain/userResource/requests/updateUserResource';
+import { UserResourceRoutingKey } from '@shared/broker/domain/userResource/userResourceRoutingKey';
+import { BrokerService } from '@shared/broker/services/broker/brokerService';
+import { BrokerMessage } from '@shared/broker/types';
 import { UnitOfWorkFactory } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
-import { UserResourceService } from '../../services/userResource/userResourceService';
-import { CreateUserResourcePayloadDto, CreateUserResourceResponseDto } from './dtos/createUserResourceDto';
-import { FindUserResourcePayloadDto, FindUserResourceResponseDto } from './dtos/findUserResourceDto';
-import { RemoveUserResourcePayloadDto } from './dtos/removeUserResourceDto';
-import { UpdateUserResourcePayloadDto, UpdateUserResourceResponseDto } from './dtos/updateUserResourceDto';
+import { UserResourceService } from '../../../services/userResource/userResourceService';
 
-@Injectable()
+@BrokerController()
 export class UserResourceBrokerController {
   public constructor(
     private readonly unitOfWorkFactory: UnitOfWorkFactory,
+    private readonly brokerService: BrokerService,
     private readonly dtoFactory: DtoFactory,
     private readonly userResourceService: UserResourceService,
   ) {}
 
-  public async createUserResource(payload: CreateUserResourcePayloadDto): Promise<CreateUserResourceResponseDto> {
+  @RpcRoute(UserResourceRoutingKey.createUserResource)
+  public async createUserResource(_: unknown, message: BrokerMessage): Promise<CreateUserResourceResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
+    const { data } = await this.brokerService.parseMessage(CreateUserResourcePayloadDto, message);
+
     const userResource = await unitOfWork.runInTransaction(async () => {
-      const { userId, resourceId } = payload;
+      const { userId, resourceId } = data.payload;
 
       const userResource = await this.userResourceService.createUserResource(unitOfWork, {
         userId,
@@ -47,11 +64,16 @@ export class UserResourceBrokerController {
     });
   }
 
-  public async findUserResource(payload: FindUserResourcePayloadDto): Promise<FindUserResourceResponseDto> {
+  @RpcRoute(UserResourceRoutingKey.findUserResource)
+  public async findUserResource(_: unknown, message: BrokerMessage): Promise<FindUserResourceResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
+    const { data } = await this.brokerService.parseMessage(FindUserResourcePayloadDto, message);
+
     const userResource = await unitOfWork.runInTransaction(async () => {
-      const userResource = await this.userResourceService.findUserResource(unitOfWork, { ...payload });
+      const { userId, resourceId } = data.payload;
+
+      const userResource = await this.userResourceService.findUserResource(unitOfWork, { userId, resourceId });
 
       return userResource;
     });
@@ -72,11 +94,14 @@ export class UserResourceBrokerController {
     });
   }
 
-  public async updateUserResource(payload: UpdateUserResourcePayloadDto): Promise<UpdateUserResourceResponseDto> {
+  @RpcRoute(UserResourceRoutingKey.updateUserResource)
+  public async updateUserResource(_: unknown, message: BrokerMessage): Promise<UpdateUserResourceResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
+    const { data } = await this.brokerService.parseMessage(UpdateUserResourcePayloadDto, message);
+
     const userResource = await unitOfWork.runInTransaction(async () => {
-      const { userId, resourceId, status, isFavorite, rating } = payload;
+      const { userId, resourceId, status, isFavorite, rating } = data.payload;
 
       const userResource = await this.userResourceService.updateUserResource(
         unitOfWork,
@@ -107,13 +132,16 @@ export class UserResourceBrokerController {
     });
   }
 
-  public async removeUserResource(payload: RemoveUserResourcePayloadDto): Promise<void> {
+  @RpcRoute(UserResourceRoutingKey.removeUserResource)
+  public async removeUserResource(_: unknown, message: BrokerMessage): Promise<void> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    await unitOfWork.runInTransaction(async () => {
-      const userResource = await this.userResourceService.removeUserResource(unitOfWork, { ...payload });
+    const { data } = await this.brokerService.parseMessage(RemoveUserResourcePayloadDto, message);
 
-      return userResource;
+    await unitOfWork.runInTransaction(async () => {
+      const { userId, resourceId } = data.payload;
+
+      await this.userResourceService.removeUserResource(unitOfWork, { userId, resourceId });
     });
   }
 }

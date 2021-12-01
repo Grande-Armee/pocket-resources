@@ -1,38 +1,37 @@
-import { Expose } from 'class-transformer';
+import { IsBoolean, IsDate, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
+import { UserResourceStatus } from '@domain/userResource/entities/types/userResourceStatus';
 import { ResourceDto } from '@shared/broker/domain/resource/requests/resourceDto';
 import { TagDto } from '@shared/broker/domain/tag/requests/tagDto';
 
-import { UserResourceStatus } from '../../../entities/types/userResourceStatus';
-
 export class UserResourceDto {
-  @Expose()
+  @IsUUID('4')
   public readonly id: string;
 
-  @Expose()
+  @IsDate()
   public readonly createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public readonly updatedAt: Date;
 
-  @Expose()
   public readonly status: UserResourceStatus;
 
-  @Expose()
+  @IsBoolean()
   public readonly isFavorite: boolean;
 
-  @Expose()
+  @IsNumber()
+  @IsOptional()
   public readonly rating: number | null;
 
-  @Expose()
+  @IsOptional()
   public readonly resource: ResourceDto | null;
 
-  @Expose()
+  @IsString()
   public readonly resourceId: string;
 
-  @Expose()
+  @IsString()
   public readonly userId: string;
 
-  @Expose()
+  @IsOptional()
   public readonly tags: TagDto[] | null;
 }
