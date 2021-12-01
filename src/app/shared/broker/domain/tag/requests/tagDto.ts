@@ -1,21 +1,21 @@
-import { Expose } from 'class-transformer';
+import { IsDate, IsString, IsUUID } from 'class-validator';
 
 export class TagDto {
-  @Expose()
+  @IsString()
   public readonly id: string;
 
-  @Expose()
+  @IsDate()
   public readonly createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public readonly updatedAt: Date;
 
-  @Expose()
+  @IsString()
   public readonly color: string;
 
-  @Expose()
+  @IsString()
   public readonly title: string;
 
-  @Expose()
+  @IsUUID('4')
   public readonly userId: string;
 }
