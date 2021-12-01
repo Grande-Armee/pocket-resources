@@ -54,7 +54,7 @@ describe('UserResourceTagService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const userResourceTagRepository = userResourceTagRepositoryFactory.create(entityManager);
         const tagRepository = tagRepositoryFactory.create(entityManager);
@@ -114,7 +114,7 @@ describe('UserResourceTagService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
@@ -157,7 +157,7 @@ describe('UserResourceTagService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
@@ -204,7 +204,7 @@ describe('UserResourceTagService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);

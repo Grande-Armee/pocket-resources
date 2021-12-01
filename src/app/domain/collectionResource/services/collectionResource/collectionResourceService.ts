@@ -14,7 +14,7 @@ export class CollectionResourceService {
     unitOfWork: PostgresUnitOfWork,
     collectionResourceId: string,
   ): Promise<CollectionResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 
     const collectionResource = await collectionResourceRepository.findOneById(collectionResourceId);
@@ -30,7 +30,7 @@ export class CollectionResourceService {
     unitOfWork: PostgresUnitOfWork,
     collectionResourceData: CreateCollectionResourceData,
   ): Promise<CollectionResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 
     const collectionResource = await collectionResourceRepository.createOne(collectionResourceData);
@@ -39,7 +39,7 @@ export class CollectionResourceService {
   }
 
   public async removeCollectionResource(unitOfWork: PostgresUnitOfWork, collectionResourceId: string): Promise<void> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 
     await collectionResourceRepository.removeOne(collectionResourceId);

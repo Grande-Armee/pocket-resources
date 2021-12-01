@@ -4,12 +4,16 @@ import { QueryRunner } from 'typeorm';
 import { TransactionalEntityManager, TransactionIsolationLevel } from './interfaces';
 
 export class PostgresUnitOfWork extends UnitOfWork {
+  public readonly entityManager: TransactionalEntityManager;
+
   public constructor(
     protected override readonly logger: LoggerService,
-    protected override readonly integrationEventsDispatcher: IntegrationEventsDispatcher,
+    public override readonly integrationEventsDispatcher: IntegrationEventsDispatcher,
     protected readonly queryRunner: QueryRunner,
   ) {
     super(logger, integrationEventsDispatcher);
+
+    this.entityManager = this.queryRunner.manager;
   }
 
   public async init(isolationLevel?: TransactionIsolationLevel): Promise<void> {
@@ -28,9 +32,5 @@ export class PostgresUnitOfWork extends UnitOfWork {
 
   public async cleanUp(): Promise<void> {
     await this.queryRunner.release();
-  }
-
-  public getEntityManager(): TransactionalEntityManager {
-    return this.queryRunner.manager;
   }
 }

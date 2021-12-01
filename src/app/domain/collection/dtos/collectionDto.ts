@@ -1,29 +1,36 @@
-import { Expose } from 'class-transformer';
+import { Type } from 'class-transformer';
+import { IsDate, IsString, IsUUID, ValidateNested } from 'class-validator';
 
 import { ResourceDto } from '@domain/resource/dtos/resourceDto';
+import { AllowNull } from '@shared/allowNull';
 
 export class CollectionDto {
-  @Expose()
+  @IsUUID('4')
   public readonly id: string;
 
-  @Expose()
+  @IsDate()
   public readonly createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public readonly updatedAt: Date;
 
-  @Expose()
+  @IsString()
+  @AllowNull()
   public readonly title: string | null;
 
-  @Expose()
+  @IsString()
+  @AllowNull()
   public readonly thumbnailUrl: string | null;
 
-  @Expose()
+  @IsString()
+  @AllowNull()
   public readonly content: string | null;
 
-  @Expose()
+  @IsUUID('4')
   public readonly userId: string;
 
-  @Expose()
+  @Type(() => ResourceDto)
+  @AllowNull()
+  @ValidateNested({ each: true })
   public readonly resources: ResourceDto[] | null;
 }

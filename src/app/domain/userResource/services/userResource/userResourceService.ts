@@ -11,7 +11,7 @@ export class UserResourceService {
   public constructor(private readonly userResourceRepositoryFactory: UserResourceRepositoryFactory) {}
 
   public async findUserResource(unitOfWork: PostgresUnitOfWork, userResourceId: string): Promise<UserResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const userResource = await userResourceRepository.findOneById(userResourceId);
@@ -27,7 +27,7 @@ export class UserResourceService {
     unitOfWork: PostgresUnitOfWork,
     userResourceData: CreateUserResourceData,
   ): Promise<UserResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const userResource = await userResourceRepository.createOne(userResourceData);
@@ -40,7 +40,7 @@ export class UserResourceService {
     userResourceId: string,
     userResourceData: UpdateUserResourceData,
   ): Promise<UserResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const userResource = await userResourceRepository.updateOne(userResourceId, { ...userResourceData });
@@ -49,7 +49,7 @@ export class UserResourceService {
   }
 
   public async removeUserResource(unitOfWork: PostgresUnitOfWork, userResourceId: string): Promise<void> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     await userResourceRepository.removeOne(userResourceId);

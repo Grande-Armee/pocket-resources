@@ -34,8 +34,7 @@ describe('TagService', () => {
       expect.assertions(6);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
@@ -64,7 +63,7 @@ describe('TagService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
@@ -98,8 +97,7 @@ describe('TagService', () => {
       expect.assertions(4);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 
@@ -145,8 +143,7 @@ describe('TagService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
-        const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+        const { entityManager, integrationEventsDispatcher } = unitOfWork;
 
         const tagRepository = tagRepositoryFactory.create(entityManager);
 

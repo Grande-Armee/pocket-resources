@@ -11,7 +11,7 @@ export class TagMapper implements Mapper<Tag, TagDto> {
   public mapEntityToDto(entity: Tag): TagDto {
     const { id, createdAt, updatedAt, color, title, userId } = entity;
 
-    return this.dtoFactory.createDtoInstance(TagDto, {
+    return this.dtoFactory.create(TagDto, {
       id,
       createdAt,
       updatedAt,

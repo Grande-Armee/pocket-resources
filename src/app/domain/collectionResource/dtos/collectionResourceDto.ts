@@ -1,18 +1,18 @@
-import { Expose } from 'class-transformer';
+import { IsUUID, IsDate } from 'class-validator';
 
 export class CollectionResourceDto {
-  @Expose()
+  @IsUUID('4')
   public readonly id: string;
 
-  @Expose()
+  @IsDate()
   public readonly createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public readonly updatedAt: Date;
 
-  @Expose()
+  @IsUUID('4')
   public readonly collectionId: string;
 
-  @Expose()
+  @IsUUID('4')
   public readonly resourceId: string;
 }

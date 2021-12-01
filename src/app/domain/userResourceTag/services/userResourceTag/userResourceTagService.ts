@@ -14,7 +14,7 @@ export class UserResourceTagService {
     unitOfWork: PostgresUnitOfWork,
     userResourceTagId: string,
   ): Promise<UserResourceTagDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
     const userResourceTag = await userResourceTagRepository.findOneById(userResourceTagId);
@@ -30,7 +30,7 @@ export class UserResourceTagService {
     unitOfWork: PostgresUnitOfWork,
     userResourceTagData: CreateUserResourceTagData,
   ): Promise<UserResourceTagDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
     const userResourceTag = await userResourceTagRepository.createOne(userResourceTagData);
@@ -39,7 +39,7 @@ export class UserResourceTagService {
   }
 
   public async removeUserResourceTag(unitOfWork: PostgresUnitOfWork, userResourceTagId: string): Promise<void> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
     await userResourceTagRepository.removeOne(userResourceTagId);
