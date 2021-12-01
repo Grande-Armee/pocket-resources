@@ -1,24 +1,29 @@
-import { Expose } from 'class-transformer';
+import { IsDate, IsString, IsUUID } from 'class-validator';
+
+import { AllowNull } from '@shared/allowNull';
 
 export class ResourceDto {
-  @Expose()
+  @IsUUID('4')
   public readonly id: string;
 
-  @Expose()
+  @IsDate()
   public readonly createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public readonly updatedAt: Date;
 
-  @Expose()
+  @IsString()
   public readonly url: string;
 
-  @Expose()
+  @IsString()
+  @AllowNull()
   public readonly title: string | null;
 
-  @Expose()
+  @IsString()
+  @AllowNull()
   public readonly thumbnailUrl: string | null;
 
-  @Expose()
+  @IsString()
+  @AllowNull()
   public readonly content: string | null;
 }

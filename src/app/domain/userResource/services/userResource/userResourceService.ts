@@ -14,7 +14,7 @@ export class UserResourceService {
     unitOfWork: PostgresUnitOfWork,
     findUserResourceData: FindUserResourceData,
   ): Promise<UserResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const userResource = await userResourceRepository.findOne({ ...findUserResourceData });
@@ -30,7 +30,7 @@ export class UserResourceService {
     unitOfWork: PostgresUnitOfWork,
     userResourceData: CreateUserResourceData,
   ): Promise<UserResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const userResource = await userResourceRepository.createOne(userResourceData);
@@ -43,7 +43,7 @@ export class UserResourceService {
     findUserResourceData: FindUserResourceData,
     userResourceData: UpdateUserResourceData,
   ): Promise<UserResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const foundUserResource = await userResourceRepository.findOne({ ...findUserResourceData });
@@ -61,7 +61,7 @@ export class UserResourceService {
     unitOfWork: PostgresUnitOfWork,
     findUserResourceData: FindUserResourceData,
   ): Promise<void> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const foundUserResource = await userResourceRepository.findOne({ ...findUserResourceData });

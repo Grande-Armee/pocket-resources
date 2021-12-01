@@ -39,7 +39,7 @@ describe('CollectionMapper', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const { userId, title, thumbnailUrl, content } = collectionTestDataGenerator.generateEntityData();
         const { url } = resourceTestDataGenerator.generateEntityData();

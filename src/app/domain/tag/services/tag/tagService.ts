@@ -12,8 +12,7 @@ export class TagService {
   public constructor(private readonly tagRepositoryFactory: TagRepositoryFactory) {}
 
   public async createTag(unitOfWork: PostgresUnitOfWork, tagData: CreateTagData): Promise<TagDto> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     const tag = await tagRepository.createOne(tagData);
@@ -32,7 +31,7 @@ export class TagService {
   }
 
   public async findTag(unitOfWork: PostgresUnitOfWork, tagId: string): Promise<TagDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     const tag = await tagRepository.findOne({ id: tagId });
@@ -45,8 +44,7 @@ export class TagService {
   }
 
   public async updateTag(unitOfWork: PostgresUnitOfWork, tagId: string, tagData: UpdateTagData): Promise<TagDto> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     const tag = await tagRepository.updateOne(tagId, { ...tagData });
@@ -65,8 +63,7 @@ export class TagService {
   }
 
   public async removeTag(unitOfWork: PostgresUnitOfWork, tagId: string): Promise<void> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     await tagRepository.removeOne(tagId);

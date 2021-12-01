@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { UnitOfWorkFactory } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { CollectionService } from '../../services/collection/collectionService';
-import { CreateCollectionPayloadDto, CreateCollectionResponseDto } from './dtos/createCollectionDto';
 import { FindCollectionPayloadDto, FindCollectionResponseDto } from './dtos/findCollectionDto';
 import { RemoveCollectionPayloadDto } from './dtos/removeCollectionDto';
 import { UpdateCollectionPayloadDto, UpdateCollectionResponseDto } from './dtos/updateCollectionDto';
@@ -16,34 +15,6 @@ export class CollectionBrokerController {
     private readonly dtoFactory: DtoFactory,
     private readonly collectionService: CollectionService,
   ) {}
-
-  public async createCollection(payload: CreateCollectionPayloadDto): Promise<CreateCollectionResponseDto> {
-    const unitOfWork = await this.unitOfWorkFactory.create();
-
-    const collection = await unitOfWork.runInTransaction(async () => {
-      const { title, userId } = payload;
-
-      const collection = await this.collectionService.createCollection(unitOfWork, {
-        title,
-        userId,
-      });
-
-      return collection;
-    });
-
-    return this.dtoFactory.createDtoInstance(CreateCollectionResponseDto, {
-      collection: {
-        id: collection.id,
-        createdAt: collection.createdAt,
-        updatedAt: collection.updatedAt,
-        title: collection.title,
-        thumbnailUrl: collection.thumbnailUrl,
-        content: collection.content,
-        userId: collection.userId,
-        resources: collection.resources,
-      },
-    });
-  }
 
   public async findCollection(payload: FindCollectionPayloadDto): Promise<FindCollectionResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();

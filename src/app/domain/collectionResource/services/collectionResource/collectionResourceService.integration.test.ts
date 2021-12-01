@@ -47,7 +47,7 @@ describe('CollectionResourceService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
         const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
@@ -95,7 +95,7 @@ describe('CollectionResourceService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
         const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
@@ -125,7 +125,7 @@ describe('CollectionResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
         const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
@@ -159,7 +159,7 @@ describe('CollectionResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
         const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
         const collectionRepository = collectionRepositoryFactory.create(entityManager);

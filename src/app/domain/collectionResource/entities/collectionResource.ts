@@ -1,4 +1,3 @@
-import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate } from 'class-validator';
 import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique, ManyToOne } from 'typeorm';
 
@@ -15,37 +14,30 @@ export const COLLECTION_RESOURCE_TABLE_NAME = 'collectionResources';
 export class CollectionResource {
   @IsUUID('4')
   @IsOptional()
-  @Expose()
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
   @IsDate()
   @IsOptional()
-  @Expose()
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
   @IsDate()
   @IsOptional()
-  @Expose()
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
-  @Expose()
   @ManyToOne(() => Resource, (resource) => resource.collectionResources)
   public resource?: Resource;
 
   @IsUUID('4')
-  @Expose()
   @Column({ type: 'uuid' })
   public resourceId: string;
 
-  @Expose()
   @ManyToOne(() => Collection, (collection) => collection.collectionResources)
   public collection?: Collection;
 
   @IsUUID('4')
-  @Expose()
   @Column({ type: 'uuid' })
   public collectionId: string;
 }

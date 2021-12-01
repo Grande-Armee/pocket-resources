@@ -40,7 +40,7 @@ describe('TagMapper', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const entityManager = unitOfWork.getEntityManager();
+        const { entityManager } = unitOfWork;
 
         const { url } = resourceTestDataGenerator.generateEntityData();
         const { userId } = userResourceTestDataGenerator.generateEntityData();

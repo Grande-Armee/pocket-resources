@@ -10,11 +10,27 @@ import { CreateUserResourceTagData } from './interfaces';
 export class UserResourceTagService {
   public constructor(private readonly userResourceTagRepositoryFactory: UserResourceTagRepositoryFactory) {}
 
+  public async findUserResourceTag(
+    unitOfWork: PostgresUnitOfWork,
+    userResourceTagId: string,
+  ): Promise<UserResourceTagDto> {
+    const { entityManager } = unitOfWork;
+    const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
+
+    const userResourceTag = await userResourceTagRepository.findOneById(userResourceTagId);
+
+    if (!userResourceTag) {
+      throw new Error('User resource tag not found.');
+    }
+
+    return userResourceTag;
+  }
+
   public async createUserResourceTag(
     unitOfWork: PostgresUnitOfWork,
     userResourceTagData: CreateUserResourceTagData,
   ): Promise<UserResourceTagDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
     const userResourceTag = await userResourceTagRepository.createOne(userResourceTagData);
@@ -23,7 +39,7 @@ export class UserResourceTagService {
   }
 
   public async removeUserResourceTag(unitOfWork: PostgresUnitOfWork, userResourceTagId: string): Promise<void> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
     await userResourceTagRepository.removeOne(userResourceTagId);

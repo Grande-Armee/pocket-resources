@@ -12,8 +12,7 @@ export class ResourceService {
   public constructor(private readonly resourceRepositoryFactory: ResourceRepositoryFactory) {}
 
   public async createResource(unitOfWork: PostgresUnitOfWork, resourceData: CreateResourceData): Promise<ResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     const existingResource = await resourceRepository.findOneByUrl(resourceData.url);
@@ -38,7 +37,7 @@ export class ResourceService {
   }
 
   public async findResource(unitOfWork: PostgresUnitOfWork, resourceId: string): Promise<ResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
+    const { entityManager } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     const resource = await resourceRepository.findOneById(resourceId);
@@ -55,8 +54,7 @@ export class ResourceService {
     resourceId: string,
     resourceData: UpdateResourceData,
   ): Promise<ResourceDto> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     const resource = await resourceRepository.updateOne(resourceId, { ...resourceData });
@@ -75,8 +73,7 @@ export class ResourceService {
   }
 
   public async removeResource(unitOfWork: PostgresUnitOfWork, resourceId: string): Promise<void> {
-    const entityManager = unitOfWork.getEntityManager();
-    const integrationEventsDispatcher = unitOfWork.getIntegrationEventsDispatcher();
+    const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     await resourceRepository.removeOne(resourceId);
