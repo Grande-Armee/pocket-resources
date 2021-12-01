@@ -1,7 +1,7 @@
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
 
-import { UserTransporter } from './domain/user/userTransporter';
+import { ResourceTransporter } from './domain/resource/resourceTransporter';
 import { BrokerInterceptor } from './interceptors/brokerInterceptor';
 import { BrokerService } from './services/broker/brokerService';
 
@@ -18,7 +18,7 @@ import { BrokerService } from './services/broker/brokerService';
       connectionInitOptions: { wait: false },
     }),
   ],
-  providers: [BrokerInterceptor, BrokerService, UserTransporter],
-  exports: [RabbitMQModule, BrokerInterceptor, BrokerService, UserTransporter],
+  providers: [BrokerInterceptor, BrokerService, ResourceTransporter],
+  exports: [RabbitMQModule, BrokerInterceptor, BrokerService, ResourceTransporter],
 })
 export class BrokerModule {}

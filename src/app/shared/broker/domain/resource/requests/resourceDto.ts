@@ -1,24 +1,27 @@
-import { Expose } from 'class-transformer';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class ResourceDto {
-  @Expose()
+  @IsString()
   public readonly id: string;
 
-  @Expose()
+  @IsDate()
   public readonly createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public readonly updatedAt: Date;
 
-  @Expose()
-  public readonly url: string | null;
+  @IsString()
+  public readonly url: string;
 
-  @Expose()
+  @IsString()
+  @IsOptional()
   public readonly title: string | null;
 
-  @Expose()
+  @IsString()
+  @IsOptional()
   public readonly thumbnailUrl: string | null;
 
-  @Expose()
+  @IsString()
+  @IsOptional()
   public readonly content: string | null;
 }

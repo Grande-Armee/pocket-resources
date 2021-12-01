@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 
-import { ResourceDto } from '@domain/resource/controllers/broker/dtos/resourceDto';
 import { TagDto } from '@domain/tag/controllers/broker/dtos/tagDto';
+import { ResourceDto } from '@shared/broker/domain/resource/requests/resourceDto';
 
 import { UserResourceStatus } from '../../../entities/types/userResourceStatus';
 

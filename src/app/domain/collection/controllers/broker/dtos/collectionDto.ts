@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-import { ResourceDto } from '@domain/resource/controllers/broker/dtos/resourceDto';
+import { ResourceDto } from '@shared/broker/domain/resource/requests/resourceDto';
 
 export class CollectionDto {
   @Expose()

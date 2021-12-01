@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { ResourceBrokerController } from './controllers/broker/resourceBrokerController';
+import { ResourceBrokerController } from './controllers/broker/resource/resourceController';
 import { ResourceMapper } from './mappers/resource/resourceMapper';
 import { ResourceRepositoryFactory } from './repositories/resource/resourceRepository';
 import { ResourceService } from './services/resource/resourceService';
