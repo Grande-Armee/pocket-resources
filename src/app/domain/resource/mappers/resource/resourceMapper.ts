@@ -11,7 +11,7 @@ export class ResourceMapper implements Mapper<Resource, ResourceDto> {
   public mapEntityToDto(entity: Resource): ResourceDto {
     const { id, createdAt, updatedAt, title, thumbnailUrl, url, content } = entity;
 
-    return this.dtoFactory.createDtoInstance(ResourceDto, {
+    return this.dtoFactory.create(ResourceDto, {
       id,
       createdAt,
       updatedAt,

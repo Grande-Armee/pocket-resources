@@ -11,7 +11,7 @@ export class CollectionResourceMapper implements Mapper<CollectionResource, Coll
   public mapEntityToDto(entity: CollectionResource): CollectionResourceDto {
     const { id, createdAt, updatedAt, collectionId, resourceId } = entity;
 
-    return this.dtoFactory.createDtoInstance(CollectionResourceDto, {
+    return this.dtoFactory.create(CollectionResourceDto, {
       id,
       createdAt,
       updatedAt,

@@ -1,4 +1,3 @@
-import { Expose } from 'class-transformer';
 import { IsUUID, IsOptional, IsDate, IsEnum, IsBoolean, IsInt } from 'class-validator';
 import {
   Entity,
@@ -25,24 +24,20 @@ export const USER_RESOURCE_TABLE_NAME = 'userResources';
 export class UserResource {
   @IsUUID('4')
   @IsOptional()
-  @Expose()
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
   @IsDate()
   @IsOptional()
-  @Expose()
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
   @IsDate()
   @IsOptional()
-  @Expose()
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
   @IsEnum(UserResourceStatus)
-  @Expose()
   @Column({
     type: 'enum',
     enum: UserResourceStatus,
@@ -51,7 +46,6 @@ export class UserResource {
   public status: UserResourceStatus;
 
   @IsBoolean()
-  @Expose()
   @Column({
     type: 'boolean',
     default: false,
@@ -59,28 +53,23 @@ export class UserResource {
   public isFavorite: boolean;
 
   @IsInt()
-  @Expose()
   @Column({
     type: 'int',
     nullable: true,
   })
   public rating: number | null;
 
-  @Expose()
   @ManyToOne(() => Resource, (resource) => resource.userResources)
   public resource?: Resource;
 
   @IsUUID('4')
-  @Expose()
   @Column({ type: 'uuid' })
   public resourceId: string;
 
-  @Expose()
   @OneToMany(() => UserResourceTag, (userResourceTag) => userResourceTag.userResource)
   public userResourceTags?: UserResourceTag[];
 
   @IsUUID('4')
-  @Expose()
   @Column({ type: 'uuid' })
   public userId: string;
 }

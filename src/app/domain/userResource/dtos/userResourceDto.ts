@@ -1,38 +1,45 @@
-import { Expose } from 'class-transformer';
+import { Type } from 'class-transformer';
+import { IsBoolean, IsDate, IsEnum, IsInt, IsUUID, ValidateNested } from 'class-validator';
 
 import { ResourceDto } from '@domain/resource/dtos/resourceDto';
 import { TagDto } from '@domain/tag/dtos/tagDto';
+import { AllowNull } from '@shared/allowNull';
 
 import { UserResourceStatus } from '../entities/types/userResourceStatus';
 
 export class UserResourceDto {
-  @Expose()
+  @IsUUID('4')
   public readonly id: string;
 
-  @Expose()
+  @IsDate()
   public readonly createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public readonly updatedAt: Date;
 
-  @Expose()
+  @IsEnum(UserResourceStatus)
   public readonly status: UserResourceStatus;
 
-  @Expose()
+  @IsBoolean()
   public readonly isFavorite: boolean;
 
-  @Expose()
+  @IsInt()
+  @AllowNull()
   public readonly rating: number | null;
 
-  @Expose()
+  @Type(() => ResourceDto)
+  @AllowNull()
+  @ValidateNested()
   public readonly resource: ResourceDto | null;
 
-  @Expose()
+  @IsUUID('4')
   public readonly resourceId: string;
 
-  @Expose()
+  @IsUUID('4')
   public readonly userId: string;
 
-  @Expose()
+  @Type(() => TagDto)
+  @AllowNull()
+  @ValidateNested({ each: true })
   public readonly tags: TagDto[] | null;
 }

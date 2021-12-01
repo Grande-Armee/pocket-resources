@@ -26,7 +26,7 @@ export class UserResourceMapper implements Mapper<UserResource, UserResourceDto>
       userResourceTags.map((userResourceTag) => this.tagMapper.mapEntityToDto(userResourceTag.tag as Tag)),
     );
 
-    return this.dtoFactory.createDtoInstance(UserResourceDto, {
+    return this.dtoFactory.create(UserResourceDto, {
       id,
       createdAt,
       updatedAt,

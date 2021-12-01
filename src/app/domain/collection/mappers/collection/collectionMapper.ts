@@ -20,7 +20,7 @@ export class CollectionMapper implements Mapper<Collection, CollectionDto> {
       ),
     );
 
-    return this.dtoFactory.createDtoInstance(CollectionDto, {
+    return this.dtoFactory.create(CollectionDto, {
       id,
       createdAt,
       updatedAt,
