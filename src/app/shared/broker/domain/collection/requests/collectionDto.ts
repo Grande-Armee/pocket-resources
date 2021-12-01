@@ -1,29 +1,32 @@
-import { Expose } from 'class-transformer';
+import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
 
 import { ResourceDto } from '@shared/broker/domain/resource/requests/resourceDto';
 
 export class CollectionDto {
-  @Expose()
+  @IsUUID('4')
   public id: string;
 
-  @Expose()
+  @IsDate()
   public createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public updatedAt: Date;
 
-  @Expose()
+  @IsString()
+  @IsOptional()
   public readonly title: string | null;
 
-  @Expose()
+  @IsString()
+  @IsOptional()
   public readonly thumbnailUrl: string | null;
 
-  @Expose()
+  @IsString()
+  @IsOptional()
   public readonly content: string | null;
 
-  @Expose()
+  @IsUUID('4')
   public readonly userId: string;
 
-  @Expose()
+  @IsOptional()
   public readonly resources: ResourceDto[] | null;
 }
