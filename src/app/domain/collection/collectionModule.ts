@@ -7,7 +7,6 @@ import { CollectionService } from './services/collection/collectionService';
 
 @Module({
   imports: [ResourceModule],
-  controllers: [],
   providers: [CollectionService, CollectionMapper, CollectionRepositoryFactory],
   exports: [CollectionService, CollectionMapper],
 })
