@@ -28,7 +28,7 @@ export class TagBrokerController {
       return tag;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateTagResponseDto, {
+    return this.dtoFactory.create(CreateTagResponseDto, {
       tag: {
         id: tag.id,
         createdAt: tag.createdAt,
@@ -51,7 +51,7 @@ export class TagBrokerController {
       return tag;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateTagResponseDto, {
+    return this.dtoFactory.create(CreateTagResponseDto, {
       tag: {
         id: tag.id,
         createdAt: tag.createdAt,
@@ -77,7 +77,7 @@ export class TagBrokerController {
       return tag;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateTagResponseDto, {
+    return this.dtoFactory.create(CreateTagResponseDto, {
       tag: {
         id: tag.id,
         createdAt: tag.createdAt,

@@ -27,7 +27,7 @@ export class CollectionBrokerController {
       return collection;
     });
 
-    return this.dtoFactory.createDtoInstance(FindCollectionResponseDto, {
+    return this.dtoFactory.create(FindCollectionResponseDto, {
       collection: {
         id: collection.id,
         createdAt: collection.createdAt,
@@ -56,7 +56,7 @@ export class CollectionBrokerController {
       return collection;
     });
 
-    return this.dtoFactory.createDtoInstance(UpdateCollectionResponseDto, {
+    return this.dtoFactory.create(UpdateCollectionResponseDto, {
       collection: {
         id: collection.id,
         createdAt: collection.createdAt,

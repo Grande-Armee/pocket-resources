@@ -30,7 +30,7 @@ export class ResourceBrokerController {
       return resource;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateResourceResponseDto, {
+    return this.dtoFactory.create(CreateResourceResponseDto, {
       resource: {
         id: resource.id,
         createdAt: resource.createdAt,
@@ -54,7 +54,7 @@ export class ResourceBrokerController {
       return resource;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateResourceResponseDto, {
+    return this.dtoFactory.create(CreateResourceResponseDto, {
       resource: {
         id: resource.id,
         createdAt: resource.createdAt,
@@ -82,7 +82,7 @@ export class ResourceBrokerController {
       return resource;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateResourceResponseDto, {
+    return this.dtoFactory.create(CreateResourceResponseDto, {
       resource: {
         id: resource.id,
         createdAt: resource.createdAt,

@@ -31,7 +31,7 @@ export class UserResourceBrokerController {
       return userResource;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateUserResourceResponseDto, {
+    return this.dtoFactory.create(CreateUserResourceResponseDto, {
       userResource: {
         id: userResource.id,
         createdAt: userResource.createdAt,
@@ -56,7 +56,7 @@ export class UserResourceBrokerController {
       return userResource;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateUserResourceResponseDto, {
+    return this.dtoFactory.create(CreateUserResourceResponseDto, {
       userResource: {
         id: userResource.id,
         createdAt: userResource.createdAt,
@@ -91,7 +91,7 @@ export class UserResourceBrokerController {
       return userResource;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateUserResourceResponseDto, {
+    return this.dtoFactory.create(CreateUserResourceResponseDto, {
       userResource: {
         id: userResource.id,
         createdAt: userResource.createdAt,

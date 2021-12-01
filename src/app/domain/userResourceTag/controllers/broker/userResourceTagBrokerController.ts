@@ -33,7 +33,7 @@ export class UserResourceTagBrokerController {
     });
 
     // TODO: remove duplicate userId and resourceId
-    return this.dtoFactory.createDtoInstance(CreateUserResourceTagResponseDto, {
+    return this.dtoFactory.create(CreateUserResourceTagResponseDto, {
       userResourceTag: {
         id: userResourceTag.id,
         createdAt: userResourceTag.createdAt,

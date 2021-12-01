@@ -34,7 +34,7 @@ export class CollectionResourceBrokerController {
       return collection;
     });
 
-    return this.dtoFactory.createDtoInstance(CreateCollectionResourceResponseDto, {
+    return this.dtoFactory.create(CreateCollectionResourceResponseDto, {
       collectionResource: {
         id: collection.id,
         createdAt: collection.createdAt,
