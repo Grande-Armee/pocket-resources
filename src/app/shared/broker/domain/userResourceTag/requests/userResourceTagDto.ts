@@ -1,21 +1,21 @@
-import { Expose } from 'class-transformer';
+import { IsDate, IsUUID } from 'class-validator';
 
 export class UserResourceTagDto {
-  @Expose()
+  @IsUUID('4')
   public id: string;
 
-  @Expose()
+  @IsDate()
   public createdAt: Date;
 
-  @Expose()
+  @IsDate()
   public updatedAt: Date;
 
-  @Expose()
+  @IsUUID('4')
   public userId: string;
 
-  @Expose()
+  @IsUUID('4')
   public resourceId: string;
 
-  @Expose()
+  @IsUUID('4')
   public tagId: string;
 }

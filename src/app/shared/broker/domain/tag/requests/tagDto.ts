@@ -1,7 +1,7 @@
 import { IsDate, IsString, IsUUID } from 'class-validator';
 
 export class TagDto {
-  @IsString()
+  @IsUUID('4')
   public readonly id: string;
 
   @IsDate()
