@@ -4,7 +4,7 @@ import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFacto
 
 import { CollectionResourceDto } from '../../dtos/collectionResourceDto';
 import { CollectionResourceRepositoryFactory } from '../../repositories/collectionResource/collectionResourceRepository';
-import { CreateCollectionResourceData } from './interfaces';
+import { CreateCollectionResourceData, RemoveCollectionResourceData } from './interfaces';
 
 @Injectable()
 export class CollectionResourceService {
@@ -38,10 +38,19 @@ export class CollectionResourceService {
     return collectionResource;
   }
 
-  public async removeCollectionResource(unitOfWork: PostgresUnitOfWork, collectionResourceId: string): Promise<void> {
+  public async removeCollectionResource(
+    unitOfWork: PostgresUnitOfWork,
+    collectionResourceData: RemoveCollectionResourceData,
+  ): Promise<void> {
     const { entityManager } = unitOfWork;
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 
-    await collectionResourceRepository.removeOne(collectionResourceId);
+    const foundCollectionResource = await collectionResourceRepository.findOne({ ...collectionResourceData });
+
+    if (!foundCollectionResource) {
+      throw new Error('Collection resource not found.');
+    }
+
+    await collectionResourceRepository.removeOne(foundCollectionResource.id);
   }
 }

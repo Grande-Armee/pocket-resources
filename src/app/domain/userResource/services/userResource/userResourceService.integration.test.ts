@@ -92,7 +92,10 @@ describe('UserResourceService', () => {
           userResourceId: userResource.id,
         });
 
-        const foundUserResourceDto = await userResourceService.findUserResource(unitOfWork, userResource.id);
+        const foundUserResourceDto = await userResourceService.findUserResource(unitOfWork, {
+          resourceId: resource.id,
+          userId: userResourceData.userId,
+        });
 
         expect(foundUserResourceDto.id).toBe(userResource.id);
         expect(foundUserResourceDto.userId).toBe(userResourceData.userId);
@@ -105,10 +108,10 @@ describe('UserResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { id: userResourceId } = userResourceTestDataGenerator.generateEntityData();
+        const { userId, resourceId } = userResourceTestDataGenerator.generateEntityData();
 
         try {
-          await userResourceService.findUserResource(unitOfWork, userResourceId);
+          await userResourceService.findUserResource(unitOfWork, { userId, resourceId });
         } catch (error) {
           expect(error).toBeTruthy();
         }
@@ -195,7 +198,7 @@ describe('UserResourceService', () => {
 
         const userResourceDtoAfterUpdate = await userResourceService.updateUserResource(
           unitOfWork,
-          userResourceDtoBeforeUpdate.id,
+          { resourceId: resource.id, userId: userResourceData.userId },
           {
             rating: userResourceData.rating,
           },
@@ -213,12 +216,16 @@ describe('UserResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { id: nonExistingId, rating } = userResourceTestDataGenerator.generateEntityData();
+        const { userId, resourceId, rating } = userResourceTestDataGenerator.generateEntityData();
 
         try {
-          await userResourceService.updateUserResource(unitOfWork, nonExistingId, {
-            rating,
-          });
+          await userResourceService.updateUserResource(
+            unitOfWork,
+            { userId, resourceId },
+            {
+              rating,
+            },
+          );
         } catch (error) {
           expect(error).toBeTruthy();
         }
@@ -246,7 +253,10 @@ describe('UserResourceService', () => {
           userId: userResourceData.userId,
         });
 
-        await userResourceService.removeUserResource(unitOfWork, userResource.id);
+        await userResourceService.removeUserResource(unitOfWork, {
+          resourceId: resource.id,
+          userId: userResourceData.userId,
+        });
 
         const userResourceInDb = await userResourceRepository.findOneById(userResource.id);
 
@@ -258,10 +268,10 @@ describe('UserResourceService', () => {
       expect.assertions(1);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { id: nonExistingId } = userResourceTestDataGenerator.generateEntityData();
+        const { id: resourceId, userId } = userResourceTestDataGenerator.generateEntityData();
 
         try {
-          await userResourceService.removeUserResource(unitOfWork, nonExistingId);
+          await userResourceService.removeUserResource(unitOfWork, { resourceId, userId });
         } catch (error) {
           expect(error).toBeTruthy();
         }
