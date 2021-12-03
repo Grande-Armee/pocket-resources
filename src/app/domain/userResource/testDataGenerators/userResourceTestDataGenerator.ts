@@ -1,7 +1,6 @@
-import { EntityTestDataGenerator, NonNullableEntity } from '@grande-armee/pocket-common';
+import { EntityTestDataGenerator, NonNullableEntity, UserResourceStatus } from '@grande-armee/pocket-common';
 import { helpers, datatype, date } from 'faker';
 
-import { UserResourceStatus } from '../entities/types/userResourceStatus';
 import { UserResource } from '../entities/userResource';
 
 type UserResourceTestData = NonNullableEntity<Omit<UserResource, 'resource' | 'userResourceTags'>>;

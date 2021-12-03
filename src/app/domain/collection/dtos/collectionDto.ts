@@ -1,8 +1,8 @@
+import { AllowNull } from '@grande-armee/pocket-common';
 import { Type } from 'class-transformer';
 import { IsDate, IsString, IsUUID, ValidateNested } from 'class-validator';
 
 import { ResourceDto } from '@domain/resource/dtos/resourceDto';
-import { AllowNull } from '@shared/allowNull';
 
 export class CollectionDto {
   @IsUUID('4')
@@ -14,16 +14,16 @@ export class CollectionDto {
   @IsDate()
   public readonly updatedAt: Date;
 
-  @IsString()
   @AllowNull()
+  @IsString()
   public readonly title: string | null;
 
-  @IsString()
   @AllowNull()
+  @IsString()
   public readonly thumbnailUrl: string | null;
 
-  @IsString()
   @AllowNull()
+  @IsString()
   public readonly content: string | null;
 
   @IsUUID('4')

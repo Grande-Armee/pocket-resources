@@ -1,6 +1,5 @@
+import { AllowNull } from '@grande-armee/pocket-common';
 import { IsDate, IsString, IsUUID } from 'class-validator';
-
-import { AllowNull } from '@shared/allowNull';
 
 export class ResourceDto {
   @IsUUID('4')
@@ -15,15 +14,15 @@ export class ResourceDto {
   @IsString()
   public readonly url: string;
 
-  @IsString()
   @AllowNull()
+  @IsString()
   public readonly title: string | null;
 
-  @IsString()
   @AllowNull()
+  @IsString()
   public readonly thumbnailUrl: string | null;
 
-  @IsString()
   @AllowNull()
+  @IsString()
   public readonly content: string | null;
 }

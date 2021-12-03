@@ -1,11 +1,9 @@
+import { AllowNull, UserResourceStatus } from '@grande-armee/pocket-common';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEnum, IsInt, IsUUID, ValidateNested } from 'class-validator';
 
 import { ResourceDto } from '@domain/resource/dtos/resourceDto';
 import { TagDto } from '@domain/tag/dtos/tagDto';
-import { AllowNull } from '@shared/allowNull';
-
-import { UserResourceStatus } from '../entities/types/userResourceStatus';
 
 export class UserResourceDto {
   @IsUUID('4')
@@ -23,12 +21,12 @@ export class UserResourceDto {
   @IsBoolean()
   public readonly isFavorite: boolean;
 
-  @IsInt()
   @AllowNull()
+  @IsInt()
   public readonly rating: number | null;
 
-  @Type(() => ResourceDto)
   @AllowNull()
+  @Type(() => ResourceDto)
   @ValidateNested()
   public readonly resource: ResourceDto | null;
 
@@ -38,8 +36,8 @@ export class UserResourceDto {
   @IsUUID('4')
   public readonly userId: string;
 
-  @Type(() => TagDto)
   @AllowNull()
+  @Type(() => TagDto)
   @ValidateNested({ each: true })
   public readonly tags: TagDto[] | null;
 }

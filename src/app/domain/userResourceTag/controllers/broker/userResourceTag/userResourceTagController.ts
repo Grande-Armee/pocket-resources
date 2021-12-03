@@ -1,15 +1,15 @@
-import { DtoFactory } from '@grande-armee/pocket-common';
-
-import { BrokerController } from '@shared/broker/decorators/brokerController';
-import { RpcRoute } from '@shared/broker/decorators/rpcRoute';
 import {
+  BrokerController,
+  BrokerMessage,
+  BrokerService,
   CreateUserResourceTagPayloadDto,
   CreateUserResourceTagResponseDto,
-} from '@shared/broker/domain/userResourceTag/requests/createUserResourceTag';
-import { RemoveUserResourceTagPayloadDto } from '@shared/broker/domain/userResourceTag/requests/removeUserResourceTag';
-import { UserResourceTagRoutingKey } from '@shared/broker/domain/userResourceTag/userResourceTagRoutingKey';
-import { BrokerService } from '@shared/broker/services/broker/brokerService';
-import { BrokerMessage } from '@shared/broker/types';
+  DtoFactory,
+  RemoveUserResourceTagPayloadDto,
+  RpcRoute,
+  UserResourceTagRoutingKey,
+} from '@grande-armee/pocket-common';
+
 import { UnitOfWorkFactory } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceTagService } from '../../../services/userResourceTag/userResourceTagService';

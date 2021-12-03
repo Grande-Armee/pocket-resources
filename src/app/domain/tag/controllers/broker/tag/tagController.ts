@@ -1,14 +1,19 @@
-import { DtoFactory } from '@grande-armee/pocket-common';
+import {
+  BrokerController,
+  BrokerMessage,
+  BrokerService,
+  CreateTagPayloadDto,
+  CreateTagResponseDto,
+  DtoFactory,
+  FindTagPayloadDto,
+  FindTagResponseDto,
+  RemoveTagPayloadDto,
+  RpcRoute,
+  TagRoutingKey,
+  UpdateTagPayloadDto,
+  UpdateTagResponseDto,
+} from '@grande-armee/pocket-common';
 
-import { BrokerController } from '@shared/broker/decorators/brokerController';
-import { RpcRoute } from '@shared/broker/decorators/rpcRoute';
-import { CreateTagPayloadDto, CreateTagResponseDto } from '@shared/broker/domain/tag/requests/createTag';
-import { FindTagPayloadDto, FindTagResponseDto } from '@shared/broker/domain/tag/requests/findTag';
-import { RemoveTagPayloadDto } from '@shared/broker/domain/tag/requests/removeTag';
-import { UpdateTagPayloadDto, UpdateTagResponseDto } from '@shared/broker/domain/tag/requests/updateTag';
-import { TagRoutingKey } from '@shared/broker/domain/tag/tagRoutingKey';
-import { BrokerService } from '@shared/broker/services/broker/brokerService';
-import { BrokerMessage } from '@shared/broker/types';
 import { UnitOfWorkFactory } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { TagService } from '../../../services/tag/tagService';
