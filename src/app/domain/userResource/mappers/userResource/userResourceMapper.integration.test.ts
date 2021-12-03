@@ -1,3 +1,4 @@
+import { UserResourceStatus } from '@grande-armee/pocket-common';
 import { TestingModule } from '@nestjs/testing';
 
 import { Resource } from '@domain/resource/entities/resource';
@@ -10,7 +11,6 @@ import { UserResourceTag } from '@domain/userResourceTag/entities/userResourceTa
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
-import { UserResourceStatus } from '../../entities/types/userResourceStatus';
 import { UserResource } from '../../entities/userResource';
 import { UserResourceTestDataGenerator } from '../../testDataGenerators/userResourceTestDataGenerator';
 import { UserResourceMapper } from './userResourceMapper';

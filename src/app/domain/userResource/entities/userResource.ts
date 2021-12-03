@@ -1,3 +1,4 @@
+import { UserResourceStatus } from '@grande-armee/pocket-common';
 import { IsUUID, IsOptional, IsDate, IsEnum, IsBoolean, IsInt } from 'class-validator';
 import {
   Entity,
@@ -12,8 +13,6 @@ import {
 
 import { Resource } from '@domain/resource/entities/resource';
 import { UserResourceTag } from '@domain/userResourceTag/entities/userResourceTag';
-
-import { UserResourceStatus } from './types/userResourceStatus';
 
 export const USER_RESOURCE_TABLE_NAME = 'userResources';
 

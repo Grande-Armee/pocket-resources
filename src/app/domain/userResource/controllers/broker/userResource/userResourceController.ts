@@ -1,23 +1,19 @@
-import { DtoFactory } from '@grande-armee/pocket-common';
-
-import { BrokerController } from '@shared/broker/decorators/brokerController';
-import { RpcRoute } from '@shared/broker/decorators/rpcRoute';
 import {
+  BrokerController,
+  BrokerMessage,
+  BrokerService,
   CreateUserResourcePayloadDto,
   CreateUserResourceResponseDto,
-} from '@shared/broker/domain/userResource/requests/createUserResource';
-import {
+  DtoFactory,
   FindUserResourcePayloadDto,
   FindUserResourceResponseDto,
-} from '@shared/broker/domain/userResource/requests/findUserResource';
-import { RemoveUserResourcePayloadDto } from '@shared/broker/domain/userResource/requests/removeUserResource';
-import {
+  RemoveUserResourcePayloadDto,
+  RpcRoute,
   UpdateUserResourcePayloadDto,
   UpdateUserResourceResponseDto,
-} from '@shared/broker/domain/userResource/requests/updateUserResource';
-import { UserResourceRoutingKey } from '@shared/broker/domain/userResource/userResourceRoutingKey';
-import { BrokerService } from '@shared/broker/services/broker/brokerService';
-import { BrokerMessage } from '@shared/broker/types';
+  UserResourceRoutingKey,
+} from '@grande-armee/pocket-common';
+
 import { UnitOfWorkFactory } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceService } from '../../../services/userResource/userResourceService';
