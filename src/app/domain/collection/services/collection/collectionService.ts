@@ -59,7 +59,7 @@ export class CollectionService {
     collectionId: string,
     collectionData: UpdateCollectionData,
   ): Promise<CollectionDto> {
-    this.logger.debug('Updating collection...');
+    this.logger.debug('Updating collection...', { collectionId: collectionId });
 
     const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
@@ -82,7 +82,7 @@ export class CollectionService {
   }
 
   public async removeCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<void> {
-    this.logger.debug('Removing collection...');
+    this.logger.debug('Removing collection...', { collectionId: collectionId });
 
     const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
