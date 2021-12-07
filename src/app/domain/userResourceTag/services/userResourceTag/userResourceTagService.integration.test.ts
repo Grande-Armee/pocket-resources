@@ -10,6 +10,7 @@ import { UserResourceTagRepositoryFactory } from '@domain/userResourceTag/reposi
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
 
+import { UserResourceTagTestDataGenerator } from '../../testDataGenerators/userResourceTagTestDataGenerator';
 import { UserResourceTagService } from './userResourceTagService';
 
 describe('UserResourceTagService', () => {
@@ -18,6 +19,7 @@ describe('UserResourceTagService', () => {
   let resourceTestDataGenerator: ResourceTestDataGenerator;
   let tagTestDataGenerator: TagTestDataGenerator;
   let userResourceTestDataGenerator: UserResourceTestDataGenerator;
+  let userResourceTagTestDataGenerator: UserResourceTagTestDataGenerator;
 
   let userResourceTagService: UserResourceTagService;
   let userResourceTagRepositoryFactory: UserResourceTagRepositoryFactory;
@@ -34,6 +36,7 @@ describe('UserResourceTagService', () => {
     resourceTestDataGenerator = new ResourceTestDataGenerator();
     tagTestDataGenerator = new TagTestDataGenerator();
     userResourceTestDataGenerator = new UserResourceTestDataGenerator();
+    userResourceTagTestDataGenerator = new UserResourceTagTestDataGenerator();
 
     userResourceTagService = testingModule.get(UserResourceTagService);
     userResourceTagRepositoryFactory = testingModule.get(UserResourceTagRepositoryFactory);
@@ -47,14 +50,77 @@ describe('UserResourceTagService', () => {
   });
 
   describe('Find user resource tag', () => {
-    // TODO: restore find tests
+    it('gets user resource tag from the database', async () => {
+      expect.assertions(3);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const { entityManager } = unitOfWork;
+
+        const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+        const userResourceTagRepository = userResourceTagRepositoryFactory.create(entityManager);
+        const tagRepository = tagRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
+
+        const resourceData = resourceTestDataGenerator.generateEntityData();
+        const userResourceData = userResourceTestDataGenerator.generateEntityData();
+
+        const { color: color1, title: title1 } = tagTestDataGenerator.generateEntityData();
+
+        const resource = await resourceRepository.createOne({ url: resourceData.url });
+
+        const tag1 = await tagRepository.createOne({
+          userId: userResourceData.userId,
+          color: color1,
+          title: title1,
+        });
+
+        const userResource = await userResourceRepository.createOne({
+          resourceId: resource.id,
+          userId: userResourceData.userId,
+        });
+
+        const userResourceTag = await userResourceTagRepository.createOne(
+          userResourceData.userId,
+          resource.id,
+          tag1.id,
+        );
+
+        const foundUserResourceTagDTO = await userResourceTagService.findUserResourceTag(unitOfWork, {
+          tagId: tag1.id,
+          userId: userResourceData.userId,
+          resourceId: resource.id,
+        });
+
+        expect(foundUserResourceTagDTO.id).toBe(userResourceTag.id);
+        expect(foundUserResourceTagDTO.userResourceId).toBe(userResource.id);
+        expect(foundUserResourceTagDTO.tagId).toBe(tag1.id);
+      });
+    });
+
+    it('should throw if user resource tag id not found', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const tagId = userResourceTagTestDataGenerator.generateTagId();
+        const userId = userResourceTagTestDataGenerator.generateUserId();
+        const resourceId = userResourceTagTestDataGenerator.generateResourceId();
+
+        try {
+          await userResourceTagService.findUserResourceTag(unitOfWork, {
+            tagId,
+            userId,
+            resourceId,
+          });
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+      });
+    });
   });
 
   describe('Create user resource tag', () => {
-    // TODO: restore create user resource tag success test
-
-    it('should not create user resource tag if userResourceTag with same userResourceId and tagId exists', async () => {
-      expect.assertions(1);
+    it('creates user resource tag in database', async () => {
+      expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
         const { entityManager } = unitOfWork;
@@ -82,10 +148,51 @@ describe('UserResourceTagService', () => {
           userId: userResourceData.userId,
         });
 
-        await userResourceTagRepository.createOne({
+        const createdUserResourceTagDTO = await userResourceTagService.createUserResourceTag(unitOfWork, {
           tagId: tag1.id,
-          userResourceId: userResource.id,
+          userId: userResourceData.userId,
+          resourceId: resource.id,
         });
+
+        expect(createdUserResourceTagDTO.userResourceId).toBe(userResource.id);
+        expect(createdUserResourceTagDTO.tagId).toBe(tag1.id);
+
+        const userResourceDTO = await userResourceTagRepository.findOneById(createdUserResourceTagDTO.id);
+
+        expect(userResourceDTO).not.toBeNull();
+      });
+    });
+
+    it('should not create user resource tag if userResourceTag with same userResourceId and tagId exists', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const { entityManager } = unitOfWork;
+
+        const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
+        const tagRepository = tagRepositoryFactory.create(entityManager);
+        const userResourceTagRepository = userResourceTagRepositoryFactory.create(entityManager);
+
+        const resourceData = resourceTestDataGenerator.generateEntityData();
+        const userResourceData = userResourceTestDataGenerator.generateEntityData();
+
+        const { color: color1, title: title1 } = tagTestDataGenerator.generateEntityData();
+
+        const resource = await resourceRepository.createOne({ url: resourceData.url });
+
+        const tag1 = await tagRepository.createOne({
+          userId: userResourceData.userId,
+          color: color1,
+          title: title1,
+        });
+
+        await userResourceRepository.createOne({
+          resourceId: resource.id,
+          userId: userResourceData.userId,
+        });
+
+        await userResourceTagRepository.createOne(userResourceData.userId, resource.id, tag1.id);
 
         try {
           await userResourceTagService.createUserResourceTag(unitOfWork, {
@@ -101,6 +208,71 @@ describe('UserResourceTagService', () => {
   });
 
   describe('Remove user resource tag', () => {
-    // TODO: restore remove tests
+    it('removes user resource tag from database', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const { entityManager } = unitOfWork;
+
+        const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
+        const resourceRepository = resourceRepositoryFactory.create(entityManager);
+        const tagRepository = tagRepositoryFactory.create(entityManager);
+        const userResourceTagRepository = userResourceTagRepositoryFactory.create(entityManager);
+
+        const resourceData = resourceTestDataGenerator.generateEntityData();
+        const userResourceData = userResourceTestDataGenerator.generateEntityData();
+
+        const { color: color1, title: title1 } = tagTestDataGenerator.generateEntityData();
+
+        const resource = await resourceRepository.createOne({ url: resourceData.url });
+
+        const tag1 = await tagRepository.createOne({
+          userId: userResourceData.userId,
+          color: color1,
+          title: title1,
+        });
+
+        await userResourceRepository.createOne({
+          resourceId: resource.id,
+          userId: userResourceData.userId,
+        });
+
+        const userResourceTag = await userResourceTagRepository.createOne(
+          userResourceData.userId,
+          resource.id,
+          tag1.id,
+        );
+
+        await userResourceTagService.removeUserResourceTag(unitOfWork, {
+          userId: userResourceData.userId,
+          resourceId: resource.id,
+          tagId: tag1.id,
+        });
+
+        const userResourceTagInDb = await userResourceRepository.findOneById(userResourceTag.id);
+
+        expect(userResourceTagInDb).toBeNull();
+      });
+    });
+
+    it('should throw if user resource tag with given id does not exist', async () => {
+      expect.assertions(1);
+
+      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
+        const tagId = userResourceTagTestDataGenerator.generateTagId();
+        const userId = userResourceTagTestDataGenerator.generateUserId();
+        const resourceId = userResourceTagTestDataGenerator.generateResourceId();
+
+        try {
+          await userResourceTagService.removeUserResourceTag(unitOfWork, {
+            tagId,
+            userId,
+            resourceId,
+          });
+        } catch (error) {
+          expect(error).toBeTruthy();
+        }
+      });
+    });
   });
 });

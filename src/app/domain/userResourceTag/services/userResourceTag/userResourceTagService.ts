@@ -17,10 +17,9 @@ export class UserResourceTagService {
     const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
-    // TODO: add finding by userId, resourceId and tagId instead of userResourceId and tagId
-    const { resourceId, tagId } = userResourceTagData;
+    const { userId, resourceId, tagId } = userResourceTagData;
 
-    const userResourceTag = await userResourceTagRepository.findOne({ userResourceId: resourceId, tagId });
+    const userResourceTag = await userResourceTagRepository.findOneByIds(userId, resourceId, tagId);
 
     if (!userResourceTag) {
       throw new Error('User resource tag not found.');
@@ -36,7 +35,11 @@ export class UserResourceTagService {
     const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
-    const userResourceTag = await userResourceTagRepository.createOne(userResourceTagData);
+    const userResourceTag = await userResourceTagRepository.createOne(
+      userResourceTagData.userId,
+      userResourceTagData.resourceId,
+      userResourceTagData.tagId,
+    );
 
     return userResourceTag;
   }
@@ -48,11 +51,9 @@ export class UserResourceTagService {
     const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
-    // TODO: add finding by userId, resourceId and tagId instead of userResourceId and tagId
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { resourceId, tagId } = userResourceTagData;
+    const { userId, resourceId, tagId } = userResourceTagData;
 
-    const userResourceTag = await userResourceTagRepository.findOne({ userResourceId: resourceId, tagId });
+    const userResourceTag = await userResourceTagRepository.findOneByIds(userId, resourceId, tagId);
 
     if (!userResourceTag) {
       throw new Error('User resource tag not found.');
