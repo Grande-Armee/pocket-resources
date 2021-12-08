@@ -6,7 +6,7 @@ import { UserResourceService } from '@src/app/domain/userResource/services/userR
 
 import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
 import { UserResourceTagRepositoryFactory } from '../../repositories/userResourceTag/userResourceTagRepository';
-import { CreateUserResourceTagData, FindUserResourceTagData } from './interfaces';
+import { CreateUserResourceTagData, FindUserResourceTagData } from './types';
 
 @Injectable()
 export class UserResourceTagService {

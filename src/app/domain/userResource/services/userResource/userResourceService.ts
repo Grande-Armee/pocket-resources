@@ -5,7 +5,7 @@ import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFacto
 
 import { UserResourceDto } from '../../dtos/userResourceDto';
 import { UserResourceRepositoryFactory } from '../../repositories/userResource/userResourceRepository';
-import { CreateUserResourceData, UpdateUserResourceData, FindUserResourceData } from './interfaces';
+import { CreateUserResourceData, UpdateUserResourceData, FindUserResourceData } from './types';
 
 @Injectable()
 export class UserResourceService {
