@@ -14,6 +14,19 @@ export class UserResourceTagRepository {
     private readonly userResourceTagMapper: UserResourceTagMapper,
   ) {}
 
+  public async findOneByIds(userId: string, resourceId: string, tagId: string): Promise<UserResourceTagDto | null> {
+    const userResourceTag = await this.manager.findOne(UserResourceTag, {
+      where: { userResource: { userId, resourceId }, tagId },
+      relations: ['userResource'],
+    });
+
+    if (!userResourceTag) {
+      return null;
+    }
+
+    return this.userResourceTagMapper.mapEntityToDto(userResourceTag);
+  }
+
   public async findOne(conditions: FindConditions<UserResourceTag>): Promise<UserResourceTagDto | null> {
     const userResourceTag = await this.manager.findOne(UserResourceTag, conditions);
 
