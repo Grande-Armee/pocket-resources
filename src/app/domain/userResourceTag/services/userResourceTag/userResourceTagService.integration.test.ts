@@ -79,11 +79,10 @@ describe('UserResourceTagService', () => {
           userId: userResourceData.userId,
         });
 
-        const userResourceTag = await userResourceTagRepository.createOne(
-          userResourceData.userId,
-          resource.id,
-          tag1.id,
-        );
+        const userResourceTag = await userResourceTagRepository.createOne({
+          userResourceId: userResource.id,
+          tagId: tag1.id,
+        });
 
         const foundUserResourceTagDTO = await userResourceTagService.findUserResourceTag(unitOfWork, {
           tagId: tag1.id,
@@ -187,12 +186,15 @@ describe('UserResourceTagService', () => {
           title: title1,
         });
 
-        await userResourceRepository.createOne({
+        const userResource = await userResourceRepository.createOne({
           resourceId: resource.id,
           userId: userResourceData.userId,
         });
 
-        await userResourceTagRepository.createOne(userResourceData.userId, resource.id, tag1.id);
+        await userResourceTagRepository.createOne({
+          userResourceId: userResource.id,
+          tagId: tag1.id,
+        });
 
         try {
           await userResourceTagService.createUserResourceTag(unitOfWork, {
@@ -232,16 +234,15 @@ describe('UserResourceTagService', () => {
           title: title1,
         });
 
-        await userResourceRepository.createOne({
+        const userResource = await userResourceRepository.createOne({
           resourceId: resource.id,
           userId: userResourceData.userId,
         });
 
-        const userResourceTag = await userResourceTagRepository.createOne(
-          userResourceData.userId,
-          resource.id,
-          tag1.id,
-        );
+        const userResourceTag = await userResourceTagRepository.createOne({
+          userResourceId: userResource.id,
+          tagId: tag1.id,
+        });
 
         await userResourceTagService.removeUserResourceTag(unitOfWork, {
           userId: userResourceData.userId,
