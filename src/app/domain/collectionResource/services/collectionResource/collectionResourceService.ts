@@ -5,7 +5,7 @@ import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFacto
 
 import { CollectionResourceDto } from '../../dtos/collectionResourceDto';
 import { CollectionResourceRepositoryFactory } from '../../repositories/collectionResource/collectionResourceRepository';
-import { CreateCollectionResourceData, RemoveCollectionResourceData } from './interfaces';
+import { CreateCollectionResourceData, RemoveCollectionResourceData } from './types';
 
 @Injectable()
 export class CollectionResourceService {

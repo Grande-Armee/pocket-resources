@@ -1,6 +1,6 @@
 import { ConfigService, Joi } from '@grande-armee/pocket-common';
 
-import { PostgresConfig } from './interfaces';
+import { PostgresConfig } from './types';
 
 export const postgresConfigFactory = async (configService: ConfigService, joi: Joi): Promise<PostgresConfig> => {
   return configService.validateConfig<PostgresConfig>(

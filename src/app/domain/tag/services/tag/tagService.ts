@@ -6,7 +6,7 @@ import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFacto
 import { TagDto } from '../../dtos/tagDto';
 import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../integrationEvents';
 import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
-import { CreateTagData, UpdateTagData } from './interfaces';
+import { CreateTagData, UpdateTagData } from './types';
 
 @Injectable()
 export class TagService {

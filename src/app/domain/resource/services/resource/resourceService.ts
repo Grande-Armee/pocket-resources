@@ -6,7 +6,7 @@ import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFacto
 import { ResourceDto } from '../../dtos/resourceDto';
 import { ResourceCreatedEvent, ResourceUpdatedEvent, ResourceRemovedEvent } from '../../integrationEvents';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
-import { CreateResourceData, UpdateResourceData } from './interfaces';
+import { CreateResourceData, UpdateResourceData } from './types';
 
 @Injectable()
 export class ResourceService {

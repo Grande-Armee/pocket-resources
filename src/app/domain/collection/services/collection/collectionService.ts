@@ -6,7 +6,7 @@ import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFacto
 import { CollectionDto } from '../../dtos/collectionDto';
 import { CollectionCreatedEvent, CollectionUpdatedEvent, CollectionRemovedEvent } from '../../integrationEvents';
 import { CollectionRepositoryFactory } from '../../repositories/collection/collectionRepository';
-import { CreateCollectionData, UpdateCollectionData } from './interfaces';
+import { CreateCollectionData, UpdateCollectionData } from './types';
 
 @Injectable()
 export class CollectionService {

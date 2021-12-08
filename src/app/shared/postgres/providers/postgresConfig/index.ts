@@ -1,3 +1,3 @@
-export { PostgresConfig } from './interfaces';
+export { PostgresConfig } from './types';
 
 export * from './postgresConfigProvider';
