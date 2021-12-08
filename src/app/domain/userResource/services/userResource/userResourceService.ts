@@ -1,3 +1,4 @@
+import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
@@ -8,7 +9,10 @@ import { CreateUserResourceData, UpdateUserResourceData, FindUserResourceData } 
 
 @Injectable()
 export class UserResourceService {
-  public constructor(private readonly userResourceRepositoryFactory: UserResourceRepositoryFactory) {}
+  public constructor(
+    private readonly userResourceRepositoryFactory: UserResourceRepositoryFactory,
+    private readonly logger: LoggerService,
+  ) {}
 
   public async findUserResource(
     unitOfWork: PostgresUnitOfWork,
@@ -30,10 +34,17 @@ export class UserResourceService {
     unitOfWork: PostgresUnitOfWork,
     userResourceData: CreateUserResourceData,
   ): Promise<UserResourceDto> {
+    this.logger.debug('Creating user resource...', {
+      userId: userResourceData.userId,
+      resourceId: userResourceData.resourceId,
+    });
+
     const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const userResource = await userResourceRepository.createOne(userResourceData);
+
+    this.logger.info('User resource created.', { userResourceId: userResource.id });
 
     return userResource;
   }
@@ -43,6 +54,11 @@ export class UserResourceService {
     findUserResourceData: FindUserResourceData,
     userResourceData: UpdateUserResourceData,
   ): Promise<UserResourceDto> {
+    this.logger.debug('Updating user resource...', {
+      userId: findUserResourceData.userId,
+      resourceId: findUserResourceData.resourceId,
+    });
+
     const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
@@ -54,6 +70,8 @@ export class UserResourceService {
 
     const userResource = await userResourceRepository.updateOne(foundUserResource.id, { ...userResourceData });
 
+    this.logger.info('User resource updated.', { userResourceId: userResource.id });
+
     return userResource;
   }
 
@@ -61,6 +79,11 @@ export class UserResourceService {
     unitOfWork: PostgresUnitOfWork,
     findUserResourceData: FindUserResourceData,
   ): Promise<void> {
+    this.logger.debug('Removing user resource...', {
+      userId: findUserResourceData.userId,
+      resourceId: findUserResourceData.resourceId,
+    });
+
     const { entityManager } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
@@ -69,6 +92,8 @@ export class UserResourceService {
     if (!foundUserResource) {
       throw new Error('User resource not found.');
     }
+
+    this.logger.info('User resource removed.', { userResourceId: foundUserResource.id });
 
     await userResourceRepository.removeOne(foundUserResource.id);
   }

@@ -1,3 +1,4 @@
+import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
@@ -11,6 +12,7 @@ import { CreateUserResourceTagData, FindUserResourceTagData } from './interfaces
 export class UserResourceTagService {
   public constructor(
     private readonly userResourceTagRepositoryFactory: UserResourceTagRepositoryFactory,
+    private readonly logger: LoggerService,
     private readonly userResourceService: UserResourceService,
   ) {}
 
@@ -36,6 +38,12 @@ export class UserResourceTagService {
     unitOfWork: PostgresUnitOfWork,
     userResourceTagData: CreateUserResourceTagData,
   ): Promise<UserResourceTagDto> {
+    this.logger.debug('Creating user resource tag...', {
+      userId: userResourceTagData.userId,
+      resourceId: userResourceTagData.resourceId,
+      tagId: userResourceTagData.tagId,
+    });
+
     const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
@@ -48,6 +56,8 @@ export class UserResourceTagService {
       tagId,
     });
 
+    this.logger.info('User resource tag created.', { userResourceTagId: userResourceTag.id });
+
     return userResourceTag;
   }
 
@@ -55,6 +65,12 @@ export class UserResourceTagService {
     unitOfWork: PostgresUnitOfWork,
     userResourceTagData: FindUserResourceTagData,
   ): Promise<void> {
+    this.logger.debug('Removing user resource tag...', {
+      userId: userResourceTagData.userId,
+      resourceId: userResourceTagData.resourceId,
+      tagId: userResourceTagData.tagId,
+    });
+
     const { entityManager } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
@@ -65,6 +81,8 @@ export class UserResourceTagService {
     if (!userResourceTag) {
       throw new Error('User resource tag not found.');
     }
+
+    this.logger.info('User resource tag removed.', { userResourceTagId: userResourceTag.id });
 
     await userResourceTagRepository.removeOne(userResourceTag.id);
   }

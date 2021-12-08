@@ -1,3 +1,4 @@
+import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
@@ -9,12 +10,17 @@ import { CreateCollectionData, UpdateCollectionData } from './interfaces';
 
 @Injectable()
 export class CollectionService {
-  public constructor(private readonly collectionRepositoryFactory: CollectionRepositoryFactory) {}
+  public constructor(
+    private readonly collectionRepositoryFactory: CollectionRepositoryFactory,
+    private readonly logger: LoggerService,
+  ) {}
 
   public async createCollection(
     unitOfWork: PostgresUnitOfWork,
     collectionData: CreateCollectionData,
   ): Promise<CollectionDto> {
+    this.logger.debug('Creating collection...');
+
     const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
@@ -29,6 +35,8 @@ export class CollectionService {
         new Date(),
       ),
     );
+
+    this.logger.info('Collection created.', { collectionId: collection.id });
 
     return collection;
   }
@@ -51,6 +59,8 @@ export class CollectionService {
     collectionId: string,
     collectionData: UpdateCollectionData,
   ): Promise<CollectionDto> {
+    this.logger.debug('Updating collection...', { collectionId: collectionId });
+
     const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
@@ -66,10 +76,14 @@ export class CollectionService {
       ),
     );
 
+    this.logger.info('Collection updated.', { collectionId: collection.id });
+
     return collection;
   }
 
   public async removeCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<void> {
+    this.logger.debug('Removing collection...', { collectionId: collectionId });
+
     const { entityManager, integrationEventsDispatcher } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
@@ -84,5 +98,7 @@ export class CollectionService {
         new Date(),
       ),
     );
+
+    this.logger.info('Collection removed.', { collectionId: collectionId });
   }
 }
