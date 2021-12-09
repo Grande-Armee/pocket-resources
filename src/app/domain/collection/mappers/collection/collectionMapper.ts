@@ -1,4 +1,4 @@
-import { DtoFactory, Mapper, Nullable } from '@grande-armee/pocket-common';
+import { Mapper, DtoFactory, Nullable } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { Resource } from '@domain/resource/entities/resource';

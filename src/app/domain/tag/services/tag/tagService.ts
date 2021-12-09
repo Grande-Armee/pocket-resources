@@ -12,12 +12,12 @@ export class TagService {
   public constructor(private readonly tagRepositoryFactory: TagRepositoryFactory) {}
 
   public async createTag(unitOfWork: PostgresUnitOfWork, tagData: CreateTagData): Promise<TagDto> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     const tag = await tagRepository.createOne(tagData);
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new TagCreatedEvent(
         {
           id: tag.id,
@@ -44,12 +44,12 @@ export class TagService {
   }
 
   public async updateTag(unitOfWork: PostgresUnitOfWork, tagId: string, tagData: UpdateTagData): Promise<TagDto> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     const tag = await tagRepository.updateOne(tagId, { ...tagData });
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new TagUpdatedEvent(
         {
           id: tag.id,
@@ -63,12 +63,12 @@ export class TagService {
   }
 
   public async removeTag(unitOfWork: PostgresUnitOfWork, tagId: string): Promise<void> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const tagRepository = this.tagRepositoryFactory.create(entityManager);
 
     await tagRepository.removeOne(tagId);
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new TagRemovedEvent(
         {
           id: tagId,

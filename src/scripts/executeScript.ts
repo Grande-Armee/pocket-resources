@@ -1,6 +1,5 @@
-import '../pathAliases';
-
 import { LoggerService } from '@grande-armee/pocket-common';
+import '../pathAliases';
 
 import { migrationRevertHandler, migrationRunHandler } from './handlers';
 import { ScriptHandler } from './interfaces';

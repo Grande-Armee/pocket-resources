@@ -12,7 +12,7 @@ export class ResourceService {
   public constructor(private readonly resourceRepositoryFactory: ResourceRepositoryFactory) {}
 
   public async createResource(unitOfWork: PostgresUnitOfWork, resourceData: CreateResourceData): Promise<ResourceDto> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     const existingResource = await resourceRepository.findOneByUrl(resourceData.url);
@@ -23,7 +23,7 @@ export class ResourceService {
 
     const resource = await resourceRepository.createOne(resourceData);
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new ResourceCreatedEvent(
         {
           id: resource.id,
@@ -54,12 +54,12 @@ export class ResourceService {
     resourceId: string,
     resourceData: UpdateResourceData,
   ): Promise<ResourceDto> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     const resource = await resourceRepository.updateOne(resourceId, { ...resourceData });
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new ResourceUpdatedEvent(
         {
           id: resource.id,
@@ -73,12 +73,12 @@ export class ResourceService {
   }
 
   public async removeResource(unitOfWork: PostgresUnitOfWork, resourceId: string): Promise<void> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
     await resourceRepository.removeOne(resourceId);
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new ResourceRemovedEvent(
         {
           id: resourceId,

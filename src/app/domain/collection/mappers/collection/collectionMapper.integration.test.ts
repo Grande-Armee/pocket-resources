@@ -1,18 +1,20 @@
-import { TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 
 import { CollectionResource } from '@domain/collectionResource/entities/collectionResource';
 import { Resource } from '@domain/resource/entities/resource';
 import { ResourceMapper } from '@domain/resource/mappers/resource/resourceMapper';
 import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+import { DatabaseModule } from '@shared/database/databaseModule';
+import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 
+import { CollectionModule } from '../../../collection/collectionModule';
 import { Collection } from '../../entities/collection';
 import { CollectionTestDataGenerator } from '../../testDataGenerators/collectionTestDataGenerator';
 import { CollectionMapper } from './collectionMapper';
 
 describe('CollectionMapper', () => {
-  let testingModule: TestingModule;
+  let moduleRef: TestingModule;
   let postgresHelper: PostgresHelper;
   let collectionTestDataGenerator: CollectionTestDataGenerator;
   let resourceTestDataGenerator: ResourceTestDataGenerator;
@@ -21,17 +23,19 @@ describe('CollectionMapper', () => {
   let collectionMapper: CollectionMapper;
 
   beforeEach(async () => {
-    testingModule = await TestModuleHelper.createTestingModule();
-    postgresHelper = new PostgresHelper(testingModule);
+    moduleRef = await Test.createTestingModule({
+      imports: [UnitOfWorkModule, DatabaseModule, CollectionModule],
+    }).compile();
+    postgresHelper = new PostgresHelper(moduleRef);
     collectionTestDataGenerator = new CollectionTestDataGenerator();
     resourceTestDataGenerator = new ResourceTestDataGenerator();
 
-    resourceMapper = testingModule.get(ResourceMapper);
-    collectionMapper = testingModule.get(CollectionMapper);
+    resourceMapper = moduleRef.get(ResourceMapper);
+    collectionMapper = moduleRef.get(CollectionMapper);
   });
 
   afterEach(async () => {
-    await testingModule.close();
+    await moduleRef.close();
   });
 
   describe('Map collection', () => {

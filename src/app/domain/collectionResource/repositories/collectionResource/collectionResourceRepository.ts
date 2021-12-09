@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
-import { RepositoryFactory } from '@shared/postgres/interfaces';
+import { RepositoryFactory } from '@shared/database/types';
 
 import { CollectionResourceDto } from '../../dtos/collectionResourceDto';
 import { CollectionResource } from '../../entities/collectionResource';

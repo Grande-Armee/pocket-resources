@@ -15,12 +15,12 @@ export class CollectionService {
     unitOfWork: PostgresUnitOfWork,
     collectionData: CreateCollectionData,
   ): Promise<CollectionDto> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.createOne(collectionData);
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new CollectionCreatedEvent(
         {
           id: collection.id,
@@ -51,12 +51,12 @@ export class CollectionService {
     collectionId: string,
     collectionData: UpdateCollectionData,
   ): Promise<CollectionDto> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.updateOne(collectionId, { ...collectionData });
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new CollectionUpdatedEvent(
         {
           id: collection.id,
@@ -70,12 +70,12 @@ export class CollectionService {
   }
 
   public async removeCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<void> {
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     await collectionRepository.removeOne(collectionId);
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new CollectionRemovedEvent(
         {
           id: collectionId,

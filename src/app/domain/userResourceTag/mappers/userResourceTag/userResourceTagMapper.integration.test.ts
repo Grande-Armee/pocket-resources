@@ -1,5 +1,6 @@
-import { TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 
+import { DomainModule } from '@domain/domainModule';
 import { Resource } from '@domain/resource/entities/resource';
 import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { Tag } from '@domain/tag/entities/tag';
@@ -7,7 +8,8 @@ import { TagTestDataGenerator } from '@domain/tag/testDataGenerators/tagTestData
 import { UserResource } from '@domain/userResource/entities/userResource';
 import { UserResourceTestDataGenerator } from '@domain/userResource/testDataGenerators/userResourceTestDataGenerator';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+import { DatabaseModule } from '@shared/database/databaseModule';
+import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 
 import { UserResourceTag } from '../../entities/userResourceTag';
 import { UserResourceTagMapper } from './userResourceTagMapper';
@@ -22,7 +24,10 @@ describe('UserResourceMapper', () => {
   let userResourceTagMapper: UserResourceTagMapper;
 
   beforeEach(async () => {
-    testingModule = await TestModuleHelper.createTestingModule();
+    testingModule = await Test.createTestingModule({
+      imports: [DatabaseModule, UnitOfWorkModule, DomainModule],
+    }).compile();
+
     postgresHelper = new PostgresHelper(testingModule);
     userResourceTestDataGenerator = new UserResourceTestDataGenerator();
     resourceTestDataGenerator = new ResourceTestDataGenerator();

@@ -1,17 +1,15 @@
+import { DtoModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
-import { CollectionResourceBrokerController } from './controllers/broker/collectionResource/collectionResourceController';
+import { DatabaseModule } from '@shared/database/databaseModule';
+
 import { CollectionResourceMapper } from './mappers/collectionResource/collectionResourceMapper';
 import { CollectionResourceRepositoryFactory } from './repositories/collectionResource/collectionResourceRepository';
 import { CollectionResourceService } from './services/collectionResource/collectionResourceService';
 
 @Module({
-  providers: [
-    CollectionResourceService,
-    CollectionResourceMapper,
-    CollectionResourceRepositoryFactory,
-    CollectionResourceBrokerController,
-  ],
+  imports: [DatabaseModule, DtoModule],
+  providers: [CollectionResourceService, CollectionResourceMapper, CollectionResourceRepositoryFactory],
   exports: [CollectionResourceService],
 })
 export class CollectionResourceModule {}

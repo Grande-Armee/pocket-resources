@@ -1,12 +1,14 @@
-import { TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 
 import { CollectionRepositoryFactory } from '@domain/collection/repositories/collection/collectionRepository';
 import { CollectionTestDataGenerator } from '@domain/collection/testDataGenerators/collectionTestDataGenerator';
 import { CollectionResourceRepositoryFactory } from '@domain/collectionResource/repositories/collectionResource/collectionResourceRepository';
+import { DomainModule } from '@domain/domainModule';
 import { ResourceRepositoryFactory } from '@domain/resource/repositories/resource/resourceRepository';
 import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+import { DatabaseModule } from '@shared/database/databaseModule';
+import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 
 import { CollectionResourceTestDataGenerator } from '../../testDataGenerators/collectionResourceTestDataGenerator';
 import { CollectionResourceService } from './collectionResourceService';
@@ -26,7 +28,10 @@ describe('CollectionResourceService', () => {
   let collectionRepositoryFactory: CollectionRepositoryFactory;
 
   beforeEach(async () => {
-    testingModule = await TestModuleHelper.createTestingModule();
+    testingModule = await Test.createTestingModule({
+      imports: [DatabaseModule, UnitOfWorkModule, DomainModule],
+    }).compile();
+
     postgresHelper = new PostgresHelper(testingModule);
     resourceTestDataGenerator = new ResourceTestDataGenerator();
     collectionResourceTestDataGenerator = new CollectionResourceTestDataGenerator();
