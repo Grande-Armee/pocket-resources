@@ -2,8 +2,8 @@ import { LoggerService } from '@grande-armee/pocket-common';
 import '../pathAliases';
 
 import { migrationRevertHandler, migrationRunHandler } from './handlers';
-import { ScriptHandler } from './interfaces';
 import { setupAppContext } from './setupAppContext';
+import { ScriptHandler } from './types';
 
 const scripts = new Map<string, ScriptHandler>()
   .set('migration.run', migrationRunHandler)

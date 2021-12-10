@@ -1,7 +1,7 @@
 import { IntegrationEventsStore, LoggerService, UnitOfWork } from '@grande-armee/pocket-common';
 import { QueryRunner } from 'typeorm';
 
-import { TransactionalEntityManager, TransactionIsolationLevel } from './interfaces';
+import { TransactionalEntityManager, TransactionIsolationLevel } from './types';
 
 export class PostgresUnitOfWork extends UnitOfWork {
   public readonly entityManager: TransactionalEntityManager;

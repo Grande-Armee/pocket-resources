@@ -32,6 +32,14 @@ export class UserResourceTagTestDataGenerator implements EntityTestDataGenerator
     return datatype.uuid();
   }
 
+  public generateUserId(): string {
+    return datatype.uuid();
+  }
+
+  public generateResourceId(): string {
+    return datatype.uuid();
+  }
+
   public generateTagId(): string {
     return datatype.uuid();
   }

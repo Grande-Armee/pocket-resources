@@ -1,3 +1,4 @@
+import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
@@ -5,13 +6,18 @@ import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFacto
 import { ResourceDto } from '../../dtos/resourceDto';
 import { ResourceCreatedEvent, ResourceUpdatedEvent, ResourceRemovedEvent } from '../../integrationEvents';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
-import { CreateResourceData, UpdateResourceData } from './interfaces';
+import { CreateResourceData, UpdateResourceData } from './types';
 
 @Injectable()
 export class ResourceService {
-  public constructor(private readonly resourceRepositoryFactory: ResourceRepositoryFactory) {}
+  public constructor(
+    private readonly resourceRepositoryFactory: ResourceRepositoryFactory,
+    private readonly logger: LoggerService,
+  ) {}
 
   public async createResource(unitOfWork: PostgresUnitOfWork, resourceData: CreateResourceData): Promise<ResourceDto> {
+    this.logger.debug('Creating resource...');
+
     const { entityManager, integrationEventsStore } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
@@ -32,6 +38,8 @@ export class ResourceService {
         new Date(),
       ),
     );
+
+    this.logger.info('Resource created.', { resourceId: resource.id });
 
     return resource;
   }
@@ -54,6 +62,8 @@ export class ResourceService {
     resourceId: string,
     resourceData: UpdateResourceData,
   ): Promise<ResourceDto> {
+    this.logger.debug('Updating resource...', { resourceId: resourceId });
+
     const { entityManager, integrationEventsStore } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
@@ -69,10 +79,14 @@ export class ResourceService {
       ),
     );
 
+    this.logger.info('Resource updated.', { resourceId: resource.id });
+
     return resource;
   }
 
   public async removeResource(unitOfWork: PostgresUnitOfWork, resourceId: string): Promise<void> {
+    this.logger.debug('Removing resource...', { resourceId: resourceId });
+
     const { entityManager, integrationEventsStore } = unitOfWork;
     const resourceRepository = this.resourceRepositoryFactory.create(entityManager);
 
@@ -87,5 +101,7 @@ export class ResourceService {
         new Date(),
       ),
     );
+
+    this.logger.info('Resource removed.', { resourceId: resourceId });
   }
 }

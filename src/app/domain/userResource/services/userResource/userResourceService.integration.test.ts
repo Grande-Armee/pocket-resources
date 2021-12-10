@@ -87,15 +87,9 @@ describe('UserResourceService', () => {
           userId: userResourceData.userId,
         });
 
-        await userResourceTagRepository.createOne({
-          tagId: tag1.id,
-          userResourceId: userResource.id,
-        });
+        await userResourceTagRepository.createOne({ userResourceId: userResource.id, tagId: tag1.id });
 
-        await userResourceTagRepository.createOne({
-          tagId: tag2.id,
-          userResourceId: userResource.id,
-        });
+        await userResourceTagRepository.createOne({ userResourceId: userResource.id, tagId: tag2.id });
 
         const foundUserResourceDto = await userResourceService.findUserResource(unitOfWork, {
           resourceId: resource.id,

@@ -1,14 +1,18 @@
+import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { CollectionResourceDto } from '../../dtos/collectionResourceDto';
 import { CollectionResourceRepositoryFactory } from '../../repositories/collectionResource/collectionResourceRepository';
-import { CreateCollectionResourceData, RemoveCollectionResourceData } from './interfaces';
+import { CreateCollectionResourceData, RemoveCollectionResourceData } from './types';
 
 @Injectable()
 export class CollectionResourceService {
-  public constructor(private readonly collectionResourceRepositoryFactory: CollectionResourceRepositoryFactory) {}
+  public constructor(
+    private readonly collectionResourceRepositoryFactory: CollectionResourceRepositoryFactory,
+    private readonly logger: LoggerService,
+  ) {}
 
   public async findCollectionResource(
     unitOfWork: PostgresUnitOfWork,
@@ -30,10 +34,17 @@ export class CollectionResourceService {
     unitOfWork: PostgresUnitOfWork,
     collectionResourceData: CreateCollectionResourceData,
   ): Promise<CollectionResourceDto> {
+    this.logger.debug('Creating collection resource...', {
+      collectionId: collectionResourceData.collectionId,
+      resourceId: collectionResourceData.resourceId,
+    });
+
     const { entityManager } = unitOfWork;
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 
     const collectionResource = await collectionResourceRepository.createOne(collectionResourceData);
+
+    this.logger.info('Collection resource created.', { collectionResourceId: collectionResource.id });
 
     return collectionResource;
   }
@@ -42,6 +53,11 @@ export class CollectionResourceService {
     unitOfWork: PostgresUnitOfWork,
     collectionResourceData: RemoveCollectionResourceData,
   ): Promise<void> {
+    this.logger.debug('Removing collection resource...', {
+      collectionId: collectionResourceData.collectionId,
+      resourceId: collectionResourceData.resourceId,
+    });
+
     const { entityManager } = unitOfWork;
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 
@@ -52,5 +68,7 @@ export class CollectionResourceService {
     }
 
     await collectionResourceRepository.removeOne(foundCollectionResource.id);
+
+    this.logger.info('Collection resource removed.', { collectionResourceId: foundCollectionResource.id });
   }
 }

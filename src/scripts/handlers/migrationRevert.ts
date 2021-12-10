@@ -1,7 +1,7 @@
 import { getConnectionToken } from '@nestjs/typeorm';
 import { Connection, MigrationExecutor } from 'typeorm';
 
-import { ScriptHandler } from '../interfaces';
+import { ScriptHandler } from '../types';
 
 export const migrationRevertHandler: ScriptHandler = async (appContext) => {
   const connection = appContext.get<Connection>(getConnectionToken());
