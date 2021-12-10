@@ -14,7 +14,7 @@ import { CollectionTestDataGenerator } from '../../testDataGenerators/collection
 import { CollectionMapper } from './collectionMapper';
 
 describe('CollectionMapper', () => {
-  let moduleRef: TestingModule;
+  let testingModule: TestingModule;
   let postgresHelper: PostgresHelper;
   let collectionTestDataGenerator: CollectionTestDataGenerator;
   let resourceTestDataGenerator: ResourceTestDataGenerator;
@@ -23,19 +23,19 @@ describe('CollectionMapper', () => {
   let collectionMapper: CollectionMapper;
 
   beforeEach(async () => {
-    moduleRef = await Test.createTestingModule({
+    testingModule = await Test.createTestingModule({
       imports: [UnitOfWorkModule, DatabaseModule, CollectionModule],
     }).compile();
-    postgresHelper = new PostgresHelper(moduleRef);
+    postgresHelper = new PostgresHelper(testingModule);
     collectionTestDataGenerator = new CollectionTestDataGenerator();
     resourceTestDataGenerator = new ResourceTestDataGenerator();
 
-    resourceMapper = moduleRef.get(ResourceMapper);
-    collectionMapper = moduleRef.get(CollectionMapper);
+    resourceMapper = testingModule.get(ResourceMapper);
+    collectionMapper = testingModule.get(CollectionMapper);
   });
 
   afterEach(async () => {
-    await moduleRef.close();
+    await testingModule.close();
   });
 
   describe('Map collection', () => {
