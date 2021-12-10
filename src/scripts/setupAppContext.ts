@@ -1,11 +1,19 @@
 import { LoggerService } from '@grande-armee/pocket-common';
-import { INestApplicationContext } from '@nestjs/common';
+import { INestApplicationContext, Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
-import { AppModule } from '@src/app/appModule';
+import { DatabaseModule } from '@shared/database/databaseModule';
+import { LoggerModule } from '@shared/logger/loggerModule';
+
+// import { AppModule } from '../app/appModule';
+
+@Module({
+  imports: [DatabaseModule, LoggerModule],
+})
+class ScriptsModule {}
 
 export const setupAppContext = async (): Promise<INestApplicationContext> => {
-  const app = await NestFactory.createApplicationContext(AppModule, {
+  const app = await NestFactory.createApplicationContext(ScriptsModule, {
     bufferLogs: true,
   });
 

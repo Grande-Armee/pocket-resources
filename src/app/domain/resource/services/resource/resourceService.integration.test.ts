@@ -1,7 +1,9 @@
-import { TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 
+import { DomainModule } from '@domain/domainModule';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+import { DatabaseModule } from '@shared/database/databaseModule';
+import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 
 import { ResourceCreatedEvent, ResourceRemovedEvent, ResourceUpdatedEvent } from '../../integrationEvents';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
@@ -17,7 +19,10 @@ describe('ResourceService', () => {
   let resourceRepositoryFactory: ResourceRepositoryFactory;
 
   beforeEach(async () => {
-    testingModule = await TestModuleHelper.createTestingModule();
+    testingModule = await Test.createTestingModule({
+      imports: [DatabaseModule, UnitOfWorkModule, DomainModule],
+    }).compile();
+
     postgresHelper = new PostgresHelper(testingModule);
     resourceTestDataGenerator = new ResourceTestDataGenerator();
 
@@ -34,7 +39,7 @@ describe('ResourceService', () => {
       expect.assertions(4);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager, integrationEventsDispatcher } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -48,7 +53,7 @@ describe('ResourceService', () => {
 
         expect(resourceDto).not.toBeNull();
 
-        const integrationEvents = integrationEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
         expect(integrationEvents.at(0) instanceof ResourceCreatedEvent).toBe(true);
@@ -115,7 +120,7 @@ describe('ResourceService', () => {
       expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager, integrationEventsDispatcher } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -134,7 +139,7 @@ describe('ResourceService', () => {
 
         expect(resourceInDb).not.toBeNull();
 
-        const integrationEvents = integrationEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
         expect(integrationEvents.at(0) instanceof ResourceUpdatedEvent).toBe(true);
@@ -161,7 +166,7 @@ describe('ResourceService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager, integrationEventsDispatcher } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
 
@@ -175,7 +180,7 @@ describe('ResourceService', () => {
 
         expect(resourceInDb).toBeNull();
 
-        const integrationEvents = integrationEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
         expect(integrationEvents.at(0) instanceof ResourceRemovedEvent).toBe(true);

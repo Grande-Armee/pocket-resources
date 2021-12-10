@@ -1,12 +1,15 @@
+import { DtoModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
-import { TagBrokerController } from './controllers/broker/tag/tagController';
+import { DatabaseModule } from '@shared/database/databaseModule';
+
 import { TagMapper } from './mappers/tag/tagMapper';
 import { TagRepositoryFactory } from './repositories/tag/tagRepository';
 import { TagService } from './services/tag/tagService';
 
 @Module({
-  providers: [TagService, TagMapper, TagRepositoryFactory, TagBrokerController],
+  imports: [DatabaseModule, DtoModule],
+  providers: [TagService, TagMapper, TagRepositoryFactory],
   exports: [TagService, TagMapper],
 })
 export class TagModule {}

@@ -1,8 +1,8 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
+import { UserResourceService } from '@domain/userResource/services/userResource/userResourceService';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
-import { UserResourceService } from '@src/app/domain/userResource/services/userResource/userResourceService';
 
 import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
 import { UserResourceTagRepositoryFactory } from '../../repositories/userResourceTag/userResourceTagRepository';

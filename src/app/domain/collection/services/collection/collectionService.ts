@@ -21,12 +21,12 @@ export class CollectionService {
   ): Promise<CollectionDto> {
     this.logger.debug('Creating collection...');
 
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.createOne(collectionData);
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new CollectionCreatedEvent(
         {
           id: collection.id,
@@ -61,12 +61,12 @@ export class CollectionService {
   ): Promise<CollectionDto> {
     this.logger.debug('Updating collection...', { collectionId: collectionId });
 
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     const collection = await collectionRepository.updateOne(collectionId, { ...collectionData });
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new CollectionUpdatedEvent(
         {
           id: collection.id,
@@ -84,12 +84,12 @@ export class CollectionService {
   public async removeCollection(unitOfWork: PostgresUnitOfWork, collectionId: string): Promise<void> {
     this.logger.debug('Removing collection...', { collectionId: collectionId });
 
-    const { entityManager, integrationEventsDispatcher } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const collectionRepository = this.collectionRepositoryFactory.create(entityManager);
 
     await collectionRepository.removeOne(collectionId);
 
-    integrationEventsDispatcher.addEvent(
+    integrationEventsStore.addEvent(
       new CollectionRemovedEvent(
         {
           id: collectionId,

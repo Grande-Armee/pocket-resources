@@ -1,10 +1,12 @@
-import { TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 
 import { CollectionResourceRepositoryFactory } from '@domain/collectionResource/repositories/collectionResource/collectionResourceRepository';
+import { DomainModule } from '@domain/domainModule';
 import { ResourceRepositoryFactory } from '@domain/resource/repositories/resource/resourceRepository';
 import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
-import { TestModuleHelper } from '@integration/helpers/testModuleHelper/testModuleHelper';
+import { DatabaseModule } from '@shared/database/databaseModule';
+import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 
 import { CollectionCreatedEvent, CollectionRemovedEvent, CollectionUpdatedEvent } from '../../integrationEvents';
 import { CollectionRepositoryFactory } from '../../repositories/collection/collectionRepository';
@@ -25,7 +27,10 @@ describe('CollectionService', () => {
   let collectionResourceRepositoryFactory: CollectionResourceRepositoryFactory;
 
   beforeEach(async () => {
-    testingModule = await TestModuleHelper.createTestingModule();
+    testingModule = await Test.createTestingModule({
+      imports: [DatabaseModule, UnitOfWorkModule, DomainModule],
+    }).compile();
+
     postgresHelper = new PostgresHelper(testingModule);
     collectionTestDataGenerator = new CollectionTestDataGenerator();
     resourceTestDataGenerator = new ResourceTestDataGenerator();
@@ -45,7 +50,7 @@ describe('CollectionService', () => {
       expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager, integrationEventsDispatcher } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
@@ -60,7 +65,7 @@ describe('CollectionService', () => {
 
         expect(collectionDto).not.toBeNull();
 
-        const integrationEvents = integrationEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
         expect(integrationEvents.at(0) instanceof CollectionCreatedEvent).toBe(true);
@@ -125,7 +130,7 @@ describe('CollectionService', () => {
       expect.assertions(4);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager, integrationEventsDispatcher } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
@@ -147,7 +152,7 @@ describe('CollectionService', () => {
 
         expect(collectionInDb).not.toBeNull();
 
-        const integrationEvents = integrationEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
         expect(integrationEvents.at(0) instanceof CollectionUpdatedEvent).toBe(true);
@@ -174,7 +179,7 @@ describe('CollectionService', () => {
       expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager, integrationEventsDispatcher } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
 
@@ -188,7 +193,7 @@ describe('CollectionService', () => {
 
         expect(collectionInDb).toBeNull();
 
-        const integrationEvents = integrationEventsDispatcher.getEvents();
+        const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
         expect(integrationEvents.at(0) instanceof CollectionRemovedEvent).toBe(true);

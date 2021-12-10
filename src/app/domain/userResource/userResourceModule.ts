@@ -1,15 +1,17 @@
+import { DtoModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
+
+import { DatabaseModule } from '@shared/database/databaseModule';
 
 import { ResourceModule } from '../resource/resourceModule';
 import { TagModule } from '../tag/tagModule';
-import { UserResourceBrokerController } from './controllers/broker/userResource/userResourceController';
 import { UserResourceMapper } from './mappers/userResource/userResourceMapper';
 import { UserResourceRepositoryFactory } from './repositories/userResource/userResourceRepository';
 import { UserResourceService } from './services/userResource/userResourceService';
 
 @Module({
-  imports: [ResourceModule, TagModule],
-  providers: [UserResourceService, UserResourceMapper, UserResourceRepositoryFactory, UserResourceBrokerController],
+  imports: [DatabaseModule, DtoModule, ResourceModule, TagModule],
+  providers: [UserResourceService, UserResourceMapper, UserResourceRepositoryFactory],
   exports: [UserResourceService],
 })
 export class UserResourceModule {}
