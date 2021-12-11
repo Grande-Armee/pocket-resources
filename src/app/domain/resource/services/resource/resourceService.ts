@@ -76,6 +76,12 @@ export class ResourceService {
     integrationEventsStore.addEvent(
       new ResourceUpdatedEvent({
         id: resource.id,
+        createdAt: resource.createdAt,
+        updatedAt: resource.updatedAt,
+        url: resource.url,
+        title: resource.title,
+        thumbnailUrl: resource.thumbnailUrl,
+        content: resource.content,
       }),
     );
 

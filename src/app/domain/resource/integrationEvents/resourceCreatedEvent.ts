@@ -11,5 +11,5 @@ export interface ResourceCreatedEventPayload {
 }
 
 export class ResourceCreatedEvent extends IntegrationEvent<ResourceCreatedEventPayload> {
-  public readonly name = 'RESOURCE_CREATED';
+  public readonly name = 'pocket.resources.resources.resourceCreated';
 }

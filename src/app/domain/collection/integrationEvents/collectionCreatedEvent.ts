@@ -14,5 +14,5 @@ export interface CollectionCreatedEventPayload {
 }
 
 export class CollectionCreatedEvent extends IntegrationEvent<CollectionCreatedEventPayload> {
-  public readonly name = 'COLLECTION_CREATED';
+  public readonly name = 'pocket.resources.collections.collectionCreated';
 }

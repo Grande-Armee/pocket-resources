@@ -5,5 +5,5 @@ export interface CollectionResourceRemovedEventPayload {
 }
 
 export class CollectionResourceRemovedEvent extends IntegrationEvent<CollectionResourceRemovedEventPayload> {
-  public readonly name = 'COLLECTION_RESOURCE_REMOVED';
+  public readonly name = 'pocket.resources.collectionResources.collectionResourceRemoved';
 }
