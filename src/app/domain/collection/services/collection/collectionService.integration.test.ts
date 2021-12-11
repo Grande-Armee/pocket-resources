@@ -11,6 +11,7 @@ import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 import { CollectionCreatedEvent, CollectionRemovedEvent, CollectionUpdatedEvent } from '../../integrationEvents';
 import { CollectionRepositoryFactory } from '../../repositories/collection/collectionRepository';
 import { CollectionTestDataGenerator } from '../../testDataGenerators/collectionTestDataGenerator';
+import { CollectionNotFoundError } from './../../errors';
 import { CollectionService } from './collectionService';
 
 describe('CollectionService', () => {
@@ -119,7 +120,7 @@ describe('CollectionService', () => {
         try {
           await collectionService.findCollection(unitOfWork, nonExistingCollectionId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof CollectionNotFoundError).toBe(true);
         }
       });
     });
@@ -168,7 +169,7 @@ describe('CollectionService', () => {
         try {
           await collectionService.updateCollection(unitOfWork, nonExistingCollectionId, { title });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof CollectionNotFoundError).toBe(true);
         }
       });
     });
@@ -209,7 +210,7 @@ describe('CollectionService', () => {
         try {
           await collectionService.removeCollection(unitOfWork, nonExistingCollectionId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof CollectionNotFoundError).toBe(true);
         }
       });
     });

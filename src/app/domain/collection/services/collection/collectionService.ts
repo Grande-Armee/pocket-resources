@@ -30,6 +30,13 @@ export class CollectionService {
     integrationEventsStore.addEvent(
       new CollectionCreatedEvent({
         id: collection.id,
+        createdAt: collection.createdAt,
+        updatedAt: collection.updatedAt,
+        content: collection.content,
+        thumbnailUrl: collection.thumbnailUrl,
+        title: collection.title,
+        userId: collection.userId,
+        resources: collection.resources,
       }),
     );
 
