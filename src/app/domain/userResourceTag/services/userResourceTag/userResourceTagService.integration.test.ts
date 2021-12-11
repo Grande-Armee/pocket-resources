@@ -7,6 +7,8 @@ import { TagRepositoryFactory } from '@domain/tag/repositories/tag/tagRepository
 import { TagTestDataGenerator } from '@domain/tag/testDataGenerators/tagTestDataGenerator';
 import { UserResourceRepositoryFactory } from '@domain/userResource/repositories/userResource/userResourceRepository';
 import { UserResourceTestDataGenerator } from '@domain/userResource/testDataGenerators/userResourceTestDataGenerator';
+import { UserResourceTagNotFoundByIdsError } from '@domain/userResourceTag/errors/userResourceTagNotByFoundByIdsError';
+import { UserResourceTagCreatedEvent, UserResourceTagRemovedEvent } from '@domain/userResourceTag/integrationEvents';
 import { UserResourceTagRepositoryFactory } from '@domain/userResourceTag/repositories/userResourceTag/userResourceTagRepository';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';
@@ -116,7 +118,7 @@ describe('UserResourceTagService', () => {
             resourceId,
           });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof UserResourceTagNotFoundByIdsError).toBe(true);
         }
       });
     });
@@ -124,10 +126,10 @@ describe('UserResourceTagService', () => {
 
   describe('Create user resource tag', () => {
     it('creates user resource tag in database', async () => {
-      expect.assertions(3);
+      expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
@@ -164,6 +166,11 @@ describe('UserResourceTagService', () => {
         const userResourceDTO = await userResourceTagRepository.findOneById(createdUserResourceTagDTO.id);
 
         expect(userResourceDTO).not.toBeNull();
+
+        const integrationEvents = integrationEventsStore.getEvents();
+
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof UserResourceTagCreatedEvent).toBe(true);
       });
     });
 
@@ -216,10 +223,10 @@ describe('UserResourceTagService', () => {
 
   describe('Remove user resource tag', () => {
     it('removes user resource tag from database', async () => {
-      expect.assertions(1);
+      expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
@@ -258,6 +265,11 @@ describe('UserResourceTagService', () => {
         const userResourceTagInDb = await userResourceRepository.findOneById(userResourceTag.id);
 
         expect(userResourceTagInDb).toBeNull();
+
+        const integrationEvents = integrationEventsStore.getEvents();
+
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0) instanceof UserResourceTagRemovedEvent).toBe(true);
       });
     });
 
@@ -276,7 +288,7 @@ describe('UserResourceTagService', () => {
             resourceId,
           });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof UserResourceTagNotFoundByIdsError).toBe(true);
         }
       });
     });

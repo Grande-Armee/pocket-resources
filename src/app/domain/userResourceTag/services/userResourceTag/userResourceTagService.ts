@@ -2,6 +2,8 @@ import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { UserResourceService } from '@domain/userResource/services/userResource/userResourceService';
+import { UserResourceTagNotFoundByIdsError } from '@domain/userResourceTag/errors/userResourceTagNotByFoundByIdsError';
+import { UserResourceTagCreatedEvent, UserResourceTagRemovedEvent } from '@domain/userResourceTag/integrationEvents';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
@@ -28,7 +30,7 @@ export class UserResourceTagService {
     const userResourceTag = await userResourceTagRepository.findOneByIds(userId, resourceId, tagId);
 
     if (!userResourceTag) {
-      throw new Error('User resource tag not found.');
+      throw new UserResourceTagNotFoundByIdsError({ userId, resourceId, tagId });
     }
 
     return userResourceTag;
@@ -44,7 +46,7 @@ export class UserResourceTagService {
       tagId: userResourceTagData.tagId,
     });
 
-    const { entityManager } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
     const { userId, resourceId, tagId } = userResourceTagData;
@@ -55,6 +57,16 @@ export class UserResourceTagService {
       userResourceId: userResource.id,
       tagId,
     });
+
+    integrationEventsStore.addEvent(
+      new UserResourceTagCreatedEvent({
+        id: userResourceTag.id,
+        createdAt: userResourceTag.createdAt,
+        updatedAt: userResourceTag.updatedAt,
+        userResourceId: userResourceTag.userResourceId,
+        tagId: userResourceTag.tagId,
+      }),
+    );
 
     this.logger.info('User resource tag created.', { userResourceTagId: userResourceTag.id });
 
@@ -71,7 +83,7 @@ export class UserResourceTagService {
       tagId: userResourceTagData.tagId,
     });
 
-    const { entityManager } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const userResourceTagRepository = this.userResourceTagRepositoryFactory.create(entityManager);
 
     const { userId, resourceId, tagId } = userResourceTagData;
@@ -79,8 +91,14 @@ export class UserResourceTagService {
     const userResourceTag = await userResourceTagRepository.findOneByIds(userId, resourceId, tagId);
 
     if (!userResourceTag) {
-      throw new Error('User resource tag not found.');
+      throw new UserResourceTagNotFoundByIdsError({ userId, resourceId, tagId });
     }
+
+    integrationEventsStore.addEvent(
+      new UserResourceTagRemovedEvent({
+        id: userResourceTag.id,
+      }),
+    );
 
     this.logger.info('User resource tag removed.', { userResourceTagId: userResourceTag.id });
 

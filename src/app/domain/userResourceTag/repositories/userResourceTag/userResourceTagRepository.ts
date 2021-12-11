@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
+import { UserResourceTagNotFoundByIdError } from '@domain/userResourceTag/errors';
 import { RepositoryFactory } from '@shared/database/types';
 
 import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
@@ -59,7 +60,7 @@ export class UserResourceTagRepository {
     const userResourceTag = await this.findOneById(id);
 
     if (!userResourceTag) {
-      throw new Error('User resource tag not found');
+      throw new UserResourceTagNotFoundByIdError({ id });
     }
 
     await this.manager.delete(UserResourceTag, { id });
