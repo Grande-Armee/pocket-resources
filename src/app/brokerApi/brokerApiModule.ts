@@ -26,6 +26,5 @@ import { UserResourceTagBrokerModule } from './userResourceTag/userResourceTagBr
     UserResourceBrokerModule,
     UserResourceTagBrokerModule,
   ],
-  exports: [CollectionBrokerModule],
 })
 export class BrokerApiModule {}
