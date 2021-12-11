@@ -5,5 +5,5 @@ export interface TagRemovedEventPayload {
 }
 
 export class TagRemovedEvent extends IntegrationEvent<TagRemovedEventPayload> {
-  public readonly name = 'TAG_REMOVED';
+  public readonly name = 'pocket.resources.tags.tagRemoved';
 }

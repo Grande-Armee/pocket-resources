@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DomainModule } from '@domain/domainModule';
+import { TagNotFoundError } from '@domain/tag/errors';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';
 import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
@@ -91,7 +92,7 @@ describe('TagService', () => {
         try {
           await tagService.findTag(unitOfWork, nonExistingId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof TagNotFoundError).toBe(true);
         }
       });
     });
@@ -137,7 +138,7 @@ describe('TagService', () => {
         try {
           await tagService.updateTag(unitOfWork, nonExistingId, { title });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof TagNotFoundError).toBe(true);
         }
       });
     });
@@ -178,7 +179,7 @@ describe('TagService', () => {
         try {
           await tagService.removeTag(unitOfWork, nonExistingId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof TagNotFoundError).toBe(true);
         }
       });
     });
