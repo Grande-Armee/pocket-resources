@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
+import { UserResourceNotFoundByIdError } from '@domain/userResource/errors';
 import { RepositoryFactory } from '@shared/database/types';
 
 import { UserResourceDto } from '../../dtos/userResourceDto';
@@ -62,7 +63,7 @@ export class UserResourceRepository {
     const userResource = await this.findOneById(id);
 
     if (!userResource) {
-      throw new Error('User resource not found');
+      throw new UserResourceNotFoundByIdError({ id: id });
     }
 
     await this.manager.update(UserResource, { id }, data);
@@ -74,7 +75,7 @@ export class UserResourceRepository {
     const userResource = await this.findOneById(id);
 
     if (!userResource) {
-      throw new Error('User resource not found');
+      throw new UserResourceNotFoundByIdError({ id: id });
     }
 
     await this.manager.delete(UserResource, { id });

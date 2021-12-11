@@ -1,6 +1,12 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
+import { UserResourceNotFoundByUserAndResourceIdError } from '@domain/userResource/errors';
+import {
+  UserResourceCreatedEvent,
+  UserResourceRemovedEvent,
+  UserResourceUpdatedEvent,
+} from '@domain/userResource/integrationEvents';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceDto } from '../../dtos/userResourceDto';
@@ -24,7 +30,10 @@ export class UserResourceService {
     const userResource = await userResourceRepository.findOne({ ...findUserResourceData });
 
     if (!userResource) {
-      throw new Error('User resource not found.');
+      throw new UserResourceNotFoundByUserAndResourceIdError({
+        userId: findUserResourceData.userId,
+        resourceId: findUserResourceData.resourceId,
+      });
     }
 
     return userResource;
@@ -39,10 +48,25 @@ export class UserResourceService {
       resourceId: userResourceData.resourceId,
     });
 
-    const { entityManager } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const userResource = await userResourceRepository.createOne(userResourceData);
+
+    integrationEventsStore.addEvent(
+      new UserResourceCreatedEvent({
+        id: userResource.id,
+        createdAt: userResource.createdAt,
+        updatedAt: userResource.updatedAt,
+        status: userResource.status,
+        isFavorite: userResource.isFavorite,
+        rating: userResource.rating,
+        resource: userResource.resource,
+        resourceId: userResource.resourceId,
+        userId: userResource.userId,
+        tags: userResource.tags,
+      }),
+    );
 
     this.logger.info('User resource created.', { userResourceId: userResource.id });
 
@@ -59,16 +83,34 @@ export class UserResourceService {
       resourceId: findUserResourceData.resourceId,
     });
 
-    const { entityManager } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const foundUserResource = await userResourceRepository.findOne({ ...findUserResourceData });
 
     if (!foundUserResource) {
-      throw new Error('User resource not found.');
+      throw new UserResourceNotFoundByUserAndResourceIdError({
+        userId: findUserResourceData.userId,
+        resourceId: findUserResourceData.resourceId,
+      });
     }
 
     const userResource = await userResourceRepository.updateOne(foundUserResource.id, { ...userResourceData });
+
+    integrationEventsStore.addEvent(
+      new UserResourceUpdatedEvent({
+        id: userResource.id,
+        createdAt: userResource.createdAt,
+        updatedAt: userResource.updatedAt,
+        status: userResource.status,
+        isFavorite: userResource.isFavorite,
+        rating: userResource.rating,
+        resource: userResource.resource,
+        resourceId: userResource.resourceId,
+        userId: userResource.userId,
+        tags: userResource.tags,
+      }),
+    );
 
     this.logger.info('User resource updated.', { userResourceId: userResource.id });
 
@@ -84,14 +126,23 @@ export class UserResourceService {
       resourceId: findUserResourceData.resourceId,
     });
 
-    const { entityManager } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const userResourceRepository = this.userResourceRepositoryFactory.create(entityManager);
 
     const foundUserResource = await userResourceRepository.findOne({ ...findUserResourceData });
 
     if (!foundUserResource) {
-      throw new Error('User resource not found.');
+      throw new UserResourceNotFoundByUserAndResourceIdError({
+        userId: findUserResourceData.userId,
+        resourceId: findUserResourceData.resourceId,
+      });
     }
+
+    integrationEventsStore.addEvent(
+      new UserResourceRemovedEvent({
+        id: foundUserResource.id,
+      }),
+    );
 
     this.logger.info('User resource removed.', { userResourceId: foundUserResource.id });
 

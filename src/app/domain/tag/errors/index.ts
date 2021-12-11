@@ -1,1 +1,1 @@
-export * from './resourceNotFoundError';
+export * from './tagNotFoundError';
