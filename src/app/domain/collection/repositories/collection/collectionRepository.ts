@@ -5,6 +5,7 @@ import { RepositoryFactory } from '@shared/database/types';
 
 import { CollectionDto } from '../../dtos/collectionDto';
 import { Collection } from '../../entities/collection';
+import { CollectionNotFoundError } from '../../errors';
 import { CollectionMapper } from '../../mappers/collection/collectionMapper';
 
 @EntityRepository()
@@ -55,7 +56,7 @@ export class CollectionRepository {
     const collection = await this.findOneById(id);
 
     if (!collection) {
-      throw new Error('Collection not found');
+      throw new CollectionNotFoundError({ id });
     }
 
     await this.manager.update(Collection, { id }, data);
@@ -67,7 +68,7 @@ export class CollectionRepository {
     const collection = await this.findOneById(id);
 
     if (!collection) {
-      throw new Error('Collection not found');
+      throw new CollectionNotFoundError({ id });
     }
 
     await this.manager.delete(Collection, { id });

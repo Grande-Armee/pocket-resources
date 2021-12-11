@@ -43,7 +43,7 @@ export class CollectionBrokerController {
       return collection;
     });
 
-    return this.dtoFactory.create(CreateCollectionResponseDto, {
+    const result = this.dtoFactory.create(CreateCollectionResponseDto, {
       collection: {
         id: collection.id,
         createdAt: collection.createdAt,
@@ -55,6 +55,10 @@ export class CollectionBrokerController {
         resources: collection.resources,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(CollectionRoutingKey.findCollection)

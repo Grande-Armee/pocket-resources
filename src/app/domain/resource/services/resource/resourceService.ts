@@ -30,13 +30,9 @@ export class ResourceService {
     const resource = await resourceRepository.createOne(resourceData);
 
     integrationEventsStore.addEvent(
-      new ResourceCreatedEvent(
-        {
-          id: resource.id,
-        },
-        'id',
-        new Date(),
-      ),
+      new ResourceCreatedEvent({
+        id: resource.id,
+      }),
     );
 
     this.logger.info('Resource created.', { resourceId: resource.id });
@@ -70,13 +66,9 @@ export class ResourceService {
     const resource = await resourceRepository.updateOne(resourceId, { ...resourceData });
 
     integrationEventsStore.addEvent(
-      new ResourceUpdatedEvent(
-        {
-          id: resource.id,
-        },
-        'id',
-        new Date(),
-      ),
+      new ResourceUpdatedEvent({
+        id: resource.id,
+      }),
     );
 
     this.logger.info('Resource updated.', { resourceId: resource.id });
@@ -93,13 +85,9 @@ export class ResourceService {
     await resourceRepository.removeOne(resourceId);
 
     integrationEventsStore.addEvent(
-      new ResourceRemovedEvent(
-        {
-          id: resourceId,
-        },
-        'id',
-        new Date(),
-      ),
+      new ResourceRemovedEvent({
+        id: resourceId,
+      }),
     );
 
     this.logger.info('Resource removed.', { resourceId: resourceId });
