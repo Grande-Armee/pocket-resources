@@ -1,6 +1,7 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
+import { CollectionNotFoundError } from '@domain/collection/errors';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { CollectionDto } from '../../dtos/collectionDto';
@@ -27,13 +28,9 @@ export class CollectionService {
     const collection = await collectionRepository.createOne(collectionData);
 
     integrationEventsStore.addEvent(
-      new CollectionCreatedEvent(
-        {
-          id: collection.id,
-        },
-        'id',
-        new Date(),
-      ),
+      new CollectionCreatedEvent({
+        id: collection.id,
+      }),
     );
 
     this.logger.info('Collection created.', { collectionId: collection.id });
@@ -48,7 +45,7 @@ export class CollectionService {
     const collection = await collectionRepository.findOne({ id: collectionId });
 
     if (!collection) {
-      throw new Error(`Collection with id ${collectionId} not found.`);
+      throw new CollectionNotFoundError({ id: collectionId });
     }
 
     return collection;
@@ -67,13 +64,9 @@ export class CollectionService {
     const collection = await collectionRepository.updateOne(collectionId, { ...collectionData });
 
     integrationEventsStore.addEvent(
-      new CollectionUpdatedEvent(
-        {
-          id: collection.id,
-        },
-        'id',
-        new Date(),
-      ),
+      new CollectionUpdatedEvent({
+        id: collection.id,
+      }),
     );
 
     this.logger.info('Collection updated.', { collectionId: collection.id });
@@ -90,13 +83,9 @@ export class CollectionService {
     await collectionRepository.removeOne(collectionId);
 
     integrationEventsStore.addEvent(
-      new CollectionRemovedEvent(
-        {
-          id: collectionId,
-        },
-        'id',
-        new Date(),
-      ),
+      new CollectionRemovedEvent({
+        id: collectionId,
+      }),
     );
 
     this.logger.info('Collection removed.', { collectionId: collectionId });

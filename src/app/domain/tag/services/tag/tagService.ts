@@ -24,13 +24,9 @@ export class TagService {
     const tag = await tagRepository.createOne(tagData);
 
     integrationEventsStore.addEvent(
-      new TagCreatedEvent(
-        {
-          id: tag.id,
-        },
-        'id',
-        new Date(),
-      ),
+      new TagCreatedEvent({
+        id: tag.id,
+      }),
     );
 
     this.logger.info('Tag created.', { tagId: tag.id });
@@ -60,13 +56,9 @@ export class TagService {
     const tag = await tagRepository.updateOne(tagId, { ...tagData });
 
     integrationEventsStore.addEvent(
-      new TagUpdatedEvent(
-        {
-          id: tag.id,
-        },
-        'id',
-        new Date(),
-      ),
+      new TagUpdatedEvent({
+        id: tag.id,
+      }),
     );
 
     this.logger.info('Tag updated.', { tagId: tagId });
@@ -83,13 +75,9 @@ export class TagService {
     await tagRepository.removeOne(tagId);
 
     integrationEventsStore.addEvent(
-      new TagRemovedEvent(
-        {
-          id: tagId,
-        },
-        'id',
-        new Date(),
-      ),
+      new TagRemovedEvent({
+        id: tagId,
+      }),
     );
 
     this.logger.info('Tag removed.', { tagId: tagId });
