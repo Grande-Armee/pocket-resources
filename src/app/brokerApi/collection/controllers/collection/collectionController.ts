@@ -75,7 +75,7 @@ export class CollectionBrokerController {
       return collection;
     });
 
-    return this.dtoFactory.create(CreateCollectionResponseDto, {
+    return this.dtoFactory.create(FindCollectionResponseDto, {
       collection: {
         id: collection.id,
         createdAt: collection.createdAt,
@@ -107,7 +107,7 @@ export class CollectionBrokerController {
       return collection;
     });
 
-    return this.dtoFactory.create(CreateCollectionResponseDto, {
+    const result = this.dtoFactory.create(UpdateCollectionResponseDto, {
       collection: {
         id: collection.id,
         createdAt: collection.createdAt,
@@ -119,6 +119,10 @@ export class CollectionBrokerController {
         resources: collection.resources,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(CollectionRoutingKey.removeCollection)
@@ -132,5 +136,7 @@ export class CollectionBrokerController {
 
       await this.collectionService.removeCollection(unitOfWork, collectionId);
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
   }
 }

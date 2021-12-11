@@ -43,7 +43,7 @@ export class UserResourceBrokerController {
       return userResource;
     });
 
-    return this.dtoFactory.create(CreateUserResourceResponseDto, {
+    const result = this.dtoFactory.create(CreateUserResourceResponseDto, {
       userResource: {
         id: userResource.id,
         createdAt: userResource.createdAt,
@@ -57,6 +57,10 @@ export class UserResourceBrokerController {
         tags: userResource.tags,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(UserResourceRoutingKey.findUserResource)
@@ -73,7 +77,7 @@ export class UserResourceBrokerController {
       return userResource;
     });
 
-    return this.dtoFactory.create(CreateUserResourceResponseDto, {
+    return this.dtoFactory.create(FindUserResourceResponseDto, {
       userResource: {
         id: userResource.id,
         createdAt: userResource.createdAt,
@@ -111,7 +115,7 @@ export class UserResourceBrokerController {
       return userResource;
     });
 
-    return this.dtoFactory.create(CreateUserResourceResponseDto, {
+    const result = this.dtoFactory.create(UpdateUserResourceResponseDto, {
       userResource: {
         id: userResource.id,
         createdAt: userResource.createdAt,
@@ -125,6 +129,10 @@ export class UserResourceBrokerController {
         tags: userResource.tags,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(UserResourceRoutingKey.removeUserResource)
@@ -138,5 +146,7 @@ export class UserResourceBrokerController {
 
       await this.userResourceService.removeUserResource(unitOfWork, { userId, resourceId });
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
   }
 }

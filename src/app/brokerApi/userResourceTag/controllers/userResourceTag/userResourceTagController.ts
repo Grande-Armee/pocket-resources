@@ -28,9 +28,9 @@ export class UserResourceTagBrokerController {
 
     const { data } = await this.brokerService.parseMessage(CreateUserResourceTagPayloadDto, message);
 
-    const userResourceTag = await unitOfWork.runInTransaction(async () => {
-      const { userId, resourceId, tagId } = data.payload;
+    const { userId, resourceId, tagId } = data.payload;
 
+    const userResourceTag = await unitOfWork.runInTransaction(async () => {
       const userResourceTag = await this.userResourceTagService.createUserResourceTag(unitOfWork, {
         userId,
         resourceId,
@@ -40,17 +40,20 @@ export class UserResourceTagBrokerController {
       return userResourceTag;
     });
 
-    // TODO: fix assigning the same id to userId and resourceId
-    return this.dtoFactory.create(CreateUserResourceTagResponseDto, {
+    const result = this.dtoFactory.create(CreateUserResourceTagResponseDto, {
       userResourceTag: {
         id: userResourceTag.id,
         createdAt: userResourceTag.createdAt,
         updatedAt: userResourceTag.updatedAt,
-        userId: userResourceTag.userResourceId,
-        resourceId: userResourceTag.userResourceId,
+        userId: userId,
+        resourceId: resourceId,
         tagId: userResourceTag.tagId,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(UserResourceTagRoutingKey.removeUserResourceTag)
@@ -64,5 +67,7 @@ export class UserResourceTagBrokerController {
 
       await this.userResourceTagService.removeUserResourceTag(unitOfWork, { userId, resourceId, tagId });
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
   }
 }

@@ -42,7 +42,7 @@ export class ResourceBrokerController {
       return resource;
     });
 
-    return this.dtoFactory.create(CreateResourceResponseDto, {
+    const result = this.dtoFactory.create(CreateResourceResponseDto, {
       resource: {
         id: resource.id,
         createdAt: resource.createdAt,
@@ -53,6 +53,10 @@ export class ResourceBrokerController {
         content: resource.content,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(ResourceRoutingKey.findResource)
@@ -100,7 +104,7 @@ export class ResourceBrokerController {
       return resource;
     });
 
-    return this.dtoFactory.create(UpdateResourceResponseDto, {
+    const result = this.dtoFactory.create(UpdateResourceResponseDto, {
       resource: {
         id: resource.id,
         createdAt: resource.createdAt,
@@ -111,6 +115,10 @@ export class ResourceBrokerController {
         content: resource.content,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(ResourceRoutingKey.removeResource)
@@ -124,5 +132,7 @@ export class ResourceBrokerController {
 
       await this.resourceService.removeResource(unitOfWork, resourceId);
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
   }
 }
