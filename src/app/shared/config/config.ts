@@ -1,45 +1,24 @@
-import * as dotenv from 'dotenv';
+import { EnvParser } from '@grande-armee/pocket-common';
 
-const loadEnvVariables = (): Record<string, string> => {
-  const { parsed: envVariables, error } = dotenv.config();
+const envParser = new EnvParser();
 
-  if (!envVariables) {
-    throw error;
-  }
-
-  return envVariables;
-};
-
-const envVariables = loadEnvVariables();
-
-// TODO: move to common
-const getEnvVariable = <T>(envVariableKey: string): T => {
-  const value = envVariables[envVariableKey];
-
-  if (!value) {
-    throw new Error(`Env variable ${envVariableKey} not set!`);
-  }
-
-  return value as any;
-};
-
-const e = getEnvVariable;
+const e = envParser.get.bind(envParser);
 
 export const config = {
   appName: 'pocket-resources',
   database: {
-    host: e<string>('POSTGRES_HOST'),
-    port: e<number>('POSTGRES_PORT'),
-    username: e<string>('POSTGRES_USERNAME'),
-    password: e<string>('POSTGRES_PASSWORD'),
-    databaseName: e<string>('POSTGRES_DATABASE_NAME'),
-    isLoggingEnabled: Boolean(e<boolean>('POSTGRES_IS_LOGGING_ENABLED')),
+    host: e('POSTGRES_HOST'),
+    port: Number(e('POSTGRES_PORT')),
+    username: e('POSTGRES_USERNAME'),
+    password: e('POSTGRES_PASSWORD'),
+    databaseName: e('POSTGRES_DATABASE_NAME'),
+    isLoggingEnabled: Boolean(e('POSTGRES_IS_LOGGING_ENABLED')),
   },
   broker: {
-    uri: e<string>('RABBITMQ_URI'),
+    uri: e('RABBITMQ_URI'),
   },
   logger: {
-    prettifyLogs: Boolean(e<boolean>('LOGGER_SHOULD_PRETTIFY_LOGS')),
-    logLevel: e<string>('LOGGER_LOG_LEVEL'),
+    prettifyLogs: Boolean(e('LOGGER_SHOULD_PRETTIFY_LOGS')),
+    logLevel: e('LOGGER_LOG_LEVEL'),
   },
 };

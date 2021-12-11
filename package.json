@@ -33,7 +33,7 @@
     "migration:revert": "npm run script:run -- migration.revert"
   },
   "dependencies": {
-    "@grande-armee/pocket-common": "^3.2.0",
+    "@grande-armee/pocket-common": "^3.3.0",
     "@nestjs/common": "^8.2.3",
     "@nestjs/core": "^8.2.3",
     "@nestjs/microservices": "^8.2.3",
