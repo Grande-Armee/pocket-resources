@@ -1,9 +1,11 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
+import { CollectionResourceNotFoundError } from '@domain/collectionResource/errors';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { CollectionResourceDto } from '../../dtos/collectionResourceDto';
+import { CollectionResourceCreatedEvent, CollectionResourceRemovedEvent } from '../../integrationEvents';
 import { CollectionResourceRepositoryFactory } from '../../repositories/collectionResource/collectionResourceRepository';
 import { CreateCollectionResourceData, RemoveCollectionResourceData } from './types';
 
@@ -14,22 +16,6 @@ export class CollectionResourceService {
     private readonly logger: LoggerService,
   ) {}
 
-  public async findCollectionResource(
-    unitOfWork: PostgresUnitOfWork,
-    collectionResourceId: string,
-  ): Promise<CollectionResourceDto> {
-    const { entityManager } = unitOfWork;
-    const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
-
-    const collectionResource = await collectionResourceRepository.findOneById(collectionResourceId);
-
-    if (!collectionResource) {
-      throw new Error('Collection resource not found.');
-    }
-
-    return collectionResource;
-  }
-
   public async createCollectionResource(
     unitOfWork: PostgresUnitOfWork,
     collectionResourceData: CreateCollectionResourceData,
@@ -39,10 +25,20 @@ export class CollectionResourceService {
       resourceId: collectionResourceData.resourceId,
     });
 
-    const { entityManager } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 
     const collectionResource = await collectionResourceRepository.createOne(collectionResourceData);
+
+    integrationEventsStore.addEvent(
+      new CollectionResourceCreatedEvent({
+        id: collectionResource.id,
+        createdAt: collectionResource.createdAt,
+        updatedAt: collectionResource.updatedAt,
+        collectionId: collectionResource.collectionId,
+        resourceId: collectionResource.resourceId,
+      }),
+    );
 
     this.logger.info('Collection resource created.', { collectionResourceId: collectionResource.id });
 
@@ -58,16 +54,25 @@ export class CollectionResourceService {
       resourceId: collectionResourceData.resourceId,
     });
 
-    const { entityManager } = unitOfWork;
+    const { entityManager, integrationEventsStore } = unitOfWork;
     const collectionResourceRepository = this.collectionResourceRepositoryFactory.create(entityManager);
 
     const foundCollectionResource = await collectionResourceRepository.findOne({ ...collectionResourceData });
 
     if (!foundCollectionResource) {
-      throw new Error('Collection resource not found.');
+      throw new CollectionResourceNotFoundError({
+        collectionId: collectionResourceData.collectionId,
+        resourceId: collectionResourceData.resourceId,
+      });
     }
 
     await collectionResourceRepository.removeOne(foundCollectionResource.id);
+
+    integrationEventsStore.addEvent(
+      new CollectionResourceRemovedEvent({
+        id: foundCollectionResource.id,
+      }),
+    );
 
     this.logger.info('Collection resource removed.', { collectionResourceId: foundCollectionResource.id });
   }

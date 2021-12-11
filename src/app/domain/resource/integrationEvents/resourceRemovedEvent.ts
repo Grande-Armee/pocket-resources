@@ -5,5 +5,5 @@ export interface ResourceRemovedEventPayload {
 }
 
 export class ResourceRemovedEvent extends IntegrationEvent<ResourceRemovedEventPayload> {
-  public readonly name = 'RESOURCE_REMOVED';
+  public readonly name = 'pocket.resources.resources.resourceRemoved';
 }

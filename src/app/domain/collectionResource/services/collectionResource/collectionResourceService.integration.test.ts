@@ -2,6 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { CollectionRepositoryFactory } from '@domain/collection/repositories/collection/collectionRepository';
 import { CollectionTestDataGenerator } from '@domain/collection/testDataGenerators/collectionTestDataGenerator';
+import { CollectionResourceNotFoundError } from '@domain/collectionResource/errors';
+import {
+  CollectionResourceCreatedEvent,
+  CollectionResourceRemovedEvent,
+} from '@domain/collectionResource/integrationEvents';
 import { CollectionResourceRepositoryFactory } from '@domain/collectionResource/repositories/collectionResource/collectionResourceRepository';
 import { DomainModule } from '@domain/domainModule';
 import { ResourceRepositoryFactory } from '@domain/resource/repositories/resource/resourceRepository';
@@ -47,60 +52,12 @@ describe('CollectionResourceService', () => {
     await testingModule.close();
   });
 
-  describe('Find collection resource', () => {
-    it('gets collection resource from the database', async () => {
-      expect.assertions(3);
-
-      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager } = unitOfWork;
-        const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
-        const resourceRepository = resourceRepositoryFactory.create(entityManager);
-        const collectionRepository = collectionRepositoryFactory.create(entityManager);
-
-        const resourceData = resourceTestDataGenerator.generateEntityData();
-        const { userId, title } = collectionTestDataGenerator.generateEntityData();
-
-        const resource = await resourceRepository.createOne({ url: resourceData.url });
-
-        const collection = await collectionRepository.createOne({ userId: userId, title });
-
-        const collectionResource = await collectionResourceRepository.createOne({
-          collectionId: collection.id,
-          resourceId: resource.id,
-        });
-
-        const foundCollectionResourceDto = await collectionResourceService.findCollectionResource(
-          unitOfWork,
-          collectionResource.id,
-        );
-
-        expect(foundCollectionResourceDto.id).toBe(collectionResource.id);
-        expect(foundCollectionResourceDto.collectionId).toBe(collection.id);
-        expect(foundCollectionResourceDto.resourceId).toBe(resource.id);
-      });
-    });
-
-    it('should throw if collection resource id not found', async () => {
-      expect.assertions(1);
-
-      await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { id: nonExistingCollectionResourceId } = collectionResourceTestDataGenerator.generateEntityData();
-
-        try {
-          await collectionResourceService.findCollectionResource(unitOfWork, nonExistingCollectionResourceId);
-        } catch (error) {
-          expect(error).toBeTruthy();
-        }
-      });
-    });
-  });
-
   describe('Create collection resource', () => {
     it('creates collection resource in database', async () => {
-      expect.assertions(3);
+      expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
         const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
@@ -123,6 +80,11 @@ describe('CollectionResourceService', () => {
         const collectionResourceInDb = await collectionResourceRepository.findOneById(createdCollectionResourceDto.id);
 
         expect(collectionResourceInDb).not.toBeNull();
+
+        const integrationEvents = integrationEventsStore.getEvents();
+
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0)).toBeInstanceOf(CollectionResourceCreatedEvent);
       });
     });
 
@@ -161,10 +123,10 @@ describe('CollectionResourceService', () => {
 
   describe('Remove collection resource', () => {
     it('removes collection resource from database', async () => {
-      expect.assertions(1);
+      expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
         const collectionResourceRepository = collectionResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
         const collectionRepository = collectionRepositoryFactory.create(entityManager);
@@ -189,6 +151,11 @@ describe('CollectionResourceService', () => {
         const collectionResourceInDb = await collectionResourceRepository.findOneById(collectionResource.id);
 
         expect(collectionResourceInDb).toBeNull();
+
+        const integrationEvents = integrationEventsStore.getEvents();
+
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0)).toBeInstanceOf(CollectionResourceRemovedEvent);
       });
     });
 
@@ -205,7 +172,7 @@ describe('CollectionResourceService', () => {
             resourceId: nonExistingResourceId,
           });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(CollectionResourceNotFoundError);
         }
       });
     });

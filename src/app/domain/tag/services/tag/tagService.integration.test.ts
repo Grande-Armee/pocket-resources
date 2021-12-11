@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DomainModule } from '@domain/domainModule';
+import { TagNotFoundError } from '@domain/tag/errors';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';
 import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
@@ -58,7 +59,7 @@ describe('TagService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof TagCreatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(TagCreatedEvent);
       });
     });
   });
@@ -91,7 +92,7 @@ describe('TagService', () => {
         try {
           await tagService.findTag(unitOfWork, nonExistingId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(TagNotFoundError);
         }
       });
     });
@@ -124,7 +125,7 @@ describe('TagService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof TagUpdatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(TagUpdatedEvent);
       });
     });
 
@@ -137,7 +138,7 @@ describe('TagService', () => {
         try {
           await tagService.updateTag(unitOfWork, nonExistingId, { title });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(TagNotFoundError);
         }
       });
     });
@@ -165,7 +166,7 @@ describe('TagService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof TagRemovedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(TagRemovedEvent);
       });
     });
 
@@ -178,7 +179,7 @@ describe('TagService', () => {
         try {
           await tagService.removeTag(unitOfWork, nonExistingId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(TagNotFoundError);
         }
       });
     });

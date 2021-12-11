@@ -1,6 +1,7 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
+import { TagNotFoundError } from '@domain/tag/errors';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { TagDto } from '../../dtos/tagDto';
@@ -26,6 +27,11 @@ export class TagService {
     integrationEventsStore.addEvent(
       new TagCreatedEvent({
         id: tag.id,
+        createdAt: tag.createdAt,
+        updatedAt: tag.updatedAt,
+        color: tag.color,
+        title: tag.title,
+        userId: tag.userId,
       }),
     );
 
@@ -41,7 +47,7 @@ export class TagService {
     const tag = await tagRepository.findOne({ id: tagId });
 
     if (!tag) {
-      throw new Error('Tag not found.');
+      throw new TagNotFoundError({ id: tagId });
     }
 
     return tag;
@@ -58,6 +64,11 @@ export class TagService {
     integrationEventsStore.addEvent(
       new TagUpdatedEvent({
         id: tag.id,
+        createdAt: tag.createdAt,
+        updatedAt: tag.updatedAt,
+        color: tag.color,
+        title: tag.title,
+        userId: tag.userId,
       }),
     );
 

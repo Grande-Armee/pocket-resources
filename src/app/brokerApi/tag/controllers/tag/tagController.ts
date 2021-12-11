@@ -44,7 +44,7 @@ export class TagBrokerController {
       return tag;
     });
 
-    return this.dtoFactory.create(CreateTagResponseDto, {
+    const result = this.dtoFactory.create(CreateTagResponseDto, {
       tag: {
         id: tag.id,
         createdAt: tag.createdAt,
@@ -54,6 +54,10 @@ export class TagBrokerController {
         userId: tag.userId,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(TagRoutingKey.findTag)
@@ -70,7 +74,7 @@ export class TagBrokerController {
       return tag;
     });
 
-    return this.dtoFactory.create(CreateTagResponseDto, {
+    return this.dtoFactory.create(FindTagResponseDto, {
       tag: {
         id: tag.id,
         createdAt: tag.createdAt,
@@ -99,7 +103,7 @@ export class TagBrokerController {
       return tag;
     });
 
-    return this.dtoFactory.create(CreateTagResponseDto, {
+    const result = this.dtoFactory.create(UpdateTagResponseDto, {
       tag: {
         id: tag.id,
         createdAt: tag.createdAt,
@@ -109,6 +113,10 @@ export class TagBrokerController {
         userId: tag.userId,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(TagRoutingKey.removeTag)
@@ -122,5 +130,7 @@ export class TagBrokerController {
 
       await this.tagService.removeTag(unitOfWork, tagId);
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
+import { TagNotFoundError } from '@domain/tag/errors';
 import { RepositoryFactory } from '@shared/database/types';
 
 import { TagDto } from '../../dtos/tagDto';
@@ -39,7 +40,7 @@ export class TagRepository {
     const tag = await this.findOne({ id });
 
     if (!tag) {
-      throw new Error('Tag not found');
+      throw new TagNotFoundError({ id });
     }
 
     await this.manager.update(Tag, { id }, data);
@@ -51,7 +52,7 @@ export class TagRepository {
     const tag = await this.findOne({ id });
 
     if (!tag) {
-      throw new Error('Tag not found');
+      throw new TagNotFoundError({ id });
     }
 
     await this.manager.delete(Tag, { id });

@@ -42,7 +42,7 @@ export class CollectionResourceBrokerController {
       return collectionResource;
     });
 
-    return this.dtoFactory.create(CreateCollectionResourceResponseDto, {
+    const result = this.dtoFactory.create(CreateCollectionResourceResponseDto, {
       collectionResource: {
         id: collectionResource.id,
         createdAt: collectionResource.createdAt,
@@ -51,6 +51,10 @@ export class CollectionResourceBrokerController {
         resourceId: collectionResource.resourceId,
       },
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
+
+    return result;
   }
 
   @RpcRoute(CollectionResourceRoutingKey.removeCollectionResource)
@@ -64,5 +68,7 @@ export class CollectionResourceBrokerController {
 
       await this.collectionResourceService.removeCollectionResource(unitOfWork, { collectionId, resourceId });
     });
+
+    await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
   }
 }

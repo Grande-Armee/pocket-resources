@@ -5,6 +5,12 @@ import { ResourceRepositoryFactory } from '@domain/resource/repositories/resourc
 import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { TagRepositoryFactory } from '@domain/tag/repositories/tag/tagRepository';
 import { TagTestDataGenerator } from '@domain/tag/testDataGenerators/tagTestDataGenerator';
+import { UserResourceNotFoundError } from '@domain/userResource/errors';
+import {
+  UserResourceCreatedEvent,
+  UserResourceRemovedEvent,
+  UserResourceUpdatedEvent,
+} from '@domain/userResource/integrationEvents';
 import { UserResourceTagRepositoryFactory } from '@domain/userResourceTag/repositories/userResourceTag/userResourceTagRepository';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';
@@ -112,7 +118,7 @@ describe('UserResourceService', () => {
         try {
           await userResourceService.findUserResource(unitOfWork, { userId, resourceId });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(UserResourceNotFoundError);
         }
       });
     });
@@ -120,10 +126,10 @@ describe('UserResourceService', () => {
 
   describe('Create user resource', () => {
     it('creates user resource in database', async () => {
-      expect.assertions(3);
+      expect.assertions(5);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
@@ -144,6 +150,11 @@ describe('UserResourceService', () => {
         const userResourceDto = await userResourceRepository.findOneById(createdUserResourceDto.id);
 
         expect(userResourceDto).not.toBeNull();
+
+        const integrationEvents = integrationEventsStore.getEvents();
+
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0)).toBeInstanceOf(UserResourceCreatedEvent);
       });
     });
 
@@ -177,10 +188,10 @@ describe('UserResourceService', () => {
 
   describe('Update user resource', () => {
     it('updates user resource in the database', async () => {
-      expect.assertions(2);
+      expect.assertions(4);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
@@ -208,6 +219,11 @@ describe('UserResourceService', () => {
         const userResourceInDb = await userResourceRepository.findOneById(userResourceDtoBeforeUpdate.id);
 
         expect(userResourceInDb).not.toBeNull();
+
+        const integrationEvents = integrationEventsStore.getEvents();
+
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0)).toBeInstanceOf(UserResourceUpdatedEvent);
       });
     });
 
@@ -226,7 +242,7 @@ describe('UserResourceService', () => {
             },
           );
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(UserResourceNotFoundError);
         }
       });
     });
@@ -234,10 +250,10 @@ describe('UserResourceService', () => {
 
   describe('Remove user resource', () => {
     it('removes user resource from database', async () => {
-      expect.assertions(1);
+      expect.assertions(3);
 
       await postgresHelper.runInTestTransaction(async (unitOfWork) => {
-        const { entityManager } = unitOfWork;
+        const { entityManager, integrationEventsStore } = unitOfWork;
 
         const userResourceRepository = userResourceRepositoryFactory.create(entityManager);
         const resourceRepository = resourceRepositoryFactory.create(entityManager);
@@ -260,6 +276,11 @@ describe('UserResourceService', () => {
         const userResourceInDb = await userResourceRepository.findOneById(userResource.id);
 
         expect(userResourceInDb).toBeNull();
+
+        const integrationEvents = integrationEventsStore.getEvents();
+
+        expect(integrationEvents).toHaveLength(1);
+        expect(integrationEvents.at(0)).toBeInstanceOf(UserResourceRemovedEvent);
       });
     });
 
@@ -272,7 +293,7 @@ describe('UserResourceService', () => {
         try {
           await userResourceService.removeUserResource(unitOfWork, { resourceId, userId });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(UserResourceNotFoundError);
         }
       });
     });

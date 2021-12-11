@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DomainModule } from '@domain/domainModule';
+import { ResourceAlreadyExistsError, ResourceNotFoundError } from '@domain/resource/errors';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';
 import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
@@ -56,7 +57,7 @@ describe('ResourceService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof ResourceCreatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(ResourceCreatedEvent);
       });
     });
 
@@ -75,7 +76,7 @@ describe('ResourceService', () => {
         try {
           await resourceService.createResource(unitOfWork, { url });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
         }
       });
     });
@@ -109,7 +110,7 @@ describe('ResourceService', () => {
         try {
           await resourceService.findResource(unitOfWork, nonExistingId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(ResourceNotFoundError);
         }
       });
     });
@@ -142,7 +143,7 @@ describe('ResourceService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof ResourceUpdatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(ResourceUpdatedEvent);
       });
     });
 
@@ -155,7 +156,7 @@ describe('ResourceService', () => {
         try {
           await resourceService.updateResource(unitOfWork, nonExistingId, { title });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(ResourceNotFoundError);
         }
       });
     });
@@ -183,7 +184,7 @@ describe('ResourceService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof ResourceRemovedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(ResourceRemovedEvent);
       });
     });
 
@@ -196,7 +197,7 @@ describe('ResourceService', () => {
         try {
           await resourceService.removeResource(unitOfWork, nonExistingId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error).toBeInstanceOf(ResourceNotFoundError);
         }
       });
     });
