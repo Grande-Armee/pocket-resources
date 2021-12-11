@@ -1,2 +1,1 @@
-export * from './collectionResourceNotFoundByIdError';
-export * from './collectionResourceNotFoundByCollectionAndResourceIdError';
+export * from './collectionResourceNotFoundError';

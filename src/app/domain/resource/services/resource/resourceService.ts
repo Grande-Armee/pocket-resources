@@ -1,8 +1,7 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
-import { ResourceNotFoundError } from '@domain/resource/errors';
-import { ResourceAlreadyExistsError } from '@domain/resource/errors/resourceAlreadyExistsError';
+import { ResourceNotFoundError, ResourceAlreadyExistsError } from '@domain/resource/errors';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { ResourceDto } from '../../dtos/resourceDto';

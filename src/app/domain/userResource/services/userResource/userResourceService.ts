@@ -1,7 +1,7 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
-import { UserResourceNotFoundByUserAndResourceIdError } from '@domain/userResource/errors';
+import { UserResourceNotFoundError } from '@domain/userResource/errors';
 import {
   UserResourceCreatedEvent,
   UserResourceRemovedEvent,
@@ -30,7 +30,7 @@ export class UserResourceService {
     const userResource = await userResourceRepository.findOne({ ...findUserResourceData });
 
     if (!userResource) {
-      throw new UserResourceNotFoundByUserAndResourceIdError({
+      throw new UserResourceNotFoundError({
         userId: findUserResourceData.userId,
         resourceId: findUserResourceData.resourceId,
       });
@@ -64,7 +64,6 @@ export class UserResourceService {
         resource: userResource.resource,
         resourceId: userResource.resourceId,
         userId: userResource.userId,
-        tags: userResource.tags,
       }),
     );
 
@@ -89,7 +88,7 @@ export class UserResourceService {
     const foundUserResource = await userResourceRepository.findOne({ ...findUserResourceData });
 
     if (!foundUserResource) {
-      throw new UserResourceNotFoundByUserAndResourceIdError({
+      throw new UserResourceNotFoundError({
         userId: findUserResourceData.userId,
         resourceId: findUserResourceData.resourceId,
       });
@@ -108,7 +107,6 @@ export class UserResourceService {
         resource: userResource.resource,
         resourceId: userResource.resourceId,
         userId: userResource.userId,
-        tags: userResource.tags,
       }),
     );
 
@@ -132,7 +130,7 @@ export class UserResourceService {
     const foundUserResource = await userResourceRepository.findOne({ ...findUserResourceData });
 
     if (!foundUserResource) {
-      throw new UserResourceNotFoundByUserAndResourceIdError({
+      throw new UserResourceNotFoundError({
         userId: findUserResourceData.userId,
         resourceId: findUserResourceData.resourceId,
       });

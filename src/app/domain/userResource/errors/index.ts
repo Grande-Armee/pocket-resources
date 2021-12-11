@@ -1,2 +1,1 @@
-export * from './userResourceNotFoundByIdError';
-export * from './userResourceNotFoundByUserAndResourceIdError';
+export * from './userResourceNotFoundError';

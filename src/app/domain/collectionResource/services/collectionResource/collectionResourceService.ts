@@ -1,7 +1,7 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
-import { CollectionResourceNotFoundByCollectionAndResourceIdError } from '@domain/collectionResource/errors';
+import { CollectionResourceNotFoundError } from '@domain/collectionResource/errors';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { CollectionResourceDto } from '../../dtos/collectionResourceDto';
@@ -60,7 +60,7 @@ export class CollectionResourceService {
     const foundCollectionResource = await collectionResourceRepository.findOne({ ...collectionResourceData });
 
     if (!foundCollectionResource) {
-      throw new CollectionResourceNotFoundByCollectionAndResourceIdError({
+      throw new CollectionResourceNotFoundError({
         collectionId: collectionResourceData.collectionId,
         resourceId: collectionResourceData.resourceId,
       });

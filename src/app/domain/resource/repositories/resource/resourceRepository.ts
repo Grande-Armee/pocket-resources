@@ -48,7 +48,7 @@ export class ResourceRepository {
     const resource = await this.findOneById(id);
 
     if (!resource) {
-      throw new ResourceNotFoundError({ id: id });
+      throw new ResourceNotFoundError({ id });
     }
 
     await this.manager.update(Resource, { id }, data);
@@ -60,7 +60,7 @@ export class ResourceRepository {
     const resource = await this.findOneById(id);
 
     if (!resource) {
-      throw new ResourceNotFoundError({ id: id });
+      throw new ResourceNotFoundError({ id });
     }
 
     await this.manager.delete(Resource, { id });

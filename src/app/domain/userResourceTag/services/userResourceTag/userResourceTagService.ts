@@ -2,7 +2,7 @@ import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { UserResourceService } from '@domain/userResource/services/userResource/userResourceService';
-import { UserResourceTagNotFoundByIdsError } from '@domain/userResourceTag/errors/userResourceTagNotByFoundByIdsError';
+import { UserResourceTagNotFoundError } from '@domain/userResourceTag/errors';
 import { UserResourceTagCreatedEvent, UserResourceTagRemovedEvent } from '@domain/userResourceTag/integrationEvents';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
@@ -30,7 +30,7 @@ export class UserResourceTagService {
     const userResourceTag = await userResourceTagRepository.findOneByIds(userId, resourceId, tagId);
 
     if (!userResourceTag) {
-      throw new UserResourceTagNotFoundByIdsError({ userId, resourceId, tagId });
+      throw new UserResourceTagNotFoundError({ userId, resourceId, tagId });
     }
 
     return userResourceTag;
@@ -91,7 +91,7 @@ export class UserResourceTagService {
     const userResourceTag = await userResourceTagRepository.findOneByIds(userId, resourceId, tagId);
 
     if (!userResourceTag) {
-      throw new UserResourceTagNotFoundByIdsError({ userId, resourceId, tagId });
+      throw new UserResourceTagNotFoundError({ userId, resourceId, tagId });
     }
 
     integrationEventsStore.addEvent(

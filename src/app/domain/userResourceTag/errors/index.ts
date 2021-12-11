@@ -1,1 +1,1 @@
-export * from './userResourceTagNotFoundByIdError';
+export * from './userResourceTagNotFoundError';

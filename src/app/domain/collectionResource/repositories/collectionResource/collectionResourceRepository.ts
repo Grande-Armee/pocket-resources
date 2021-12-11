@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
-import { CollectionResourceNotFoundByIdError } from '@domain/collectionResource/errors';
+import { CollectionResourceNotFoundError } from '@domain/collectionResource/errors';
 import { RepositoryFactory } from '@shared/database/types';
 
 import { CollectionResourceDto } from '../../dtos/collectionResourceDto';
@@ -49,7 +49,7 @@ export class CollectionResourceRepository {
     const collectionResource = await this.findOneById(id);
 
     if (!collectionResource) {
-      throw new CollectionResourceNotFoundByIdError({
+      throw new CollectionResourceNotFoundError({
         id,
       });
     }

@@ -40,7 +40,7 @@ export class TagRepository {
     const tag = await this.findOne({ id });
 
     if (!tag) {
-      throw new TagNotFoundError({ id: id });
+      throw new TagNotFoundError({ id });
     }
 
     await this.manager.update(Tag, { id }, data);
@@ -52,7 +52,7 @@ export class TagRepository {
     const tag = await this.findOne({ id });
 
     if (!tag) {
-      throw new TagNotFoundError({ id: id });
+      throw new TagNotFoundError({ id });
     }
 
     await this.manager.delete(Tag, { id });

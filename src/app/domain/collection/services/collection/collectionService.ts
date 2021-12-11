@@ -36,7 +36,6 @@ export class CollectionService {
         thumbnailUrl: collection.thumbnailUrl,
         title: collection.title,
         userId: collection.userId,
-        resources: collection.resources,
       }),
     );
 
@@ -79,7 +78,6 @@ export class CollectionService {
         thumbnailUrl: collection.thumbnailUrl,
         title: collection.title,
         userId: collection.userId,
-        resources: collection.resources,
       }),
     );
 

@@ -69,7 +69,7 @@ describe('CollectionService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof CollectionCreatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(CollectionCreatedEvent);
       });
     });
   });
@@ -120,7 +120,7 @@ describe('CollectionService', () => {
         try {
           await collectionService.findCollection(unitOfWork, nonExistingCollectionId);
         } catch (error) {
-          expect(error instanceof CollectionNotFoundError).toBe(true);
+          expect(error).toBeInstanceOf(CollectionNotFoundError);
         }
       });
     });
@@ -156,7 +156,7 @@ describe('CollectionService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof CollectionUpdatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(CollectionUpdatedEvent);
       });
     });
 
@@ -169,7 +169,7 @@ describe('CollectionService', () => {
         try {
           await collectionService.updateCollection(unitOfWork, nonExistingCollectionId, { title });
         } catch (error) {
-          expect(error instanceof CollectionNotFoundError).toBe(true);
+          expect(error).toBeInstanceOf(CollectionNotFoundError);
         }
       });
     });
@@ -197,7 +197,7 @@ describe('CollectionService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof CollectionRemovedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(CollectionRemovedEvent);
       });
     });
 
@@ -210,7 +210,7 @@ describe('CollectionService', () => {
         try {
           await collectionService.removeCollection(unitOfWork, nonExistingCollectionId);
         } catch (error) {
-          expect(error instanceof CollectionNotFoundError).toBe(true);
+          expect(error).toBeInstanceOf(CollectionNotFoundError);
         }
       });
     });

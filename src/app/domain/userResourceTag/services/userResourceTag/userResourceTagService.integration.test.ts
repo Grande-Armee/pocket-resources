@@ -7,7 +7,7 @@ import { TagRepositoryFactory } from '@domain/tag/repositories/tag/tagRepository
 import { TagTestDataGenerator } from '@domain/tag/testDataGenerators/tagTestDataGenerator';
 import { UserResourceRepositoryFactory } from '@domain/userResource/repositories/userResource/userResourceRepository';
 import { UserResourceTestDataGenerator } from '@domain/userResource/testDataGenerators/userResourceTestDataGenerator';
-import { UserResourceTagNotFoundByIdsError } from '@domain/userResourceTag/errors/userResourceTagNotByFoundByIdsError';
+import { UserResourceTagNotFoundError } from '@domain/userResourceTag/errors';
 import { UserResourceTagCreatedEvent, UserResourceTagRemovedEvent } from '@domain/userResourceTag/integrationEvents';
 import { UserResourceTagRepositoryFactory } from '@domain/userResourceTag/repositories/userResourceTag/userResourceTagRepository';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
@@ -118,7 +118,7 @@ describe('UserResourceTagService', () => {
             resourceId,
           });
         } catch (error) {
-          expect(error instanceof UserResourceTagNotFoundByIdsError).toBe(true);
+          expect(error).toBeInstanceOf(UserResourceTagNotFoundError);
         }
       });
     });
@@ -170,7 +170,7 @@ describe('UserResourceTagService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof UserResourceTagCreatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(UserResourceTagCreatedEvent);
       });
     });
 
@@ -269,7 +269,7 @@ describe('UserResourceTagService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof UserResourceTagRemovedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(UserResourceTagRemovedEvent);
       });
     });
 
@@ -288,7 +288,7 @@ describe('UserResourceTagService', () => {
             resourceId,
           });
         } catch (error) {
-          expect(error instanceof UserResourceTagNotFoundByIdsError).toBe(true);
+          expect(error).toBeInstanceOf(UserResourceTagNotFoundError);
         }
       });
     });

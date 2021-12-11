@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { CollectionRepositoryFactory } from '@domain/collection/repositories/collection/collectionRepository';
 import { CollectionTestDataGenerator } from '@domain/collection/testDataGenerators/collectionTestDataGenerator';
-import { CollectionResourceNotFoundByCollectionAndResourceIdError } from '@domain/collectionResource/errors';
+import { CollectionResourceNotFoundError } from '@domain/collectionResource/errors';
 import {
   CollectionResourceCreatedEvent,
   CollectionResourceRemovedEvent,
@@ -84,7 +84,7 @@ describe('CollectionResourceService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof CollectionResourceCreatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(CollectionResourceCreatedEvent);
       });
     });
 
@@ -155,7 +155,7 @@ describe('CollectionResourceService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof CollectionResourceRemovedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(CollectionResourceRemovedEvent);
       });
     });
 
@@ -172,7 +172,7 @@ describe('CollectionResourceService', () => {
             resourceId: nonExistingResourceId,
           });
         } catch (error) {
-          expect(error instanceof CollectionResourceNotFoundByCollectionAndResourceIdError).toBe(true);
+          expect(error).toBeInstanceOf(CollectionResourceNotFoundError);
         }
       });
     });

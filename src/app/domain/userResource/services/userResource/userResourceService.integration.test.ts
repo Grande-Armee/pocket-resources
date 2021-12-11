@@ -5,7 +5,7 @@ import { ResourceRepositoryFactory } from '@domain/resource/repositories/resourc
 import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { TagRepositoryFactory } from '@domain/tag/repositories/tag/tagRepository';
 import { TagTestDataGenerator } from '@domain/tag/testDataGenerators/tagTestDataGenerator';
-import { UserResourceNotFoundByUserAndResourceIdError } from '@domain/userResource/errors';
+import { UserResourceNotFoundError } from '@domain/userResource/errors';
 import {
   UserResourceCreatedEvent,
   UserResourceRemovedEvent,
@@ -118,7 +118,7 @@ describe('UserResourceService', () => {
         try {
           await userResourceService.findUserResource(unitOfWork, { userId, resourceId });
         } catch (error) {
-          expect(error instanceof UserResourceNotFoundByUserAndResourceIdError).toBe(true);
+          expect(error).toBeInstanceOf(UserResourceNotFoundError);
         }
       });
     });
@@ -154,7 +154,7 @@ describe('UserResourceService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof UserResourceCreatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(UserResourceCreatedEvent);
       });
     });
 
@@ -223,7 +223,7 @@ describe('UserResourceService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof UserResourceUpdatedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(UserResourceUpdatedEvent);
       });
     });
 
@@ -242,7 +242,7 @@ describe('UserResourceService', () => {
             },
           );
         } catch (error) {
-          expect(error instanceof UserResourceNotFoundByUserAndResourceIdError).toBe(true);
+          expect(error).toBeInstanceOf(UserResourceNotFoundError);
         }
       });
     });
@@ -280,7 +280,7 @@ describe('UserResourceService', () => {
         const integrationEvents = integrationEventsStore.getEvents();
 
         expect(integrationEvents).toHaveLength(1);
-        expect(integrationEvents.at(0) instanceof UserResourceRemovedEvent).toBe(true);
+        expect(integrationEvents.at(0)).toBeInstanceOf(UserResourceRemovedEvent);
       });
     });
 
@@ -293,7 +293,7 @@ describe('UserResourceService', () => {
         try {
           await userResourceService.removeUserResource(unitOfWork, { resourceId, userId });
         } catch (error) {
-          expect(error instanceof UserResourceNotFoundByUserAndResourceIdError).toBe(true);
+          expect(error).toBeInstanceOf(UserResourceNotFoundError);
         }
       });
     });
