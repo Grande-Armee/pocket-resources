@@ -1,6 +1,8 @@
 import { LoggerService } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
+import { ResourceNotFoundError } from '@domain/resource/errors';
+import { ResourceAlreadyExistsError } from '@domain/resource/errors/resourceAlreadyExistsError';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { ResourceDto } from '../../dtos/resourceDto';
@@ -24,7 +26,7 @@ export class ResourceService {
     const existingResource = await resourceRepository.findOneByUrl(resourceData.url);
 
     if (existingResource) {
-      throw new Error(`Resource with url: ${resourceData.url} already exists.`);
+      throw new ResourceAlreadyExistsError({ url: resourceData.url });
     }
 
     const resource = await resourceRepository.createOne(resourceData);
@@ -32,6 +34,12 @@ export class ResourceService {
     integrationEventsStore.addEvent(
       new ResourceCreatedEvent({
         id: resource.id,
+        createdAt: resource.createdAt,
+        updatedAt: resource.updatedAt,
+        url: resource.url,
+        title: resource.title,
+        thumbnailUrl: resource.thumbnailUrl,
+        content: resource.content,
       }),
     );
 
@@ -47,7 +55,7 @@ export class ResourceService {
     const resource = await resourceRepository.findOneById(resourceId);
 
     if (!resource) {
-      throw new Error('Resource not found.');
+      throw new ResourceNotFoundError({ id: resourceId });
     }
 
     return resource;

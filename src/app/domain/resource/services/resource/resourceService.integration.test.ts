@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DomainModule } from '@domain/domainModule';
+import { ResourceNotFoundError } from '@domain/resource/errors';
+import { ResourceAlreadyExistsError } from '@domain/resource/errors/resourceAlreadyExistsError';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';
 import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
@@ -75,7 +77,7 @@ describe('ResourceService', () => {
         try {
           await resourceService.createResource(unitOfWork, { url });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof ResourceAlreadyExistsError).toBe(true);
         }
       });
     });
@@ -109,7 +111,7 @@ describe('ResourceService', () => {
         try {
           await resourceService.findResource(unitOfWork, nonExistingId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof ResourceNotFoundError).toBe(true);
         }
       });
     });
@@ -155,7 +157,7 @@ describe('ResourceService', () => {
         try {
           await resourceService.updateResource(unitOfWork, nonExistingId, { title });
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof ResourceNotFoundError).toBe(true);
         }
       });
     });
@@ -196,7 +198,7 @@ describe('ResourceService', () => {
         try {
           await resourceService.removeResource(unitOfWork, nonExistingId);
         } catch (error) {
-          expect(error).toBeTruthy();
+          expect(error instanceof ResourceNotFoundError).toBe(true);
         }
       });
     });
