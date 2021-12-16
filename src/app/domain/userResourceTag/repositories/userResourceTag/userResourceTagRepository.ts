@@ -1,7 +1,7 @@
+import { UserResourceTagNotFoundError } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
-import { UserResourceTagNotFoundError } from '@domain/userResourceTag/errors';
 import { RepositoryFactory } from '@shared/database/types';
 
 import { UserResourceTagDto } from '../../dtos/userResourceTagDto';

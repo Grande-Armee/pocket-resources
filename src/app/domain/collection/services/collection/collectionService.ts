@@ -1,11 +1,15 @@
-import { LoggerService } from '@grande-armee/pocket-common';
+import {
+  CollectionCreatedEvent,
+  CollectionNotFoundError,
+  CollectionRemovedEvent,
+  CollectionUpdatedEvent,
+  LoggerService,
+} from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
-import { CollectionNotFoundError } from '@domain/collection/errors';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
-import { CollectionDto } from '../../dtos/collectionDto';
-import { CollectionCreatedEvent, CollectionUpdatedEvent, CollectionRemovedEvent } from '../../integrationEvents';
+import { CollectionDto } from '../../dtos';
 import { CollectionRepositoryFactory } from '../../repositories/collection/collectionRepository';
 import { CreateCollectionData, UpdateCollectionData } from './types';
 

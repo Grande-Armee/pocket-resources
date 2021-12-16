@@ -1,12 +1,12 @@
+import {
+  CollectionResourceCreatedEvent,
+  CollectionResourceNotFoundError,
+  CollectionResourceRemovedEvent,
+} from '@grande-armee/pocket-common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CollectionRepositoryFactory } from '@domain/collection/repositories/collection/collectionRepository';
 import { CollectionTestDataGenerator } from '@domain/collection/testDataGenerators/collectionTestDataGenerator';
-import { CollectionResourceNotFoundError } from '@domain/collectionResource/errors';
-import {
-  CollectionResourceCreatedEvent,
-  CollectionResourceRemovedEvent,
-} from '@domain/collectionResource/integrationEvents';
 import { CollectionResourceRepositoryFactory } from '@domain/collectionResource/repositories/collectionResource/collectionResourceRepository';
 import { DomainModule } from '@domain/domainModule';
 import { ResourceRepositoryFactory } from '@domain/resource/repositories/resource/resourceRepository';

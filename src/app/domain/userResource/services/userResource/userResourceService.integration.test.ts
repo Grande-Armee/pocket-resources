@@ -1,3 +1,9 @@
+import {
+  UserResourceCreatedEvent,
+  UserResourceNotFoundError,
+  UserResourceRemovedEvent,
+  UserResourceUpdatedEvent,
+} from '@grande-armee/pocket-common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DomainModule } from '@domain/domainModule';
@@ -5,12 +11,6 @@ import { ResourceRepositoryFactory } from '@domain/resource/repositories/resourc
 import { ResourceTestDataGenerator } from '@domain/resource/testDataGenerators/resourceTestDataGenerator';
 import { TagRepositoryFactory } from '@domain/tag/repositories/tag/tagRepository';
 import { TagTestDataGenerator } from '@domain/tag/testDataGenerators/tagTestDataGenerator';
-import { UserResourceNotFoundError } from '@domain/userResource/errors';
-import {
-  UserResourceCreatedEvent,
-  UserResourceRemovedEvent,
-  UserResourceUpdatedEvent,
-} from '@domain/userResource/integrationEvents';
 import { UserResourceTagRepositoryFactory } from '@domain/userResourceTag/repositories/userResourceTag/userResourceTagRepository';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';

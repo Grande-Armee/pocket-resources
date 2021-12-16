@@ -1,11 +1,15 @@
-import { LoggerService } from '@grande-armee/pocket-common';
+import {
+  LoggerService,
+  TagCreatedEvent,
+  TagNotFoundError,
+  TagRemovedEvent,
+  TagUpdatedEvent,
+} from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
-import { TagNotFoundError } from '@domain/tag/errors';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { TagDto } from '../../dtos/tagDto';
-import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../integrationEvents';
 import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
 import { CreateTagData, UpdateTagData } from './types';
 

@@ -1,11 +1,16 @@
-import { LoggerService } from '@grande-armee/pocket-common';
+import {
+  LoggerService,
+  ResourceAlreadyExistsError,
+  ResourceCreatedEvent,
+  ResourceNotFoundError,
+  ResourceRemovedEvent,
+  ResourceUpdatedEvent,
+} from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
-import { ResourceNotFoundError, ResourceAlreadyExistsError } from '@domain/resource/errors';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
-import { ResourceDto } from '../../dtos/resourceDto';
-import { ResourceCreatedEvent, ResourceUpdatedEvent, ResourceRemovedEvent } from '../../integrationEvents';
+import { ResourceDto } from '../../dtos';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { CreateResourceData, UpdateResourceData } from './types';
 

@@ -1,7 +1,7 @@
+import { ResourceNotFoundError } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
-import { ResourceNotFoundError } from '@domain/resource/errors';
 import { RepositoryFactory } from '@shared/database/types';
 
 import { ResourceDto } from '../../dtos/resourceDto';

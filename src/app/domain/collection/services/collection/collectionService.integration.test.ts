@@ -1,3 +1,9 @@
+import {
+  CollectionCreatedEvent,
+  CollectionNotFoundError,
+  CollectionRemovedEvent,
+  CollectionUpdatedEvent,
+} from '@grande-armee/pocket-common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CollectionResourceRepositoryFactory } from '@domain/collectionResource/repositories/collectionResource/collectionResourceRepository';
@@ -8,10 +14,8 @@ import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelp
 import { DatabaseModule } from '@shared/database/databaseModule';
 import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 
-import { CollectionCreatedEvent, CollectionRemovedEvent, CollectionUpdatedEvent } from '../../integrationEvents';
 import { CollectionRepositoryFactory } from '../../repositories/collection/collectionRepository';
 import { CollectionTestDataGenerator } from '../../testDataGenerators/collectionTestDataGenerator';
-import { CollectionNotFoundError } from './../../errors';
 import { CollectionService } from './collectionService';
 
 describe('CollectionService', () => {

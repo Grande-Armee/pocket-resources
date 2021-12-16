@@ -1,12 +1,17 @@
+import {
+  ResourceAlreadyExistsError,
+  ResourceCreatedEvent,
+  ResourceNotFoundError,
+  ResourceRemovedEvent,
+  ResourceUpdatedEvent,
+} from '@grande-armee/pocket-common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DomainModule } from '@domain/domainModule';
-import { ResourceAlreadyExistsError, ResourceNotFoundError } from '@domain/resource/errors';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';
 import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 
-import { ResourceCreatedEvent, ResourceRemovedEvent, ResourceUpdatedEvent } from '../../integrationEvents';
 import { ResourceRepositoryFactory } from '../../repositories/resource/resourceRepository';
 import { ResourceTestDataGenerator } from '../../testDataGenerators/resourceTestDataGenerator';
 import { ResourceService } from './resourceService';
