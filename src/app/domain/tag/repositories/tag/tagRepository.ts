@@ -1,7 +1,7 @@
+import { TagNotFoundError } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
-import { TagNotFoundError } from '@domain/tag/errors';
 import { RepositoryFactory } from '@shared/database/types';
 
 import { TagDto } from '../../dtos/tagDto';

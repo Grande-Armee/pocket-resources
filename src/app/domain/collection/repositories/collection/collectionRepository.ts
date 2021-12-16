@@ -1,3 +1,4 @@
+import { CollectionNotFoundError } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
@@ -5,7 +6,6 @@ import { RepositoryFactory } from '@shared/database/types';
 
 import { CollectionDto } from '../../dtos/collectionDto';
 import { Collection } from '../../entities/collection';
-import { CollectionNotFoundError } from '../../errors';
 import { CollectionMapper } from '../../mappers/collection/collectionMapper';
 
 @EntityRepository()

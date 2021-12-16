@@ -1,12 +1,12 @@
-import { LoggerService } from '@grande-armee/pocket-common';
-import { Injectable } from '@nestjs/common';
-
-import { UserResourceNotFoundError } from '@domain/userResource/errors';
 import {
+  LoggerService,
   UserResourceCreatedEvent,
+  UserResourceNotFoundError,
   UserResourceRemovedEvent,
   UserResourceUpdatedEvent,
-} from '@domain/userResource/integrationEvents';
+} from '@grande-armee/pocket-common';
+import { Injectable } from '@nestjs/common';
+
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceDto } from '../../dtos/userResourceDto';

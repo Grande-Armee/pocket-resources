@@ -1,7 +1,7 @@
+import { UserResourceNotFoundError } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository, EntityManager, FindConditions } from 'typeorm';
 
-import { UserResourceNotFoundError } from '@domain/userResource/errors';
 import { RepositoryFactory } from '@shared/database/types';
 
 import { UserResourceDto } from '../../dtos/userResourceDto';

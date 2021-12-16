@@ -1,12 +1,11 @@
+import { TagCreatedEvent, TagNotFoundError, TagRemovedEvent, TagUpdatedEvent } from '@grande-armee/pocket-common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { DomainModule } from '@domain/domainModule';
-import { TagNotFoundError } from '@domain/tag/errors';
 import { PostgresHelper } from '@integration/helpers/postgresHelper/postgresHelper';
 import { DatabaseModule } from '@shared/database/databaseModule';
 import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 
-import { TagCreatedEvent, TagRemovedEvent, TagUpdatedEvent } from '../../integrationEvents';
 import { TagRepositoryFactory } from '../../repositories/tag/tagRepository';
 import { TagTestDataGenerator } from '../../testDataGenerators/tagTestDataGenerator';
 import { TagService } from './tagService';

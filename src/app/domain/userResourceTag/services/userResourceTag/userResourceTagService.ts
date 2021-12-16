@@ -1,9 +1,12 @@
-import { LoggerService } from '@grande-armee/pocket-common';
+import {
+  LoggerService,
+  UserResourceTagCreatedEvent,
+  UserResourceTagNotFoundError,
+  UserResourceTagRemovedEvent,
+} from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { UserResourceService } from '@domain/userResource/services/userResource/userResourceService';
-import { UserResourceTagNotFoundError } from '@domain/userResourceTag/errors';
-import { UserResourceTagCreatedEvent, UserResourceTagRemovedEvent } from '@domain/userResourceTag/integrationEvents';
 import { PostgresUnitOfWork } from '@shared/unitOfWork/providers/unitOfWorkFactory';
 
 import { UserResourceTagDto } from '../../dtos/userResourceTagDto';
