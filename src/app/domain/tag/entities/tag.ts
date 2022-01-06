@@ -19,25 +19,27 @@ export const TAG_TABLE_NAME = 'tags';
   name: TAG_TABLE_NAME,
 })
 export class Tag {
-  @IsUUID('4')
   @IsOptional()
+  @IsUUID('4')
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
+  @IsOptional()
   @IsString()
   @Column({ type: 'varchar', length: 7 })
   public color: string;
 
+  @IsOptional()
   @IsString()
   @Column({ type: 'text' })
   public title: string;
@@ -45,6 +47,7 @@ export class Tag {
   @OneToMany(() => UserResourceTag, (userResourceTag) => userResourceTag.tag)
   public userResourceTags?: UserResourceTag[];
 
+  @IsOptional()
   @IsUUID('4')
   @Column({ type: 'uuid' })
   public userId: string;

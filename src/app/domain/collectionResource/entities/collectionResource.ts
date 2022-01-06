@@ -23,24 +23,25 @@ export const COLLECTION_RESOURCE_TABLE_NAME = 'collectionResources';
   name: COLLECTION_RESOURCE_TABLE_NAME,
 })
 export class CollectionResource {
-  @IsUUID('4')
   @IsOptional()
+  @IsUUID('4')
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
   @ManyToOne(() => Resource, (resource) => resource.collectionResources)
   public resource?: Resource;
 
+  @IsOptional()
   @IsUUID('4')
   @Column({ type: 'uuid' })
   public resourceId: string;
@@ -48,6 +49,7 @@ export class CollectionResource {
   @ManyToOne(() => Collection, (collection) => collection.collectionResources)
   public collection?: Collection;
 
+  @IsOptional()
   @IsUUID('4')
   @Column({ type: 'uuid' })
   public collectionId: string;

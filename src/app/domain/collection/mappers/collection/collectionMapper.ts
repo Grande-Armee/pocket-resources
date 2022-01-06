@@ -20,8 +20,6 @@ export class CollectionMapper implements Mapper<Collection, CollectionDto> {
       ),
     );
 
-    // TODO: Dto.create()
-
     return CollectionDto.create({
       id,
       createdAt,

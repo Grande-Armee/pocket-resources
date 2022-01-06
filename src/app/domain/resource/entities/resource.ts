@@ -20,34 +20,38 @@ export const RESOURCE_TABLE_NAME = 'resources';
   name: RESOURCE_TABLE_NAME,
 })
 export class Resource {
-  @IsUUID('4')
   @IsOptional()
+  @IsUUID('4')
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
+  @IsOptional()
   @IsString()
   @Column({ type: 'text', unique: true })
   public url: string;
 
+  @IsOptional()
   @IsString()
   @Column({ type: 'text', nullable: true })
   public title: string | null;
 
+  @IsOptional()
   @IsString()
   @IsUrl()
   @Column({ type: 'text', nullable: true })
   public thumbnailUrl: string | null;
 
+  @IsOptional()
   @IsString()
   @Column({ type: 'text', nullable: true })
   public content: string | null;
