@@ -1,5 +1,16 @@
+import { Validator } from '@grande-armee/pocket-common';
 import { IsUUID, IsOptional, IsDate } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, Column, Unique } from 'typeorm';
+import {
+  Entity,
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  Column,
+  Unique,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
 
 import { Tag } from '@domain/tag/entities/tag';
 import { UserResource } from '@domain/userResource/entities/userResource';
@@ -39,4 +50,10 @@ export class UserResourceTag {
   @IsUUID('4')
   @Column({ type: 'uuid' })
   public tagId: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  protected validate(): void {
+    Validator.validate(this);
+  }
 }

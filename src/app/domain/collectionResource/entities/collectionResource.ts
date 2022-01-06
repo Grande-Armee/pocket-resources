@@ -1,5 +1,16 @@
+import { Validator } from '@grande-armee/pocket-common';
 import { IsUUID, IsOptional, IsDate } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, Unique, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  Column,
+  Unique,
+  ManyToOne,
+  BeforeUpdate,
+  BeforeInsert,
+} from 'typeorm';
 
 import { Resource } from '@domain/resource/entities/resource';
 
@@ -40,4 +51,10 @@ export class CollectionResource {
   @IsUUID('4')
   @Column({ type: 'uuid' })
   public collectionId: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  protected validate(): void {
+    Validator.validate(this);
+  }
 }

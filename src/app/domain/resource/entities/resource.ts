@@ -1,5 +1,15 @@
+import { Validator } from '@grande-armee/pocket-common';
 import { IsUUID, IsOptional, IsDate, IsString, IsUrl } from 'class-validator';
-import { Entity, CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  CreateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  Column,
+  OneToMany,
+  BeforeUpdate,
+  BeforeInsert,
+} from 'typeorm';
 
 import { CollectionResource } from '@domain/collectionResource/entities/collectionResource';
 import { UserResource } from '@domain/userResource/entities/userResource';
@@ -47,4 +57,10 @@ export class Resource {
 
   @OneToMany(() => CollectionResource, (collectionResource) => collectionResource.resource)
   public collectionResources?: CollectionResource[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  protected validate(): void {
+    Validator.validate(this);
+  }
 }

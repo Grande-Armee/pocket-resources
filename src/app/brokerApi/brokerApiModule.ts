@@ -1,4 +1,4 @@
-import { ClsModule, DtoModule } from '@grande-armee/pocket-common';
+import { ClsModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
 import { DomainModule } from '@domain/domainModule';
@@ -16,7 +16,6 @@ import { UserResourceTagBrokerModule } from './userResourceTag/userResourceTagBr
   imports: [
     BrokerModule,
     UnitOfWorkModule,
-    DtoModule,
     DomainModule,
     ClsModule,
     CollectionBrokerModule,

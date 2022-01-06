@@ -1,4 +1,4 @@
-import { Mapper, DtoFactory, Nullable } from '@grande-armee/pocket-common';
+import { Mapper, Nullable } from '@grande-armee/pocket-common';
 import { Injectable } from '@nestjs/common';
 
 import { Resource } from '@domain/resource/entities/resource';
@@ -9,7 +9,7 @@ import { Collection } from '../../entities/collection';
 
 @Injectable()
 export class CollectionMapper implements Mapper<Collection, CollectionDto> {
-  public constructor(private readonly dtoFactory: DtoFactory, private readonly resourceMapper: ResourceMapper) {}
+  public constructor(private readonly resourceMapper: ResourceMapper) {}
 
   public mapEntityToDto(entity: Collection): CollectionDto {
     const { id, createdAt, updatedAt, title, thumbnailUrl, content, userId, collectionResources } = entity;
@@ -20,7 +20,9 @@ export class CollectionMapper implements Mapper<Collection, CollectionDto> {
       ),
     );
 
-    return this.dtoFactory.create(CollectionDto, {
+    // TODO: Dto.create()
+
+    return CollectionDto.create({
       id,
       createdAt,
       updatedAt,

@@ -1,4 +1,4 @@
-import { DtoModule, ClsModule } from '@grande-armee/pocket-common';
+import { ClsModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
 import { CollectionResourceModule } from '@domain/collectionResource/collectionResourceModule';
@@ -8,7 +8,7 @@ import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 import { CollectionResourceBrokerController } from './controllers/collectionResource/collectionResourceController';
 
 @Module({
-  imports: [BrokerModule, UnitOfWorkModule, DtoModule, ClsModule, CollectionResourceModule],
+  imports: [BrokerModule, UnitOfWorkModule, ClsModule, CollectionResourceModule],
   providers: [CollectionResourceBrokerController],
 })
 export class CollectionResourceBrokerModule {}

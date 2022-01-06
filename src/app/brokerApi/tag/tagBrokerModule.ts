@@ -1,4 +1,4 @@
-import { DtoModule, ClsModule } from '@grande-armee/pocket-common';
+import { ClsModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
 import { TagModule } from '@domain/tag/tagModule';
@@ -8,7 +8,7 @@ import { UnitOfWorkModule } from '@shared/unitOfWork/unitOfWorkModule';
 import { TagBrokerController } from './controllers/tag/tagController';
 
 @Module({
-  imports: [BrokerModule, UnitOfWorkModule, DtoModule, ClsModule, TagModule],
+  imports: [BrokerModule, UnitOfWorkModule, ClsModule, TagModule],
   providers: [TagBrokerController],
 })
 export class TagBrokerModule {}

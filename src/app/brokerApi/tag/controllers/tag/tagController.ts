@@ -1,7 +1,6 @@
 import {
   BrokerController,
   BrokerService,
-  DtoFactory,
   RpcRoute,
   TagRoutingKey,
   BrokerMessage,
@@ -12,6 +11,7 @@ import {
   UpdateTagResponseDto,
   UpdateTagPayloadDto,
   RemoveTagPayloadDto,
+  TagDto,
 } from '@grande-armee/pocket-common';
 
 import { TagService } from '@domain/tag/services/tag/tagService';
@@ -22,7 +22,6 @@ export class TagBrokerController {
   public constructor(
     private readonly unitOfWorkFactory: UnitOfWorkFactory,
     private readonly brokerService: BrokerService,
-    private readonly dtoFactory: DtoFactory,
     private readonly tagService: TagService,
   ) {}
 
@@ -30,10 +29,11 @@ export class TagBrokerController {
   public async createTag(_: unknown, message: BrokerMessage): Promise<CreateTagResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(CreateTagPayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = CreateTagPayloadDto.create(data.payload);
 
     const tag = await unitOfWork.runInTransaction(async () => {
-      const { color, title, userId } = data.payload;
+      const { color, title, userId } = payload;
 
       const tag = await this.tagService.createTag(unitOfWork, {
         color,
@@ -44,15 +44,15 @@ export class TagBrokerController {
       return tag;
     });
 
-    const result = this.dtoFactory.create(CreateTagResponseDto, {
-      tag: {
+    const result = CreateTagResponseDto.create({
+      tag: TagDto.create({
         id: tag.id,
         createdAt: tag.createdAt,
         updatedAt: tag.updatedAt,
         color: tag.color,
         title: tag.title,
         userId: tag.userId,
-      },
+      }),
     });
 
     await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
@@ -64,25 +64,26 @@ export class TagBrokerController {
   public async findTag(_: unknown, message: BrokerMessage): Promise<FindTagResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(FindTagPayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = FindTagPayloadDto.create(data.payload);
 
     const tag = await unitOfWork.runInTransaction(async () => {
-      const { tagId } = data.payload;
+      const { tagId } = payload;
 
       const tag = await this.tagService.findTag(unitOfWork, tagId);
 
       return tag;
     });
 
-    return this.dtoFactory.create(FindTagResponseDto, {
-      tag: {
+    return FindTagResponseDto.create({
+      tag: TagDto.create({
         id: tag.id,
         createdAt: tag.createdAt,
         updatedAt: tag.updatedAt,
         color: tag.color,
         title: tag.title,
         userId: tag.userId,
-      },
+      }),
     });
   }
 
@@ -90,10 +91,11 @@ export class TagBrokerController {
   public async updateTag(_: unknown, message: BrokerMessage): Promise<UpdateTagResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(UpdateTagPayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = UpdateTagPayloadDto.create(data.payload);
 
     const tag = await unitOfWork.runInTransaction(async () => {
-      const { tagId, color, title } = data.payload;
+      const { tagId, color, title } = payload;
 
       const tag = await this.tagService.updateTag(unitOfWork, tagId, {
         color,
@@ -103,15 +105,15 @@ export class TagBrokerController {
       return tag;
     });
 
-    const result = this.dtoFactory.create(UpdateTagResponseDto, {
-      tag: {
+    const result = UpdateTagResponseDto.create({
+      tag: TagDto.create({
         id: tag.id,
         createdAt: tag.createdAt,
         updatedAt: tag.updatedAt,
         color: tag.color,
         title: tag.title,
         userId: tag.userId,
-      },
+      }),
     });
 
     await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
@@ -123,10 +125,11 @@ export class TagBrokerController {
   public async removeTag(_: unknown, message: BrokerMessage): Promise<void> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(RemoveTagPayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = RemoveTagPayloadDto.create(data.payload);
 
     await unitOfWork.runInTransaction(async () => {
-      const { tagId } = data.payload;
+      const { tagId } = payload;
 
       await this.tagService.removeTag(unitOfWork, tagId);
     });

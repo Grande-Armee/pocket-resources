@@ -1,7 +1,6 @@
 import {
   BrokerController,
   BrokerService,
-  DtoFactory,
   RpcRoute,
   ResourceRoutingKey,
   BrokerMessage,
@@ -12,6 +11,7 @@ import {
   UpdateResourceResponseDto,
   UpdateResourcePayloadDto,
   RemoveResourcePayloadDto,
+  ResourceDto,
 } from '@grande-armee/pocket-common';
 
 import { ResourceService } from '@domain/resource/services/resource/resourceService';
@@ -22,7 +22,6 @@ export class ResourceBrokerController {
   public constructor(
     private readonly unitOfWorkFactory: UnitOfWorkFactory,
     private readonly brokerService: BrokerService,
-    private readonly dtoFactory: DtoFactory,
     private readonly resourceService: ResourceService,
   ) {}
 
@@ -30,10 +29,11 @@ export class ResourceBrokerController {
   public async createResource(_: unknown, message: BrokerMessage): Promise<CreateResourceResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(CreateResourcePayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = CreateResourcePayloadDto.create(data.payload);
 
     const resource = await unitOfWork.runInTransaction(async () => {
-      const { url } = data.payload;
+      const { url } = payload;
 
       const resource = await this.resourceService.createResource(unitOfWork, {
         url,
@@ -42,8 +42,8 @@ export class ResourceBrokerController {
       return resource;
     });
 
-    const result = this.dtoFactory.create(CreateResourceResponseDto, {
-      resource: {
+    const result = CreateResourceResponseDto.create({
+      resource: ResourceDto.create({
         id: resource.id,
         createdAt: resource.createdAt,
         updatedAt: resource.updatedAt,
@@ -51,7 +51,7 @@ export class ResourceBrokerController {
         title: resource.title,
         thumbnailUrl: resource.thumbnailUrl,
         content: resource.content,
-      },
+      }),
     });
 
     await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
@@ -63,18 +63,19 @@ export class ResourceBrokerController {
   public async findResource(_: unknown, message: BrokerMessage): Promise<FindResourceResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(FindResourcePayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = FindResourcePayloadDto.create(data.payload);
 
     const resource = await unitOfWork.runInTransaction(async () => {
-      const { resourceId } = data.payload;
+      const { resourceId } = payload;
 
       const resource = await this.resourceService.findResource(unitOfWork, resourceId);
 
       return resource;
     });
 
-    return this.dtoFactory.create(FindResourceResponseDto, {
-      resource: {
+    return FindResourceResponseDto.create({
+      resource: ResourceDto.create({
         id: resource.id,
         createdAt: resource.createdAt,
         updatedAt: resource.updatedAt,
@@ -82,7 +83,7 @@ export class ResourceBrokerController {
         title: resource.title,
         thumbnailUrl: resource.thumbnailUrl,
         content: resource.content,
-      },
+      }),
     });
   }
 
@@ -90,10 +91,11 @@ export class ResourceBrokerController {
   public async updateResource(_: unknown, message: BrokerMessage): Promise<UpdateResourceResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(UpdateResourcePayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = UpdateResourcePayloadDto.create(data.payload);
 
     const resource = await unitOfWork.runInTransaction(async () => {
-      const { resourceId, title, content, thumbnailUrl } = data.payload;
+      const { resourceId, title, content, thumbnailUrl } = payload;
 
       const resource = await this.resourceService.updateResource(unitOfWork, resourceId, {
         title,
@@ -104,8 +106,8 @@ export class ResourceBrokerController {
       return resource;
     });
 
-    const result = this.dtoFactory.create(UpdateResourceResponseDto, {
-      resource: {
+    const result = UpdateResourceResponseDto.create({
+      resource: ResourceDto.create({
         id: resource.id,
         createdAt: resource.createdAt,
         updatedAt: resource.updatedAt,
@@ -113,7 +115,7 @@ export class ResourceBrokerController {
         title: resource.title,
         thumbnailUrl: resource.thumbnailUrl,
         content: resource.content,
-      },
+      }),
     });
 
     await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
@@ -125,10 +127,11 @@ export class ResourceBrokerController {
   public async removeResource(_: unknown, message: BrokerMessage): Promise<void> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(RemoveResourcePayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = RemoveResourcePayloadDto.create(data.payload);
 
     await unitOfWork.runInTransaction(async () => {
-      const { resourceId } = data.payload;
+      const { resourceId } = payload;
 
       await this.resourceService.removeResource(unitOfWork, resourceId);
     });

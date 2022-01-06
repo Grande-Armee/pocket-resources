@@ -1,4 +1,4 @@
-import { AllowNull } from '@grande-armee/pocket-common';
+import { AllowNull, Transformer } from '@grande-armee/pocket-common';
 import { Type } from 'class-transformer';
 import { IsDate, IsString, IsUUID, ValidateNested } from 'class-validator';
 
@@ -33,4 +33,6 @@ export class CollectionDto {
   @AllowNull()
   @ValidateNested({ each: true })
   public readonly resources: ResourceDto[] | null;
+
+  public static readonly create = Transformer.createInstanceFactory(CollectionDto);
 }
