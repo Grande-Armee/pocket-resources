@@ -1,4 +1,3 @@
-import { DtoModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
 import { UserResourceModule } from '@domain/userResource/userResourceModule';
@@ -9,7 +8,7 @@ import { UserResourceTagRepositoryFactory } from './repositories/userResourceTag
 import { UserResourceTagService } from './services/userResourceTag/userResourceTagService';
 
 @Module({
-  imports: [DatabaseModule, DtoModule, UserResourceModule],
+  imports: [DatabaseModule, UserResourceModule],
   providers: [UserResourceTagService, UserResourceTagMapper, UserResourceTagRepositoryFactory],
   exports: [UserResourceTagService],
 })

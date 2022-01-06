@@ -1,4 +1,3 @@
-import { DtoModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
 import { DatabaseModule } from '@shared/database/databaseModule';
@@ -8,7 +7,7 @@ import { TagRepositoryFactory } from './repositories/tag/tagRepository';
 import { TagService } from './services/tag/tagService';
 
 @Module({
-  imports: [DatabaseModule, DtoModule],
+  imports: [DatabaseModule],
   providers: [TagService, TagMapper, TagRepositoryFactory],
   exports: [TagService, TagMapper],
 })

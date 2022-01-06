@@ -1,4 +1,4 @@
-import { AllowNull } from '@grande-armee/pocket-common';
+import { AllowNull, Transformer } from '@grande-armee/pocket-common';
 import { IsDate, IsString, IsUUID } from 'class-validator';
 
 export class ResourceDto {
@@ -25,4 +25,6 @@ export class ResourceDto {
   @AllowNull()
   @IsString()
   public readonly content: string | null;
+
+  public static readonly create = Transformer.createInstanceFactory(ResourceDto);
 }

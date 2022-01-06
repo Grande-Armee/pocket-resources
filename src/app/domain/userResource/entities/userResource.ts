@@ -1,4 +1,4 @@
-import { UserResourceStatus } from '@grande-armee/pocket-common';
+import { UserResourceStatus, Validator } from '@grande-armee/pocket-common';
 import { IsUUID, IsOptional, IsDate, IsEnum, IsBoolean, IsInt } from 'class-validator';
 import {
   Entity,
@@ -9,6 +9,8 @@ import {
   ManyToOne,
   OneToMany,
   Unique,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
 
 import { Resource } from '@domain/resource/entities/resource';
@@ -21,21 +23,22 @@ export const USER_RESOURCE_TABLE_NAME = 'userResources';
   name: USER_RESOURCE_TABLE_NAME,
 })
 export class UserResource {
-  @IsUUID('4')
   @IsOptional()
+  @IsUUID('4')
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
+  @IsOptional()
   @IsEnum(UserResourceStatus)
   @Column({
     type: 'enum',
@@ -44,6 +47,7 @@ export class UserResource {
   })
   public status: UserResourceStatus;
 
+  @IsOptional()
   @IsBoolean()
   @Column({
     type: 'boolean',
@@ -51,6 +55,7 @@ export class UserResource {
   })
   public isFavorite: boolean;
 
+  @IsOptional()
   @IsInt()
   @Column({
     type: 'int',
@@ -61,6 +66,7 @@ export class UserResource {
   @ManyToOne(() => Resource, (resource) => resource.userResources)
   public resource?: Resource;
 
+  @IsOptional()
   @IsUUID('4')
   @Column({ type: 'uuid' })
   public resourceId: string;
@@ -68,7 +74,14 @@ export class UserResource {
   @OneToMany(() => UserResourceTag, (userResourceTag) => userResourceTag.userResource)
   public userResourceTags?: UserResourceTag[];
 
+  @IsOptional()
   @IsUUID('4')
   @Column({ type: 'uuid' })
   public userId: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  protected validate(): void {
+    Validator.validate(this);
+  }
 }

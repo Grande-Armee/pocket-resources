@@ -1,3 +1,4 @@
+import { Transformer } from '@grande-armee/pocket-common';
 import { IsDate, IsUUID } from 'class-validator';
 
 export class UserResourceTagDto {
@@ -15,4 +16,6 @@ export class UserResourceTagDto {
 
   @IsUUID('4')
   public readonly tagId: string;
+
+  public static readonly create = Transformer.createInstanceFactory(UserResourceTagDto);
 }

@@ -2,10 +2,10 @@ import {
   BrokerController,
   BrokerMessage,
   BrokerService,
+  CollectionDto,
   CollectionRoutingKey,
   CreateCollectionPayloadDto,
   CreateCollectionResponseDto,
-  DtoFactory,
   FindCollectionPayloadDto,
   FindCollectionResponseDto,
   RemoveCollectionPayloadDto,
@@ -22,7 +22,6 @@ export class CollectionBrokerController {
   public constructor(
     private readonly unitOfWorkFactory: UnitOfWorkFactory,
     private readonly brokerService: BrokerService,
-    private readonly dtoFactory: DtoFactory,
     private readonly collectionService: CollectionService,
   ) {}
 
@@ -30,10 +29,11 @@ export class CollectionBrokerController {
   public async createCollection(_: unknown, message: BrokerMessage): Promise<CreateCollectionResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(CreateCollectionPayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = CreateCollectionPayloadDto.create(data.payload);
 
     const collection = await unitOfWork.runInTransaction(async () => {
-      const { userId, title } = data.payload;
+      const { userId, title } = payload;
 
       const collection = await this.collectionService.createCollection(unitOfWork, {
         userId,
@@ -43,8 +43,8 @@ export class CollectionBrokerController {
       return collection;
     });
 
-    const result = this.dtoFactory.create(CreateCollectionResponseDto, {
-      collection: {
+    const result = CreateCollectionResponseDto.create({
+      collection: CollectionDto.create({
         id: collection.id,
         createdAt: collection.createdAt,
         updatedAt: collection.updatedAt,
@@ -53,7 +53,7 @@ export class CollectionBrokerController {
         content: collection.content,
         userId: collection.userId,
         resources: collection.resources,
-      },
+      }),
     });
 
     await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
@@ -65,18 +65,19 @@ export class CollectionBrokerController {
   public async findCollection(_: unknown, message: BrokerMessage): Promise<FindCollectionResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(FindCollectionPayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = FindCollectionPayloadDto.create(data.payload);
 
     const collection = await unitOfWork.runInTransaction(async () => {
-      const { collectionId } = data.payload;
+      const { collectionId } = payload;
 
       const collection = await this.collectionService.findCollection(unitOfWork, collectionId);
 
       return collection;
     });
 
-    return this.dtoFactory.create(FindCollectionResponseDto, {
-      collection: {
+    return FindCollectionResponseDto.create({
+      collection: CollectionDto.create({
         id: collection.id,
         createdAt: collection.createdAt,
         updatedAt: collection.updatedAt,
@@ -85,7 +86,7 @@ export class CollectionBrokerController {
         content: collection.content,
         userId: collection.userId,
         resources: collection.resources,
-      },
+      }),
     });
   }
 
@@ -93,10 +94,11 @@ export class CollectionBrokerController {
   public async updateCollection(_: unknown, message: BrokerMessage): Promise<UpdateCollectionResponseDto> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(UpdateCollectionPayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = UpdateCollectionPayloadDto.create(data.payload);
 
     const collection = await unitOfWork.runInTransaction(async () => {
-      const { collectionId, title, content, thumbnailUrl } = data.payload;
+      const { collectionId, title, content, thumbnailUrl } = payload;
 
       const collection = await this.collectionService.updateCollection(unitOfWork, collectionId, {
         title,
@@ -107,8 +109,8 @@ export class CollectionBrokerController {
       return collection;
     });
 
-    const result = this.dtoFactory.create(UpdateCollectionResponseDto, {
-      collection: {
+    const result = UpdateCollectionResponseDto.create({
+      collection: CollectionDto.create({
         id: collection.id,
         createdAt: collection.createdAt,
         updatedAt: collection.updatedAt,
@@ -117,7 +119,7 @@ export class CollectionBrokerController {
         content: collection.content,
         userId: collection.userId,
         resources: collection.resources,
-      },
+      }),
     });
 
     await this.brokerService.publishEvents(unitOfWork.integrationEventsStore.getEvents());
@@ -129,10 +131,11 @@ export class CollectionBrokerController {
   public async removeCollection(_: unknown, message: BrokerMessage): Promise<void> {
     const unitOfWork = await this.unitOfWorkFactory.create();
 
-    const { data } = await this.brokerService.parseMessage(RemoveCollectionPayloadDto, message);
+    const { data } = await this.brokerService.parseMessage(message);
+    const payload = RemoveCollectionPayloadDto.create(data.payload);
 
     await unitOfWork.runInTransaction(async () => {
-      const { collectionId } = data.payload;
+      const { collectionId } = payload;
 
       await this.collectionService.removeCollection(unitOfWork, collectionId);
     });

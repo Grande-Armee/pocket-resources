@@ -1,4 +1,3 @@
-import { DtoModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
 import { DatabaseModule } from '@shared/database/databaseModule';
@@ -8,7 +7,7 @@ import { ResourceRepositoryFactory } from './repositories/resource/resourceRepos
 import { ResourceService } from './services/resource/resourceService';
 
 @Module({
-  imports: [DatabaseModule, DtoModule],
+  imports: [DatabaseModule],
   providers: [ResourceService, ResourceMapper, ResourceRepositoryFactory],
   exports: [ResourceService, ResourceMapper],
 })

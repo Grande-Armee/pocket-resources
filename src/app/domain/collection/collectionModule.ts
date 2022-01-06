@@ -1,4 +1,3 @@
-import { DtoModule } from '@grande-armee/pocket-common';
 import { Module } from '@nestjs/common';
 
 import { ResourceModule } from '@domain/resource/resourceModule';
@@ -9,7 +8,7 @@ import { CollectionRepositoryFactory } from './repositories/collection/collectio
 import { CollectionService } from './services/collection/collectionService';
 
 @Module({
-  imports: [DatabaseModule, ResourceModule, DtoModule],
+  imports: [DatabaseModule, ResourceModule],
   providers: [CollectionService, CollectionMapper, CollectionRepositoryFactory],
   exports: [CollectionService, CollectionMapper],
 })

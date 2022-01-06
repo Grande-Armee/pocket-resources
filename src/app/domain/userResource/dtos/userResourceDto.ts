@@ -1,4 +1,4 @@
-import { AllowNull, UserResourceStatus } from '@grande-armee/pocket-common';
+import { AllowNull, Transformer, UserResourceStatus } from '@grande-armee/pocket-common';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEnum, IsInt, IsUUID, ValidateNested } from 'class-validator';
 
@@ -40,4 +40,6 @@ export class UserResourceDto {
   @Type(() => TagDto)
   @ValidateNested({ each: true })
   public readonly tags: TagDto[] | null;
+
+  public static readonly create = Transformer.createInstanceFactory(UserResourceDto);
 }
